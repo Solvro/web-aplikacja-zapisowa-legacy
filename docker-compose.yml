@@ -1,3 +1,21 @@
-version '3'
-
-
+version: "2"
+services:
+    aplikacja_zapisowa_frontend:
+       build: "./frontend"
+       ports: 
+           - 3000:3000
+       volumes:
+           - "./frontend/:/app"
+       depends_on:
+           - "aplikacja_zapisowa_backend"
+    aplikacja_zapisowa_backend:
+       build: "./backend"
+       depends_on:
+           - "aplikacja_zapisowa_postgres"
+       volumes:
+           - "./backend/aplikacja_zapisowa:/app"
+           - "/app/node_modules"
+    aplikacja_zapisowa_postgres:
+       image: "postgres:latest"
+       volumes:
+           - "aplikacja-zapisowa_postgress-volume"
