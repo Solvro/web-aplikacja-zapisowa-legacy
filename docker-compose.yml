@@ -1,21 +1,23 @@
 version: "2"
 services:
-    aplikacja_zapisowa_frontend:
+    frontend:
        build: "./frontend"
        ports: 
            - 3000:3000
        volumes:
            - "./frontend/:/app"
        depends_on:
-           - "aplikacja_zapisowa_backend"
-    aplikacja_zapisowa_backend:
+           - "backend"
+    backend:
        build: "./backend"
+       ports:
+           - "8000:8000"
        depends_on:
-           - "aplikacja_zapisowa_postgres"
+           - "db"
        volumes:
            - "./backend/aplikacja_zapisowa:/app"
            - "/app/node_modules"
-    aplikacja_zapisowa_postgres:
+    db:
        image: "postgres:latest"
        volumes:
            - "aplikacja-zapisowa_postgress-volume"

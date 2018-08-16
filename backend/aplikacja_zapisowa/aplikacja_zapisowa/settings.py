@@ -27,6 +27,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+if DEBUG:
+    ALLOWED_HOSTS.append('*')
+
 
 # Application definition
 
@@ -37,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'enrolmentpanel',
 ]
 
 MIDDLEWARE = [
@@ -77,8 +82,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'postgres',
-        'USERNAME': 'postgres',
-        'HOST': 'aplikacja_zapisowa_postgres'
+        'USER': 'postgres',
+        'HOST': 'db',
+        'PORT': '5432',
     }
 }
 
@@ -120,3 +126,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    )
+}
