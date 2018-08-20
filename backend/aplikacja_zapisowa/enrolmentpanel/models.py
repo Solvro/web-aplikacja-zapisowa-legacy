@@ -40,13 +40,13 @@ class Student(AbstractUser):
 
     def generate_login(self):
         """
-        Generates login from index and
-        address of Rally object in memory
-        :return:
+        Generates login from index and random 5 sign
+        from [2-9a-hjk-n-p-zA-HJ-Z]
+        :return: username
         """
         # can be annoying
         # NOTE think about other way
-        username = self.index + Student.objects.make_random_password()
+        username = self.index + Student.objects.make_random_password(5)
         print(f'Username: {username}', end=' ')
         return username
 
@@ -54,7 +54,7 @@ class Student(AbstractUser):
         """
         Generates password from index and random 10 sign
         from [2-9a-hjk-n-p-zA-HJ-Z]
-        :return:
+        :return: password
         """
         # potentially vulnerable
         password = self.index + Student.objects.make_random_password()
