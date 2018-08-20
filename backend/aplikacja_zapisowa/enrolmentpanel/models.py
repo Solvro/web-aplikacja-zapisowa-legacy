@@ -19,6 +19,9 @@ class Student(AbstractUser):
         ('M', 'Male'),
         ('F', 'Female'),
     )
+    # rally is needed because we create user only for one rally
+    # but one student can be registered for several
+    # also enables deletion with the rally
     rally = models.ForeignKey(Rally, on_delete=models.CASCADE)
     # ask if it has to be unique think about login
     index = models.CharField(max_length=30, unique=True)
