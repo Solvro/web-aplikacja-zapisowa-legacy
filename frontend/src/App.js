@@ -4,13 +4,12 @@ import './App.css';
 
 class App extends Component {
   callApi(){
-    fetch('http://jsonplaceholder.typicode.com/todos/1')
+    fetch('http://localhost:8000/api/test')
     .then((result) => {
+      console.log(result)
       return result.json();
-    }).then((jsonResult) => {
-      alert(jsonResult);
-    }).catch((err) => {
-      console.log(err)
+    }).then(res => {
+      alert(res['sub'])
     })
   }
 
