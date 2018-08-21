@@ -14,9 +14,10 @@
     "css-loader": "0.28.7",
     "dotenv": "4.0.0",
     "dotenv-expand": "4.2.0",
+    "extract-text-webpack-plugin": "3.0.2",
     "eslint": "5.4.0",
     "eslint-loader": "2.1.0",
-    "extract-text-webpack-plugin": "3.0.2",
+    "typescript": "^3.0.1",
     "file-loader": "0.11.2",
     "fork-ts-checker-webpack-plugin": "^0.2.8",
     "fs-extra": "3.0.1",
@@ -48,7 +49,7 @@
     "whatwg-fetch": "2.0.3"
   },
   "scripts": {
-    "start": "node scripts/start.js",
+    "start": "webpack --config webpack.config.dev.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom"
   },
@@ -57,6 +58,8 @@
     "@types/node": "^10.7.1",
     "@types/react": "^16.4.11",
     "@types/react-dom": "^16.0.7",
+    "eslint": "5.4.0",
+    "eslint-loader": "2.1.0",
     "typescript": "^3.0.1"
   },
   "jest": {
