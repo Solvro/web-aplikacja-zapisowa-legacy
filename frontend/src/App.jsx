@@ -2,7 +2,7 @@ import Button from '@material-ui/core/Button';
 import { bindActionCreators } from 'redux';
 import * as React from 'react';
 import { connect } from 'react-redux';
-import * as actionCreators from './store/actions/actionsCreators';
+import actionCreators from './store/actions/actionsCreators';
 import './App.css';
 
 import logo from './logo.svg';
@@ -11,15 +11,15 @@ import logo from './logo.svg';
 
 function mapStateToProps(state){
   // tslint:disable-next-line:no-console
-  console.log(state);
+  console.log('state',state);
   return {
-    index: state.numbers
+    numbers: state.numbers
   }
 }
 
-function mapDispachtToProps(dispatch){
+function mapDispachToProps(dispatch){
     // tslint:disable-next-line:no-console
-    console.log(dispatch);
+    console.log('dispatch', dispatch);
   return bindActionCreators(actionCreators, dispatch);
 
 }
@@ -32,7 +32,7 @@ class App extends React.Component {
 
   render() {
     // tslint:disable-next-line:no-console
-    console.log('func',this.props.increment);
+    console.log('props',this.props);
     return (
       <div className="App">
         <header className="App-header">
@@ -43,12 +43,13 @@ class App extends React.Component {
           To get started, edit <code>src/App.tsx</code> and save to reload.
           
         </p>
-        <Button variant="contained" color="primary" onClick={this.props.increment.bind(null, 1)}>
-          {this.props.index}
+        <Button variant="contained" color="primary" onClick={() => this.props.increment(10)}>
+          Add 10 to store
         </Button>
+        <p>Store: {this.props.numbers.numbers || 1}</p>
       </div>
     );
   }
 }
 
-export default connect(mapStateToProps,mapDispachtToProps)(App);
+export default connect(mapStateToProps,mapDispachToProps)(App);

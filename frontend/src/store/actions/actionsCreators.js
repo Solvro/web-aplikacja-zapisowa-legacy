@@ -1,10 +1,14 @@
 // increment Action
 
-function increment(index){
+function increment(numbers){
     return {
-        index,
+        numbers,
         type: 'INCREMENT'
     }
 }
 
-export default increment;
+const actions = {
+    increment
+}
+
+export default actions;

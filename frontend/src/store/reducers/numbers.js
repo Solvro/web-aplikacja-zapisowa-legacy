@@ -2,9 +2,13 @@ function numbers(state = {}, action){
     // tslint:disable-next-line:no-console
     console.log(state, action);
     if (action.type === 'INCREMENT'){
+        // tslint:disable-next-line:no-console
+        console.log('STATE', state);
+        // tslint:disable-next-line:no-console
+        console.log('actionAction', action);
         return {
             ...state,
-            index: state.index +1
+            numbers: (state.numbers || 1) + action.numbers
         }
     }
 
