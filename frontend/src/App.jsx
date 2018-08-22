@@ -32,7 +32,7 @@ class App extends React.Component {
 
   render() {
     // tslint:disable-next-line:no-console
-    console.log(this.props);
+    console.log('func',this.props.increment);
     return (
       <div className="App">
         <header className="App-header">
@@ -43,7 +43,7 @@ class App extends React.Component {
           To get started, edit <code>src/App.tsx</code> and save to reload.
           
         </p>
-        <Button variant="contained" color="primary" onClick={this.add}>
+        <Button variant="contained" color="primary" onClick={this.props.increment.bind(null, 1)}>
           {this.props.index}
         </Button>
       </div>

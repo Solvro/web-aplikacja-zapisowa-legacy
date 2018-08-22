@@ -1,7 +1,10 @@
 function numbers(state = {}, action){
+    // tslint:disable-next-line:no-console
+    console.log(state, action);
     if (action.type === 'INCREMENT'){
         return {
-            ...state
+            ...state,
+            index: state.index +1
         }
     }
 
