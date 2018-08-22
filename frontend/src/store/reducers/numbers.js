@@ -1,7 +1,7 @@
 function numbers(state = {}, action){
     if (action.type === 'INCREMENT'){
         return {
-            state
+            ...state
         }
     }
 
