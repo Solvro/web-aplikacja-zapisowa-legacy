@@ -8,10 +8,53 @@ class Rally(models.Model):
     name = models.CharField(max_length=150, primary_key=True)
     max_people = models.PositiveIntegerField()
 
+    def save(self, *args, **kwargs):
+        if self.max_people > 0:
+            super().save(*args, **kwargs)
+
+# def create_rally(rally_name):
+#     rally_name = '_'.join(rally_name.split())
+#
+#     class MyRallyMetaClass(ModelBase):
+#         def __new__(mcs, name, bases, attrs):
+#             name += rally_name
+#             return ModelBase.__new__(mcs, name, bases, attrs)
+#
+#     class MyRally(models.Model):
+#         name = models.CharField(max_length=150, primary_key=True)
+#         max_people = models.PositiveIntegerField()
+#         __metaclass__ = MyRallyMetaClass
+#
+#         class Meta:
+#             db_table = rally_name
+#
+#     return MyRally
+
 
 class Room(models.Model):
-    number = models.IntegerField(primary_key=True)
+    number = models.IntegerField()
     rally = models.ForeignKey(Rally, on_delete=models.CASCADE)
+    max_capacity = models.PositiveSmallIntegerField(default=0)
+
+    class Meta:
+        unique_together = (('rally', 'number'),)
+
+    def save(self, *args, **kwargs):
+        if self.max_capacity > 0:
+            super().save(*args, **kwargs)
+
+    def add_people(self, people):
+        """
+        Updates room field in models
+        given in people
+        :param people: list-like object with models
+        """
+        # probably will be modified
+        needed_people = self.max_capacity - Student.objects.filter(room=self).count()
+        if len(people) <= needed_people:
+            for person in people:
+                person.room = self
+                person.save()
 
 
 class Student(AbstractUser):
@@ -19,23 +62,23 @@ class Student(AbstractUser):
         ('M', 'Male'),
         ('F', 'Female'),
     )
-    # rally is needed because we create user only for one rally
-    # but one student can be registered for several
-    # also enables deletion with the rally
     rally = models.ForeignKey(Rally, on_delete=models.CASCADE)
     index = models.CharField(max_length=30)
     sex = models.CharField(max_length=1,
                            choices=SEX_CHOICES)
-    room = models.ForeignKey(Room, null=True, on_delete=models.SET_NULL)
+    room = models.ForeignKey(Room,
+                             default=None,
+                             null=True,
+                             on_delete=models.SET_NULL)
+
+    class Meta:
+        unique_together = (('rally', 'index'),)
 
     def save(self, *args, **kwargs):
         self.username = self.generate_login()
         # add index to ensure being unique
         self.set_password(raw_password=self.generate_pass())
-        # send_mail(f"Here is your password {kwargs['index'] + password}",
-        #           'mati.walczak997@gmail.com',
-        #           [kwargs['email']],
-        #           fail_silently=False)
+        # NOTE add sending emails
         super().save(*args, **kwargs)
 
     def generate_login(self):
@@ -44,10 +87,7 @@ class Student(AbstractUser):
         from [2-9a-hjk-n-p-zA-HJ-Z]
         :return: username
         """
-        # can be annoying
-        # NOTE think about other way
         username = self.index + Student.objects.make_random_password(5)
-        print(f'Username: {username}', end=' ')
         return username
 
     def generate_pass(self):
@@ -58,5 +98,4 @@ class Student(AbstractUser):
         """
         # potentially vulnerable
         password = self.index + Student.objects.make_random_password()
-        print(f'Pass: {password}')
         return password
