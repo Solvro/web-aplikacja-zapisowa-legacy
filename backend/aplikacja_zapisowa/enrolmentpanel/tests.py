@@ -1,7 +1,6 @@
 from django.test import TestCase
-from .models import Rally, Student, Room
 from django.db.utils import IntegrityError, DataError
-
+from .models import Rally, Room, Student
 
 class StudentTestCase(TestCase):
     index = '236775'
