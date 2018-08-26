@@ -3,7 +3,7 @@ import { IncrementState, IncrementType } from './types'
 
 
 
-const reducer:Reducer<IncrementState> = (state = {number: 0}, action) => {
+const reducer: Reducer<IncrementState> = (state = {number: 0}, action) => {
     switch (action.type) {
         case IncrementType.add: {
             return {...state, number: state.number + action.payload};
