@@ -133,3 +133,5 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.BrowsableAPIRenderer',
     )
 }
+
+AUTH_USER_MODEL = 'enrolmentpanel.Student'
