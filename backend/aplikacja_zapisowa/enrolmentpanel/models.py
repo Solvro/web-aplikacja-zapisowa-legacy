@@ -1,47 +1,32 @@
 from django.contrib.auth.models import AbstractUser
-from django.core.mail import send_mail
 from django.db import models
+from .exceptions import NotPositiveNumberOfPeople
 
 
-# NOTE consider using indexes in models
-class Rally(models.Model):
+class Event(models.Model):
     name = models.CharField(max_length=150, primary_key=True)
     max_people = models.PositiveIntegerField()
 
     def save(self, *args, **kwargs):
         if self.max_people > 0:
             super().save(*args, **kwargs)
-
-# def create_rally(rally_name):
-#     rally_name = '_'.join(rally_name.split())
-#
-#     class MyRallyMetaClass(ModelBase):
-#         def __new__(mcs, name, bases, attrs):
-#             name += rally_name
-#             return ModelBase.__new__(mcs, name, bases, attrs)
-#
-#     class MyRally(models.Model):
-#         name = models.CharField(max_length=150, primary_key=True)
-#         max_people = models.PositiveIntegerField()
-#         __metaclass__ = MyRallyMetaClass
-#
-#         class Meta:
-#             db_table = rally_name
-#
-#     return MyRally
+        else:
+            raise NotPositiveNumberOfPeople
 
 
 class Room(models.Model):
     number = models.IntegerField()
-    rally = models.ForeignKey(Rally, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
     max_capacity = models.PositiveSmallIntegerField(default=0)
 
     class Meta:
-        unique_together = (('rally', 'number'),)
+        unique_together = (('Event', 'number'),)
 
     def save(self, *args, **kwargs):
         if self.max_capacity > 0:
             super().save(*args, **kwargs)
+        else:
+            raise NotPositiveNumberOfPeople
 
     def add_people(self, people):
         """
@@ -62,7 +47,7 @@ class Student(AbstractUser):
         ('M', 'Male'),
         ('F', 'Female'),
     )
-    rally = models.ForeignKey(Rally, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
     index = models.CharField(max_length=30)
     sex = models.CharField(max_length=1,
                            choices=SEX_CHOICES)
@@ -72,13 +57,11 @@ class Student(AbstractUser):
                              on_delete=models.SET_NULL)
 
     class Meta:
-        unique_together = (('rally', 'index'),)
+        unique_together = (('Event', 'index'),)
 
     def save(self, *args, **kwargs):
         self.username = self.generate_login()
-        # add index to ensure being unique
         self.set_password(raw_password=self.generate_pass())
-        # NOTE add sending emails
         super().save(*args, **kwargs)
 
     def generate_login(self):
@@ -87,7 +70,7 @@ class Student(AbstractUser):
         from [2-9a-hjk-n-p-zA-HJ-Z]
         :return: username
         """
-        username = self.index + Student.objects.make_random_password(5)
+        username = self.index + '_' + Student.objects.make_random_password(5)
         return username
 
     def generate_pass(self):
