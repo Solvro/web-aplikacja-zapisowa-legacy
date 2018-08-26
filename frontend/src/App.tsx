@@ -1,20 +1,19 @@
+import './App.css';
+
 import Button from '@material-ui/core/Button';
 import * as React from 'react';
+import { MouseEvent } from 'react';
 import { connect, Dispatch } from 'react-redux';
-import './App.css';
-import { increment } from './store/increment/actions';
 
-import {MouseEvent} from "react";
-import logo from './logo.svg';
 import { ApplicationState } from './store';
+import { increment } from './store/increment/actions';
 
 interface IPropsFromStore {
     store: ApplicationState;
     add(value: number): void;
 }
-
 interface IAppState {
-    cokolwiek: any;
+  state: ''
 }
 
 function mapStateToProps(state: ApplicationState){
@@ -24,13 +23,6 @@ function mapStateToProps(state: ApplicationState){
 function mapDispatchToProps(dispatch: Dispatch<ApplicationState>) {
   return { add: (value: number): void => { dispatch(increment(value)) } }
 }
-// tslint:disable-next-line
-// function mapDispatchToProps(dispatch: Dispatch) {
-//   add: (value: any) => dispatch(increment(value))
-// }
-
-
-
 class App extends React.Component<IPropsFromStore, IAppState> {
 
   public render() {
@@ -39,7 +31,6 @@ class App extends React.Component<IPropsFromStore, IAppState> {
     return (
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
           <h1 className="App-title">Welcome to React</h1>
         </header>
         <p className="App-intro">
