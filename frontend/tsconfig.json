@@ -11,6 +11,7 @@
     "moduleResolution": "node",
     "rootDir": "src",
     "forceConsistentCasingInFileNames": true,
+    "allowSyntheticDefaultImports": true, // Allows you to use ES2015 style imports, even though the code we import doesnt have a ES2015 default export
     "noImplicitReturns": true,
     "noImplicitThis": true,
     "noImplicitAny": true,
