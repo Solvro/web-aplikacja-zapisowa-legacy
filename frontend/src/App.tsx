@@ -12,10 +12,6 @@ interface IPropsFromStore extends RouteComponentProps<any>{
     add(value: number): void;
 }
 
-interface IAppState {
-  state: ''
-}
-
 function mapStateToProps(state: ApplicationState){
   return { store: state }
 }
@@ -23,12 +19,11 @@ function mapStateToProps(state: ApplicationState){
 function mapDispatchToProps(dispatch: Dispatch<ApplicationState>) {
   return { add: (value: number): void => { dispatch(increment(value)) } }
 }
-class App extends React.Component<IPropsFromStore, IAppState> {
+class App extends React.Component<IPropsFromStore> {
 
   public render() {
-    // tslint:disable-next-line:no-console
-    console.log('props',this.props);
-      return (
+
+    return (
       <div className="App">
         <header className="App-header">
           <h1 className="App-title">Welcome to React</h1>
@@ -51,5 +46,5 @@ class App extends React.Component<IPropsFromStore, IAppState> {
     private onClickAdd = (event: MouseEvent<HTMLElement>) => this.props.add(10);
     private onClickChange = (event: MouseEvent<HTMLElement>) => this.props.history.push('/a');
 }
-// this.props.history.push("/a")
+
 export default connect(mapStateToProps,mapDispatchToProps)(App);
