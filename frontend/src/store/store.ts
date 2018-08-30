@@ -1,7 +1,33 @@
-import { createStore } from 'redux';
+import {rootReducer} from '.';
 
-import { rootReducer } from '.';
+import {connectRouter, routerMiddleware} from 'connected-react-router'
+import createHistory from 'history/createBrowserHistory'
+import {applyMiddleware, compose, createStore} from 'redux';
 
-const store = createStore(rootReducer, (window as any).__REDUX_DEVTOOLS_EXTENSION__ && (window as any).__REDUX_DEVTOOLS_EXTENSION__());
+
+export const history = createHistory();
+
+const enhancers = [];
+const middleware = [
+    routerMiddleware(history)
+];
+
+if (process.env.NODE_ENV === 'development') {
+    const devToolsExtension = (window as any).__REDUX_DEVTOOLS_EXTENSION__
+
+    if (typeof devToolsExtension === 'function') {
+        enhancers.push(devToolsExtension())
+    }
+}
+
+const composedEnhancers = compose(
+    applyMiddleware(...middleware),
+    ...enhancers
+);
+
+const store = createStore(
+    connectRouter(history)(rootReducer),
+    composedEnhancers
+);
 
 export default store;
