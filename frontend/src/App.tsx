@@ -19,32 +19,33 @@ function mapStateToProps(state: ApplicationState){
 function mapDispatchToProps(dispatch: Dispatch<ApplicationState>) {
   return { add: (value: number): void => { dispatch(increment(value)) } }
 }
+
 class App extends React.Component<IPropsFromStore> {
 
   public render() {
 
     return (
-      <div className="App">
-        <header className="App-header">
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.tsx</code> and save to reload.
+          <div className="App">
+            <header className="App-header">
+              <h1 className="App-title">Welcome to React</h1>
+            </header>
+            <p className="App-intro">
+              To get started, edit <code>src/App.tsx</code> and save to reload.
 
-        </p>
-        <Button variant="contained" color="primary" onClick={this.onClickAdd}>
-          Add 10 to store
-        </Button>
-        <Button variant="contained" color="primary" onClick={this.onClickChange} >
-            Go to The best site you have ever seen!
-        </Button>
-        <p>Store: {`${this.props.store.incrementStore.number}`}</p>
-      </div>
+            </p>
+            <Button variant="contained" color="primary" onClick={this.onClickAdd}>
+              Add 10 to store
+            </Button>
+            <Button variant="contained" color="primary" onClick={this.onClickChange} >
+                Go to The best site you have ever seen!
+            </Button>
+            <p>Store: {`${this.props.store.incrementStore.number}`}</p>
+          </div>
     );
   }
 
     private onClickAdd = (event: MouseEvent<HTMLElement>) => this.props.add(10);
-    private onClickChange = (event: MouseEvent<HTMLElement>) => this.props.history.push('/a');
+    private onClickChange = (event: MouseEvent<HTMLElement>) => this.props.history.push('/signIn');
 }
 
 export default connect(mapStateToProps,mapDispatchToProps)(App);
