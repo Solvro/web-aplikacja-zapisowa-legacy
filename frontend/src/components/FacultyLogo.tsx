@@ -12,8 +12,8 @@ export class FacultyLogo extends React.Component<IFacultyLogoProps> {
         return (
             <img
                 style={{
-                    height: `${this.props.size}em`,
-                    width: `${this.props.size}em`,
+                    height: `${this.props.size}vh`,
+                    width: `${this.props.size}vh`,
                 }}
                 src={W10}
             />

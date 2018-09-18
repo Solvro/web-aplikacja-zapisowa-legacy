@@ -1,4 +1,4 @@
-import {createStyles} from "@material-ui/core";
+import {createStyles, withStyles, WithStyles} from "@material-ui/core";
 import AppBar from "@material-ui/core/AppBar/AppBar";
 import Button from "@material-ui/core/Button/Button";
 import {cyan} from "@material-ui/core/colors";
@@ -30,16 +30,25 @@ const styles = createStyles({
         display: 'flex',
         flex: '0.3 0.3 auto',
         flexDirection: 'column',
-        justifyContent: 'space-around',
+        justifyContent: 'space-between',
+        '& > button': {
+            marginTop: '1.5em',
+        }
     },
     loginCard: {
         alignItems: 'center',
         alignSelf: 'center',
         display: 'flex',
         flexDirection: 'column',
-        height: '50vh',
-        justifyContent: 'space-around',
-        padding: '1em',
+        justifyContent: 'space-between',
+        '& img': {
+            marginTop: '3em',
+            marginBottom: '2em',
+        },
+        '& form': {
+            marginTop: '1em',
+            marginBottom: '2em',
+        }
     },
     main: {
         backgroundImage: `url(${Background})`,
@@ -49,14 +58,15 @@ const styles = createStyles({
         display: 'flex',
         flexDirection: 'column',
         height: '100%',
-    }
+    },
 });
 
-class LoginScreen extends React.Component{
-    public render() {
+class LoginScreen extends React.Component<WithStyles <typeof styles>> {
+    public render(): React.ReactNode {
 
+        const { classes } = this.props;
         return (
-            <div style={styles.main}>
+            <div className={classes.main}>
                 <AppBar color={"default"} position={"static"}>
                     <Toolbar>
                         <Typography variant="title" color={"textPrimary"}>
@@ -64,18 +74,23 @@ class LoginScreen extends React.Component{
                         </Typography>
                     </Toolbar>
                 </AppBar>
-                <div style={styles.container}>
+                <div className={classes.container}>
                     <Grid container={true} justify={"center"} alignItems={"center"}>
-                        <Grid item={true} xs={4}>
-                            <Paper square={true} style={styles.loginCard}>
-                                <FacultyLogo size={7}/>
-                                <Typography color="primary" variant="display2">Jesienny Rajd Mechanika</Typography>
-                                <form style={styles.form}>
-                                    <FormControl margin="normal" required={true} fullWidth={true}>
+                        <Grid item={true} lg={5} md={8} xs={10}>
+                            <Paper
+                                square={true}
+                                className={classes.loginCard}
+                            >
+                                <FacultyLogo size={15}/>
+                                <Typography color="primary" align="center" variant="display2">
+                                    Jesienny Rajd Mechanika
+                                </Typography>
+                                <form className={classes.form}>
+                                    <FormControl margin="normal" required={true} fullWidth={false}>
                                         <InputLabel htmlFor="login">Login</InputLabel>
                                         <Input id="login" name="login" autoComplete="login" autoFocus={true} />
                                     </FormControl>
-                                    <FormControl margin="normal" required={true} fullWidth={true}>
+                                    <FormControl margin="normal" required={true} fullWidth={false}>
                                         <InputLabel htmlFor="password">Hasło</InputLabel>
                                         <Input
                                             name="password"
@@ -103,4 +118,4 @@ class LoginScreen extends React.Component{
     }
 }
 
-export default LoginScreen;
+export default withStyles(styles)(LoginScreen);
