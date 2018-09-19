@@ -1,11 +1,27 @@
 import './App.css';
-
-import Button from '@material-ui/core/Button';
-import React, {MouseEvent} from 'react';
+import React from 'react';
 import {connect, Dispatch} from 'react-redux';
-import {RouteComponentProps} from "react-router-dom";
+import {Route, RouteComponentProps} from "react-router-dom";
 import {ApplicationState} from './store';
 import {increment} from './store/increment/actions';
+import AppBar from "@material-ui/core/AppBar/AppBar";
+import Toolbar from "@material-ui/core/Toolbar/Toolbar";
+import Typography from "@material-ui/core/Typography/Typography";
+import Background from './img/schoolbus.jpg';
+import {createStyles, withStyles, WithStyles} from "@material-ui/core";
+import LoginScreen from "./components/LoginScreen/LoginScreen";
+
+const styles = createStyles({
+    main: {
+        backgroundImage: `url(${Background})`,
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'cover',
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+    },
+});
 
 interface IPropsFromStore extends RouteComponentProps<any>{
     store: ApplicationState;
@@ -19,32 +35,28 @@ function mapStateToProps(state: ApplicationState){
 function mapDispatchToProps(dispatch: Dispatch<ApplicationState>) {
   return { add: (value: number): void => { dispatch(increment(value)) } }
 }
-class App extends React.Component<IPropsFromStore> {
+
+class App extends React.Component<IPropsFromStore & WithStyles<typeof styles>> {
 
   public render() {
+    const { classes } = this.props;
 
     return (
-      <div className="App">
-        <header className="App-header">
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.tsx</code> and save to reload.
-
-        </p>
-        <Button variant="contained" color="primary" onClick={this.onClickAdd}>
-          Add 10 to store
-        </Button>
-        <Button variant="contained" color="primary" onClick={this.onClickChange} >
-            Go to The best site you have ever seen!
-        </Button>
-        <p>Store: {`${this.props.store.incrementStore.number}`}</p>
-      </div>
+          <div className="App">
+              <div className={classes.main}>
+                  <AppBar color={"default"} position={"static"}>
+                      <Toolbar>
+                          <Typography variant="title" color={"textPrimary"}>
+                              Aplikacja zapisowa
+                          </Typography>
+                      </Toolbar>
+                  </AppBar>
+                  <Route path={'/SignIn'} component={LoginScreen}/>
+              </div>
+          </div>
     );
   }
-
-    private onClickAdd = (event: MouseEvent<HTMLElement>) => this.props.add(10);
-    private onClickChange = (event: MouseEvent<HTMLElement>) => this.props.history.push('/a');
 }
 
-export default connect(mapStateToProps,mapDispatchToProps)(App);
+export default connect(mapStateToProps,mapDispatchToProps)
+(withStyles(styles)(App));
