@@ -29,6 +29,7 @@ export const loginScreenStyles = createStyles({
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
+        margin: '0 -1em 0 -1em',
         '& img': {
             marginTop: '3em',
             marginBottom: '2em',
