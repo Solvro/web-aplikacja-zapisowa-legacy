@@ -20,8 +20,13 @@ const darkTheme = createMuiTheme({
         },
         text: {
             primary: grey["50"],
+            secondary: grey["900"],
         },
         type: 'dark',
+        background: {
+            paper: '#FFF',
+            default: '#FAFAFA'
+        },
     }
 });
 
