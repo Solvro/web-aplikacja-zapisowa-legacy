@@ -18,10 +18,10 @@ class UserFormRoute extends React.Component<WithStyles<typeof chooseRoomModalSty
                 <Paper
                     className={classes.paper}
                 >
-                    <Typography variant={"h4"} color={"textSecondary"}>
+                    <Typography variant={"headline"} color={"textSecondary"}>
                         Twoja grupa
                     </Typography>
-                    <Typography variant={"h4"} color={"textSecondary"}>
+                    <Typography variant={"headline"} color={"textSecondary"}>
                         Wybierz pokój
                     </Typography>
                 </Paper>

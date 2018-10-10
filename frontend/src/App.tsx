@@ -11,6 +11,7 @@ import Typography from "@material-ui/core/Typography/Typography";
 import {createStyles, withStyles, WithStyles} from "@material-ui/core";
 import LoginScreen from "./components/LoginScreen/LoginScreen";
 import UserFormRoute from "./components/UserFormRoute/UserFormRoute";
+import AddRoomMatesModal from "./components/AddRoomMatesModal/AddRoomMatesModal";
 
 const styles = createStyles({
     main: {
@@ -50,6 +51,7 @@ class App extends React.Component<IPropsFromStore & WithStyles<typeof styles>> {
                   </AppBar>
                   <Route path={'/SignIn'} component={LoginScreen}/>
                   <Route path={'/RoomBooking'} component={UserFormRoute}/>
+                  <Route path={'/AddingRoomMates'} component={AddRoomMatesModal}/>
               </div>
           </div>
     );
