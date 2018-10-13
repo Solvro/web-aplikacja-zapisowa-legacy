@@ -134,4 +134,3 @@ REST_FRAMEWORK = {
     )
 }
 
-AUTH_USER_MODEL = 'enrolmentpanel.Student'
