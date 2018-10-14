@@ -23,7 +23,6 @@ class AddRoomMatesModal extends React.Component<
   };
 
   handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(event.target.value);
     this.setState({
       inputCode: event.target.value
     });
