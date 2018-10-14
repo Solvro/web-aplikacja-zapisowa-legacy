@@ -1,10 +1,10 @@
 
-const loggedUser = {
+export const loggedUser = {
     name: "Michał Treter",
     faculty: "W11",
 };
 
-const userGroup = [
+export const userGroup = [
     {
         name: "Hono Poturaj",
         faculty: "W10",
