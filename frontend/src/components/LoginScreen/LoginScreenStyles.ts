@@ -1,5 +1,6 @@
 import {createStyles} from "@material-ui/core";
-import {cyan} from "@material-ui/core/colors";
+import {cyan, grey} from "@material-ui/core/colors";
+import Background from '../../img/schoolbus.jpg';
 
 export const loginScreenStyles = createStyles({
     container: {
@@ -7,6 +8,10 @@ export const loginScreenStyles = createStyles({
         flex: '1 1 auto',
         flexDirection: 'column',
         justifyContent: 'center',
+        backgroundImage: `url(${Background})`,
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'cover',
     },
     facultyLogoImage: {
         fill: cyan.A200,
@@ -24,6 +29,7 @@ export const loginScreenStyles = createStyles({
         }
     },
     loginCard: {
+        background: grey["800"],
         alignItems: 'center',
         alignSelf: 'center',
         display: 'flex',

@@ -7,20 +7,18 @@ import {increment} from './store/increment/actions';
 import AppBar from "@material-ui/core/AppBar/AppBar";
 import Toolbar from "@material-ui/core/Toolbar/Toolbar";
 import Typography from "@material-ui/core/Typography/Typography";
-import Background from './img/schoolbus.jpg';
+
 import {createStyles, withStyles, WithStyles} from "@material-ui/core";
 import LoginScreen from "./components/LoginScreen/LoginScreen";
+import UserFormRoute from "./components/UserFormRoute/UserFormRoute";
+import AddRoomMatesModal from "./components/AddRoomMatesModal/AddRoomMatesModal";
 
 const styles = createStyles({
     main: {
-        backgroundImage: `url(${Background})`,
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        backgroundSize: 'cover',
         display: 'flex',
         flexDirection: 'column',
         height: '100%',
-    },
+    }
 });
 
 interface IPropsFromStore extends RouteComponentProps<any>{
@@ -52,6 +50,8 @@ class App extends React.Component<IPropsFromStore & WithStyles<typeof styles>> {
                       </Toolbar>
                   </AppBar>
                   <Route path={'/SignIn'} component={LoginScreen}/>
+                  <Route path={'/RoomBooking'} component={UserFormRoute}/>
+                  <Route path={'/AddingRoomMates'} component={AddRoomMatesModal}/>
               </div>
           </div>
     );

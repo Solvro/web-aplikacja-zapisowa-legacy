@@ -1,4 +1,4 @@
-import {cyan, grey} from "@material-ui/core/colors";
+import { grey} from "@material-ui/core/colors";
 import CssBaseline from "@material-ui/core/CssBaseline/CssBaseline";
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import * as React from 'react';
@@ -13,15 +13,20 @@ import store from './store/store';
 const darkTheme = createMuiTheme({
     palette: {
         primary: {
-            main: cyan.A100,
+            main: '#009688',
         },
         secondary: {
             main: grey["900"]
         },
         text: {
             primary: grey["50"],
+            secondary: grey["900"],
         },
         type: 'dark',
+        background: {
+            paper: '#FFF',
+            default: '#FAFAFA'
+        },
     }
 });
 
