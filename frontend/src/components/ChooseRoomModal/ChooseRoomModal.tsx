@@ -19,9 +19,7 @@ class UserFormRoute extends React.Component<WithStyles<typeof chooseRoomModalSty
                 container={true}
                 item={true}
                 className={classes.paperContainer}
-                xl={7}
-                lg={8}
-                md={9}
+                xl={8}
                 sm={10}
                 xs={12}
             >
