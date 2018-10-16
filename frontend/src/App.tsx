@@ -44,7 +44,7 @@ class App extends React.Component<IPropsFromStore & WithStyles<typeof styles>> {
               <div className={classes.main}>
                   <AppBar color={"default"} position={"static"}>
                       <Toolbar>
-                          <Typography variant="title" color={"textPrimary"}>
+                          <Typography variant="h6" color={"textPrimary"}>
                               Aplikacja zapisowa
                           </Typography>
                       </Toolbar>

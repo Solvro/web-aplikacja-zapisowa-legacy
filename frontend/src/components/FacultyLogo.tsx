@@ -8,7 +8,6 @@ interface IFacultyLogoProps {
 export class FacultyLogo extends React.Component<IFacultyLogoProps> {
 
     public render(): React.ReactNode {
-        console.log(W10);
         return (
             <img
                 style={{

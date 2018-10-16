@@ -5,11 +5,29 @@ export const chooseRoomModalStyles = (theme: Theme) => createStyles({
         flexGrow: 1,
         flexDirection: 'column',
         justifyContent: 'flex-start',
-        padding: theme.spacing.unit * 10,
+        padding: theme.spacing.unit * 4,
     },
     paper: {
-        minHeight: '50vh',
         flexDirection: 'column',
-        padding: '1em',
+        padding: theme.spacing.unit * 4,
+        paddingTop: 0,
+        '& > h5': {
+            marginTop: theme.spacing.unit * 3,
+            marginBottom: theme.spacing.unit,
+        }
     },
+    userChipsContainer: {
+        '& > div': {
+            padding: theme.spacing.unit * 0.4,
+            '@media(min-width: 600px)': {
+                display: 'flex',
+                '&:nth-child(even)': {
+                    justifyContent: 'flex-start',
+                },
+                '&:nth-child(odd)': {
+                    justifyContent: 'flex-end',
+                },
+            }
+        },
+    }
 });
