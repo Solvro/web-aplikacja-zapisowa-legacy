@@ -1,9 +1,6 @@
 import './App.css';
 import React from 'react';
-import {connect, Dispatch} from 'react-redux';
-import {Route, RouteComponentProps} from "react-router-dom";
-import {ApplicationState} from './store';
-import {increment} from './store/increment/actions';
+import {Route, RouteComponentProps, Switch, withRouter} from "react-router-dom";
 import AppBar from "@material-ui/core/AppBar/AppBar";
 import Toolbar from "@material-ui/core/Toolbar/Toolbar";
 import Typography from "@material-ui/core/Typography/Typography";
@@ -21,20 +18,7 @@ const styles = createStyles({
     }
 });
 
-interface IPropsFromStore extends RouteComponentProps<any>{
-    store: ApplicationState;
-    add(value: number): void;
-}
-
-function mapStateToProps(state: ApplicationState){
-  return { store: state }
-}
-
-function mapDispatchToProps(dispatch: Dispatch<ApplicationState>) {
-  return { add: (value: number): void => { dispatch(increment(value)) } }
-}
-
-class App extends React.Component<IPropsFromStore & WithStyles<typeof styles>> {
+class App extends React.Component<WithStyles<typeof styles> & RouteComponentProps> {
 
   public render() {
     const { classes } = this.props;
@@ -42,21 +26,22 @@ class App extends React.Component<IPropsFromStore & WithStyles<typeof styles>> {
     return (
           <div className="App">
               <div className={classes.main}>
-                  <AppBar color={"default"} position={"static"}>
+                  <AppBar color={"secondary"} position={"static"}>
                       <Toolbar>
-                          <Typography variant="h6" color={"textPrimary"}>
+                          <Typography variant="h6" color={"inherit"}>
                               Aplikacja zapisowa
                           </Typography>
                       </Toolbar>
                   </AppBar>
-                  <Route path={'/SignIn'} component={LoginScreen}/>
-                  <Route path={'/RoomBooking'} component={UserFormRoute}/>
-                  <Route path={'/AddingRoomMates'} component={AddRoomMatesModal}/>
+                  <Switch>
+                      <Route path={'/SignIn'} component={LoginScreen}/>
+                      <Route path={'/AddingRoomMates'} component={AddRoomMatesModal}/>
+                      <Route path={'/RoomBooking'} component={UserFormRoute}/>
+                  </Switch>
               </div>
           </div>
     );
   }
 }
 
-export default connect(mapStateToProps,mapDispatchToProps)
-(withStyles(styles)(App));
+export default withRouter(withStyles(styles)(App));

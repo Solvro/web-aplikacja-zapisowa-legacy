@@ -12,8 +12,7 @@ export const addRoomMatesModalStyles = (theme: Theme) => createStyles({
         padding: '80px 0'
     },
     paper: {
-        minHeight: '50vh',
-        padding: '2em',
+        padding: theme.spacing.unit * 4,
         flexDirection: 'column',
     },
     buttonWrapper: {
@@ -22,27 +21,40 @@ export const addRoomMatesModalStyles = (theme: Theme) => createStyles({
         width: '100%',
         alignItems: 'center',
         justifyContent: 'center',
-        margin: '2em 0'
+        marginTop: theme.spacing.unit,
     },
     button: {
         marginRight: '12px'
     },
-    textfield: {
-        color: 'black'
-    },
     description: {
         textAlign: 'justify',
-        fontSize: '24px',
-        fontWeight: 'normal'
     },
     chipsContainer: {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         margin: '0 auto'
-
     },
-    chip:{
+    chip: {
         marginBottom: '10px'
+    },
+    codeInput: {
+        color: 'black',
+        marginTop: theme.spacing.unit * 2,
+        marginBottom: theme.spacing.unit * 2,
+    },
+    userChipsContainer: {
+        '& > div': {
+            padding: theme.spacing.unit * 0.4,
+            '@media(min-width: 600px)': {
+                display: 'flex',
+                '&:nth-child(even)': {
+                    justifyContent: 'flex-start',
+                },
+                '&:nth-child(odd)': {
+                    justifyContent: 'flex-end',
+                },
+            }
+        },
     }
 });

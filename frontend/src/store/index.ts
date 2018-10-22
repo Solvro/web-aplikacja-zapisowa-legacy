@@ -1,10 +1,9 @@
 import { combineReducers } from 'redux';
-import { IncrementReducer } from './increment/reducer'
-import { IncrementState } from './increment/types'
+import {RoomMateState} from "./RoomMate/types";
+import {roomMateReducer} from "./RoomMate/reducer";
 
-// tslint:disable-next-line:interface-name
 export interface ApplicationState {
-    incrementStore: IncrementState
+    roomMateState: RoomMateState
 }
 
-export const rootReducer = combineReducers<ApplicationState>({ incrementStore: IncrementReducer });
+export const rootReducer = combineReducers<ApplicationState>({roomMateState: roomMateReducer});
