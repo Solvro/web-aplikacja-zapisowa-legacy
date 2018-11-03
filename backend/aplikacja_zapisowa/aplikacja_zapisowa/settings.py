@@ -158,4 +158,5 @@ SWAGGER_SETTINGS = {
             'type': 'basic'
         }
     },
+
 }
