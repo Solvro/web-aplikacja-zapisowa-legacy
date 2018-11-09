@@ -2,3 +2,4 @@ Django==2.1
 psycopg2==2.7.5
 djangorestframework==3.8.2
 djangorestframework_simplejwt
+django-rest-swagger

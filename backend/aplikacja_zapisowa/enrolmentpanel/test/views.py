@@ -10,6 +10,9 @@ from enrolmentpanel.models import Organiser, User
 
 # Create your views here.
 class TestView(APIView):
+    """
+    Just a test view. Nothing spectacular
+    """
 
     renderer_classes = (JSONRenderer, )
 
