@@ -12,14 +12,14 @@ urlpatterns = [
     path('auth/', include('rest_framework.urls')),
     path('organiser/', include('enrolmentpanel.organiser.urls')),
     path('student/', include('enrolmentpanel.student.urls')),
-    path('token/', TokenObtainPairView.as_view()),
-    path('token/refresh/', TokenRefreshView.as_view()),
+    path('token', TokenObtainPairView.as_view()),
+    path('token/refresh', TokenRefreshView.as_view()),
 ]
 
 if settings.DEBUG:
     urlpatterns.extend(
         [
             path('test/', include('enrolmentpanel.test.urls')),
-            path('token/verify/', TokenVerifyView.as_view()),
+            path('token/verify', TokenVerifyView.as_view()),
         ]
     )
