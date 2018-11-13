@@ -28,13 +28,17 @@ class CreateStudentView(APIView):
         event_pk = request.data.get("event")
         student_index = request.data.get("index")
         student_sex = request.data.get("sex")
+        name = request.data.get("name")
+        faculty = request.data.get("faculty")
 
         event = Event.objects.get(pk=event_pk)
 
         create_new_student(
             student_index,
             event,
-            student_sex
+            student_sex,
+            name,
+            faculty
         )
 
         return Response({"status": "maybe ok"})

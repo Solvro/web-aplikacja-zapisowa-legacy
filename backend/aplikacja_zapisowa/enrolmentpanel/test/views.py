@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 from rest_framework.parsers import JSONParser
@@ -6,7 +7,8 @@ from rest_framework.response import Response
 
 import json
 
-from enrolmentpanel.models import Organiser, User
+from enrolmentpanel.models import Organiser, User, Event
+from enrolmentpanel.utils.model_utils import create_new_student
 
 # Create your views here.
 class TestView(APIView):
@@ -53,3 +55,18 @@ class CreateOrganiserUserView(APIView):
         organiser = Organiser.objects.create(faculty=faculty, user=user)
         organiser.save()
         return Response({"status": "ok"})
+
+
+class CreateStudentView(APIView):
+
+    def post(self, request):
+        event = Event.objects.all()[0]
+        create_new_student(
+            request.data.get('index'),
+            event,
+            request.data.get('sex'),
+            request.data.get('name'),
+            request.data.get('faculty')
+        )
+
+        return Response({'status': 'ok'}, status=status.HTTP_201_CREATED)

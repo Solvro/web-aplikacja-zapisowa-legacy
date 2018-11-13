@@ -33,6 +33,8 @@ class Room(models.Model):
     number = models.IntegerField()
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     max_capacity = models.PositiveSmallIntegerField(default=0)
+    cur_capacity = models.PositiveSmallIntegerField(default=0)
+    vacancies = models.PositiveSmallIntegerField(default=0)
 
     class Meta:
         unique_together = (('event', 'number'),)
@@ -42,6 +44,8 @@ class Room(models.Model):
             super().save(*args, **kwargs)
         else:
             raise NotPositiveNumberOfPeople
+
+        self.vacancies = self.max_capacity - self.cur_capacity
 
     def add_people(self, people):
         """
@@ -55,6 +59,14 @@ class Room(models.Model):
             for person in people:
                 person.room = self
                 person.save()
+            self.cur_capacity += len(people)
+            self.save()
+
+    def remove_person(self, student):
+        student.room = None
+        student.save()
+        self.cur_capacity -= 1
+        self.save()
 
 
 class Student(models.Model):
@@ -65,7 +77,9 @@ class Student(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True, related_name='participant')
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    name = models.CharField(max_length=30)
     index = models.CharField(max_length=30)
+    faculty = models.PositiveSmallIntegerField()
     sex = models.CharField(max_length=1,
                            choices=SEX_CHOICES)
     room = models.ForeignKey(Room,

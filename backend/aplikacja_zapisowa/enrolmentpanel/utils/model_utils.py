@@ -25,7 +25,7 @@ def create_student_user(username, password):
     return user
 
 
-def create_new_student(index, event, sex):
+def create_new_student(index, event, sex, name, faculty):
     username, password = generate_student_credentials(index)
     student_user = create_student_user(username, password)
 
@@ -33,7 +33,9 @@ def create_new_student(index, event, sex):
         user=student_user,
         event=event,
         index=index,
-        sex=sex
+        sex=sex,
+        name=name,
+        faculty=faculty
     )
 
     new_student.save()
