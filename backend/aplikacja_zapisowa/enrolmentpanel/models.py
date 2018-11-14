@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from .exceptions import NotPositiveNumberOfPeople
+
+from enrolmentpanel.exceptions import NotPositiveNumberOfPeople
 
 
 class User(AbstractUser):
@@ -40,12 +41,12 @@ class Room(models.Model):
         unique_together = (('event', 'number'),)
 
     def save(self, *args, **kwargs):
+        self.vacancies = self.max_capacity - self.cur_capacity
         if self.max_capacity > 0:
             super().save(*args, **kwargs)
         else:
             raise NotPositiveNumberOfPeople
 
-        self.vacancies = self.max_capacity - self.cur_capacity
 
     def add_people(self, people):
         """
@@ -56,10 +57,12 @@ class Room(models.Model):
         # probably will be modified
         needed_people = self.max_capacity - Student.objects.filter(room=self).count()
         if len(people) <= needed_people:
+            self.cur_capacity += len(people)
+
             for person in people:
                 person.room = self
                 person.save()
-            self.cur_capacity += len(people)
+
             self.save()
 
     def remove_person(self, student):

@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'enrolmentpanel',
     'rest_framework_swagger',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -165,3 +166,14 @@ SWAGGER_SETTINGS = {
 
 #CORS settings
 CORS_ORIGIN_ALLOW_ALL = DEBUG
+
+# ASGI channels configuration
+ASGI_APPLICATION = "aplikacja_zapisowa.routing.application"
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('redis', 6379)],
+        },
+    },
+}

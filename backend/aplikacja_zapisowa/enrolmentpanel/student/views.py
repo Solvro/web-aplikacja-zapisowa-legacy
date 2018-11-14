@@ -8,6 +8,7 @@ from rest_framework.views import APIView
 from .permissions import IsStudentAccount
 from enrolmentpanel.models import Room, Student, User
 from enrolmentpanel.serializers import RoomSerializer
+from enrolmentpanel.utils.notify_utils import notify_consumers_on_room_change
 
 
 class TestView(APIView):
@@ -26,16 +27,17 @@ class SoloRoomView(APIView):
     permission_classes = (IsAuthenticated, IsStudentAccount)
 
     def get_room_for_solo(self, student):
-        suitable_room = Room.objects\
-            .filter(event=student.event, cur_capacity__gte=1)\
-            .order_by('cur_capacity')[0]
+        suitable_rooms = Room.objects.filter(
+            event=student.event, vacancies__gte=1
+        )
 
-        return suitable_room
+        return suitable_rooms[0]
 
     def post(self, request):
         student = Student.objects.get(user=request.user)
         room = self.get_room_for_solo(student)
         room.add_people([student])
+        notify_consumers_on_room_change(room)
 
         return Response({
             "room_number": room.number,
@@ -60,31 +62,10 @@ class GroupRoomView(APIView):
 
         return students
 
-    def get_suitable_rooms(self, size):
-        rooms = Room.objects.filter(vacancies_gte=size).order_by('-max_capacity')
-        if len(rooms) < 0:
-            raise Exception
-        return rooms
-
     def validate_students(self, students):
         for student in students:
             if not student.room is None:
                 raise Exception
-    
-    def get(self, request):
-        user_names = self.get_users_from_request(request)
-        students = self.get_students_from_users(user_names)
-        self.validate_students(students)
-
-        rooms = self.get_suitable_rooms(len(user_names))
-        resp = {'rooms': []}
-
-        for room in rooms:
-            serialized_room = RoomSerializer(room)
-            resp['rooms'].append(serialized_room.data)
-
-        return Response(resp)
-
 
     def post(self, request):
         user_names = self.get_users_from_request(request)
@@ -94,5 +75,6 @@ class GroupRoomView(APIView):
         room = Room.objects.get(number=request.data['room']['number'])
 
         room.add_people(students)
+        notify_consumers_on_room_change(room)
 
         return Response({'status': 'ok'})
