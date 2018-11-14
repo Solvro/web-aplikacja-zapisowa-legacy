@@ -14,14 +14,11 @@ urlpatterns = [
     path('auth/', include('rest_framework.urls')),
     path('organiser/', include('enrolmentpanel.organiser.urls')),
     path('student/', include('enrolmentpanel.student.urls')),
-<<<<<<< HEAD
     path('token', TokenObtainPairView.as_view()),
     path('token/refresh', TokenRefreshView.as_view()),
-=======
     path('token/', TokenObtainPairView.as_view()),
     path('token/refresh/', TokenRefreshView.as_view()),
     path('students/<username>', StudentView.as_view())
->>>>>>> Students endpoint
 ]
 
 if settings.DEBUG:
