@@ -1,15 +1,20 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
-from rest_framework.renderers import JSONRenderer
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-# Create your views here.
-class TestView(APIView):
+from enrolmentpanel.models import Student, User
+from enrolmentpanel.serializers import StudentSerializer
 
-    renderer_classes = (JSONRenderer, )
 
-    def get(self, request):
-        data = {
-            'sub': 'marine'
-        }
-        return Response(data)
+class StudentView(APIView):
+
+    permission_classes = (IsAuthenticated, )
+
+    def get(self, request, username):
+        u = User.objects.get(username=username)
+        queryset = Student.objects.all()
+        student = get_object_or_404(queryset, user=u)
+        serializer = StudentSerializer(student)
+
+        return Response(serializer.data)

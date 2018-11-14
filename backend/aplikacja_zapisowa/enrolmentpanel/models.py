@@ -1,14 +1,16 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 from .exceptions import NotPositiveNumberOfPeople
 
 
-class Admin(models.Model):
-    faculty = models.PositiveSmallIntegerField()
-    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True, related_name='admin')
+class User(AbstractUser):
+    is_participant = models.BooleanField(default=False)
+    is_organiser = models.BooleanField(default=False)
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
+
+class Organiser(models.Model):
+    faculty = models.PositiveSmallIntegerField()
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True, related_name='organiser')
 
     def delete(self, *args, **kwargs):
         self.user.delete()
@@ -18,7 +20,7 @@ class Admin(models.Model):
 class Event(models.Model):
     name = models.CharField(max_length=150, primary_key=True)
     max_people = models.PositiveIntegerField()
-    organizer = models.ForeignKey(Admin, on_delete=models.CASCADE)
+    organizer = models.ForeignKey(Organiser, on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
         if self.max_people > 0:
@@ -31,6 +33,8 @@ class Room(models.Model):
     number = models.IntegerField()
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     max_capacity = models.PositiveSmallIntegerField(default=0)
+    cur_capacity = models.PositiveSmallIntegerField(default=0)
+    vacancies = models.PositiveSmallIntegerField(default=0)
 
     class Meta:
         unique_together = (('event', 'number'),)
@@ -40,6 +44,8 @@ class Room(models.Model):
             super().save(*args, **kwargs)
         else:
             raise NotPositiveNumberOfPeople
+
+        self.vacancies = self.max_capacity - self.cur_capacity
 
     def add_people(self, people):
         """
@@ -53,6 +59,14 @@ class Room(models.Model):
             for person in people:
                 person.room = self
                 person.save()
+            self.cur_capacity += len(people)
+            self.save()
+
+    def remove_person(self, student):
+        student.room = None
+        student.save()
+        self.cur_capacity -= 1
+        self.save()
 
 
 class Student(models.Model):
@@ -61,9 +75,11 @@ class Student(models.Model):
         ('F', 'Female'),
     )
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True, related_name='user')
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True, related_name='participant')
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    name = models.CharField(max_length=30)
     index = models.CharField(max_length=30)
+    faculty = models.PositiveSmallIntegerField()
     sex = models.CharField(max_length=1,
                            choices=SEX_CHOICES)
     room = models.ForeignKey(Room,
@@ -74,36 +90,6 @@ class Student(models.Model):
     class Meta:
         unique_together = (('index', 'event'),)
 
-    def save(self, *args, **kwargs):
-        self.user = User(username=self.generate_login(), password=self.generate_pass())
-        self.user.save()
-        self.user_id = self.user.id
-        super().save(*args, **kwargs)
-
     def delete(self, *args, **kwargs):
         self.user.delete()
         return super().delete(*args, **kwargs)
-
-    def generate_login(self):
-        """
-        Generates login from index and random 5 sign
-        from [2-9a-hjk-n-p-zA-HJ-Z]
-        :return: username
-        """
-        username = self.index + '_' + User.objects.make_random_password(5)
-        return username
-
-    def generate_pass(self):
-        """
-        Generates password from index and random 10 sign
-        from [2-9a-hjk-n-p-zA-HJ-Z]
-        :return: password
-        """
-        # potentially vulnerable
-        password = self.index + User.objects.make_random_password()
-        return password
-#
-# class StudentManager(models.Manager):
-#     def create_student(self):
-
-

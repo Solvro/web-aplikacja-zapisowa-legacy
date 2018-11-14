@@ -15,8 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework_swagger.views import get_swagger_view
+
+swagger_view = get_swagger_view('Enrolment Panel Api')
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api', include('enrolmentpanel.urls'))
+    path('api/', include('enrolmentpanel.urls')),
+    path('swagger/', swagger_view)
 ]
