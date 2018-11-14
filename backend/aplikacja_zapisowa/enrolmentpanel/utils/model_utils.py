@@ -1,3 +1,4 @@
+from django.conf import settings
 from enrolmentpanel.models import (
     Student,
     User
@@ -41,3 +42,6 @@ def create_new_student(index, event, sex, name, faculty):
     new_student.save()
     mail = StudentRegisterMail(event, index, username, password)
     mail.send_email()
+
+    if settings.DEBUG:
+        return (username, password)

@@ -61,12 +61,15 @@ class CreateStudentView(APIView):
 
     def post(self, request):
         event = Event.objects.all()[0]
-        create_new_student(
+        usr, pas = create_new_student(
             request.data.get('index'),
             event,
-            request.data.get('sex'),
+            'M',
             request.data.get('name'),
-            request.data.get('faculty')
+            11
         )
 
-        return Response({'status': 'ok'}, status=status.HTTP_201_CREATED)
+        return Response(
+            {'username': usr, 'password': pas},
+            status=status.HTTP_201_CREATED
+        )

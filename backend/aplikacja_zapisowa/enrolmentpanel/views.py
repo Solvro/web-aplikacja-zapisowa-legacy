@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
@@ -9,7 +10,8 @@ from enrolmentpanel.serializers import StudentSerializer
 
 class StudentView(APIView):
 
-    permission_classes = (IsAuthenticated, )
+    if not settings.DEBUG:
+        permission_classes = (IsAuthenticated, )
 
     def get(self, request, username):
         u = User.objects.get(username=username)
