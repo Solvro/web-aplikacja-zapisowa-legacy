@@ -3,6 +3,10 @@
   height: 100vh;
 }
 
+.App > * {
+    overflow: auto;
+}
+
 body, html, #root {
     overflow: hidden;
     height: 100%;

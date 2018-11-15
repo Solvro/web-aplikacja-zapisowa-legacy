@@ -1,5 +1,5 @@
 import {createAsyncAction, createStandardAction} from "typesafe-actions";
-import {RoomMate, RoomMateState, RoomMateType} from "./types";
+import {RoomMate, RoomMateState, RoomMateType, StudentErrors} from "./types";
 import {fetchStudent} from "../api";
 import {Dispatch} from "react-redux";
 
@@ -7,9 +7,11 @@ export const fetchRoomMate = createAsyncAction(
     RoomMateType.ADD_ROOM_MATE_REQUEST,
     RoomMateType.ADD_ROOM_MATE_SUCCESS,
     RoomMateType.ADD_ROOM_MATE_FAILURE
-)<void, RoomMate, Error>();
+)<void, RoomMate, String>();
 
 export const removeRoomMate = createStandardAction(RoomMateType.REMOVE_ROOM_MATE)<string>();
+
+export const removeError = createStandardAction(RoomMateType.REMOVE_ERROR)<number>();
 
 export const initFetchRoomMate = (username: string) => {
     return async (dispatch: Dispatch<RoomMateState>) => {
@@ -19,13 +21,16 @@ export const initFetchRoomMate = (username: string) => {
 
         try {
             roomMate = await fetchStudent(username);
+            const {name, faculty} = roomMate;
             if (roomMate) {
-                dispatch(fetchRoomMate.success(roomMate))
+                dispatch(fetchRoomMate.success({name, faculty, login: username}))
             } else {
-                dispatch(fetchRoomMate.failure(new Error("Student not found")));
+                dispatch(fetchRoomMate.failure(StudentErrors.notExist(username)));
             }
         } catch (error) {
-            dispatch(fetchRoomMate.failure(error));
+            console.log(error);
+            const errorMessage = username ? StudentErrors.notExist(username) : StudentErrors.emptyUsername;
+            dispatch(fetchRoomMate.failure(errorMessage));
             return error;
         }
     }

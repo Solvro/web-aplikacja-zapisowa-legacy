@@ -32,24 +32,22 @@ export const chooseRoomModalStyles = (theme: Theme) => createStyles({
         },
     },
     modal: {
-        left: '30vw',
-        top: '35vh',
+        left: '25vw',
+        top: '30vh',
     },
     modalPaper: {
-        width: '40vw',
-        height: '30vh',
+        width: '50vw',
         textAlign: 'center',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
         '& > *': {
-            margin: theme.spacing.unit,
+            margin: theme.spacing.unit * 3,
         },
     },
     buttonWrapper: {
         display: 'flex',
         flexDirection: 'row',
-        width: '100%',
         alignItems: 'center',
         justifyContent: 'center',
         marginTop: theme.spacing.unit * 4,

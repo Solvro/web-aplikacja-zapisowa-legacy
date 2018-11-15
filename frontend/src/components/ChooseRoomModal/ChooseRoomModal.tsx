@@ -56,24 +56,26 @@ class ChooseRoomModal extends React.Component<WithStyles<typeof chooseRoomModalS
                     onClose={() => this.setState({isModalVisible: false})}
                     className={classes.modal}
                 >
-                    <Paper className={classes.modalPaper}>
+                    <Paper
+                        className={classes.modalPaper}
+                        square={true}
+                    >
                         <Typography variant="h5" id="modal-title">
                             {`Czy na pewno? Chcesz mieszkać w pokoju ${this.state.pickedRoom.number}?`}
                         </Typography>
                         <Typography variant="body1" id="simple-modal-description">
                             {`Wybierasz ${this.state.pickedRoom.capacity}-osobowy pokój nr ${this.state.pickedRoom.number}.
                             Po twojej rezerwacji jego stan zapełnienia zmieni się z ${this.state.pickedRoom.occupancy}/${this.state.pickedRoom.capacity}
-                            do ${this.state.pickedRoom.occupancy + this.props.roomMates.length}/${this.state.pickedRoom.capacity}`}
+                            do ${this.state.pickedRoom.occupancy + this.props.roomMates.length + 1}/${this.state.pickedRoom.capacity}`}
                         </Typography>
                         <div className={classes.buttonWrapper}>
                             <Button
                                 className={classes.button}
                                 variant={"contained"}
                                 color={"default"}
+                                onClick={() => this.setState({isModalVisible: false})}
                             >
-                                <NavLink to={'/RoomBooking'} style={{textDecoration: 'none', color: 'inherit'}}>
                                     WRÓĆ
-                                </NavLink>
                             </Button>
                             <Button variant={"contained"} color={"primary"}>
                                 <NavLink to={'/SignIn'} style={{textDecoration: 'none', color: 'inherit'}}>
@@ -116,7 +118,7 @@ class ChooseRoomModal extends React.Component<WithStyles<typeof chooseRoomModalS
                         {this.state.rooms.map((room: Room, index: number) => {
                             return (
                                 <Grid item={true} xs={12} sm={6} md={4} lg={3} style={{padding: '0.5em'}} key={index}>
-                                    <RoomCard onClick={() => this.setState({isModalVisible: true, pickedRoom: room})} desiredSpace={this.props.roomMates.length + 1} room={room}/>
+                                    <RoomCard onClick={() => this.setState({isModalVisible: true, pickedRoom: room})} desiredSpace={this.props.roomMates.length} room={room}/>
                                 </Grid>
                             );
                         })}
