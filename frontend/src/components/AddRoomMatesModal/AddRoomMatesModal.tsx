@@ -146,18 +146,22 @@ class AddRoomMatesModal extends React.Component<WithStyles<typeof addRoomMatesMo
                             ))}
                         </Grid>
                         <div className={classes.buttonWrapper}>
-                            <Button
-                                className={classes.button}
-                                variant={"contained"}
-                                color={"default"}
-                            >
-                                <NavLink to={'/RoomBooking'} style={{textDecoration: 'none', color: 'inherit'}}>
+
+                            <NavLink to={'/RoomBooking'} style={{textDecoration: 'none', color: 'inherit'}}>
+                                <Button
+                                    className={classes.button}
+                                    variant={"contained"}
+                                    color={this.props.roomMates.length > 0 ? "primary" : "default"}
+                                >
                                     Utwórz grupę
-                                </NavLink>
-                            </Button>
-                            <Button variant={"contained"} color={"primary"}>
-                                Jestem sam
-                            </Button>
+                                </Button>
+                            </NavLink>
+
+                            <NavLink to={'/RoomBooking'} style={{textDecoration: 'none', color: 'inherit'}}>
+                                <Button variant={"contained"} color={"primary"}>
+                                    Jestem sam
+                                </Button>
+                            </NavLink>
                         </div>
                     </Paper>
                 </Grid>

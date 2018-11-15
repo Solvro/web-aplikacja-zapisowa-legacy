@@ -24,6 +24,7 @@ export const RoomCard: React.SFC<RoomCardProps> = (props) => {
             pointerEvents: isDisabled ? 'none' : 'auto',
             width: '100%',
             paddingTop: '2em',
+            paddingBottom: '1em',
             color: '#FFF',
             transition: 'background 600ms ease',
         },

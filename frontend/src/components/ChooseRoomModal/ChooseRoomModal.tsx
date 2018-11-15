@@ -78,7 +78,7 @@ class ChooseRoomModal extends React.Component<WithStyles<typeof chooseRoomModalS
                                     WRÓĆ
                             </Button>
                             <Button variant={"contained"} color={"primary"}>
-                                <NavLink to={'/SignIn'} style={{textDecoration: 'none', color: 'inherit'}}>
+                                <NavLink to={'/Summary'} style={{textDecoration: 'none', color: 'inherit'}}>
                                     REZERWUJ
                                 </NavLink>
                             </Button>

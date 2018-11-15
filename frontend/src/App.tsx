@@ -9,6 +9,7 @@ import {createStyles, withStyles, WithStyles} from "@material-ui/core";
 import LoginScreen from "./components/LoginScreen/LoginScreen";
 import UserFormRoute from "./components/UserFormRoute/UserFormRoute";
 import AddRoomMatesModal from "./components/AddRoomMatesModal/AddRoomMatesModal";
+import SummaryRoute from "./components/SummaryRoute/SummaryRoute";
 
 const styles = createStyles({
     main: {
@@ -34,9 +35,10 @@ class App extends React.Component<WithStyles<typeof styles> & RouteComponentProp
                       </Toolbar>
                   </AppBar>
                   <Switch>
-                      <Route path={'/SignIn'} component={LoginScreen}/>
                       <Route path={'/AddingRoomMates'} component={AddRoomMatesModal}/>
                       <Route path={'/RoomBooking'} component={UserFormRoute}/>
+                      <Route path={'/Summary'} component={SummaryRoute}/>
+                      <Route path={'/'} component={LoginScreen}/>
                   </Switch>
               </div>
           </div>
