@@ -12,7 +12,7 @@ type RenderComponent = (props: RouteComponentProps<any>) => React.ReactNode;
 export class PrivateRoute extends Route<PrivateRouteProps> {
 
   state = {
-    auth: false,
+    loggedIn: false,
     authorized: false
   }
 
@@ -27,7 +27,7 @@ export class PrivateRoute extends Route<PrivateRouteProps> {
    this.validateIsLogged()
       .then(isLogged => {
         if(isLogged === true )
-          this.setState({auth: true})
+          this.setState({loggedIn: true})
         this.setState({authorized: true})
       })
       .catch(err => {
@@ -38,7 +38,7 @@ export class PrivateRoute extends Route<PrivateRouteProps> {
   render () {
     const {component: Component, ...rest}: PrivateRouteProps = this.props;
     const renderComponent: RenderComponent = (props) => (
-      this.state.auth
+      this.state.loggedIn
         ? <Component {...props} />
         : <Redirect to='/' />
     );
