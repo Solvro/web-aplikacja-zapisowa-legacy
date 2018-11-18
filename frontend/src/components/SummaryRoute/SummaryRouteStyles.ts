@@ -15,4 +15,8 @@ export default (theme: Theme) => createStyles({
         padding: theme.spacing.unit * 4,
         flexDirection: 'column',
     },
+    planet: {
+        marginTop: theme.spacing.unit * 4,
+        marginBottom: theme.spacing.unit * 4,
+    }
 });
