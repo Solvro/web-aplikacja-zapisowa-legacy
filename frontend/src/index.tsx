@@ -14,15 +14,15 @@ const darkTheme = createMuiTheme({
     palette: {
         primary: {
             main: '#009688',
+            light: '#FFF',
         },
         secondary: {
-            main: grey["900"]
+            main: grey["900"],
         },
         text: {
-            primary: grey["50"],
-            secondary: grey["900"],
+            secondary: '#AFAFAF',
         },
-        type: 'dark',
+        type: 'light',
         background: {
             paper: '#FFF',
             default: '#FAFAFA'

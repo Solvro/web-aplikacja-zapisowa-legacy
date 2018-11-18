@@ -1,5 +1,5 @@
 import {rootReducer} from '.';
-
+import thunk from 'redux-thunk';
 import {connectRouter, routerMiddleware} from 'connected-react-router'
 import createHistory from 'history/createBrowserHistory'
 import {applyMiddleware, compose, createStore} from 'redux';
@@ -9,7 +9,8 @@ export const history = createHistory();
 
 const enhancers = [];
 const middleware = [
-    routerMiddleware(history)
+    routerMiddleware(history),
+    thunk
 ];
 
 if (process.env.NODE_ENV === 'development') {

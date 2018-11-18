@@ -11,15 +11,22 @@ export type Room = {
 
 interface RoomCardProps {
     room: Room;
+    desiredSpace: number;
+    onClick?(): void;
 }
 
 export const RoomCard: React.SFC<RoomCardProps> = (props) => {
     const {number, capacity, occupancy} = props.room;
+    const isDisabled = props.desiredSpace >= capacity - occupancy;
     const styles = createStyles({
         cardActionArea: {
-            background: '#88CDB4',
+            background: isDisabled ? '#AFAFAF' : '#88CDB4',
+            pointerEvents: isDisabled ? 'none' : 'auto',
             width: '100%',
             paddingTop: '2em',
+            paddingBottom: '1em',
+            color: '#FFF',
+            transition: 'background 600ms ease',
         },
         cardContent: {
             padding: 0,
@@ -33,9 +40,9 @@ export const RoomCard: React.SFC<RoomCardProps> = (props) => {
             backgroundImage: 'repeating-linear-gradient(to right, black 0px, black 4px, rgba(100,100,100,0.4) 0px, rgba(100,100,100,0.4) 20px)',
             borderRadius: '2px',
             width: `${props.room.capacity * 20 + 4}px`,
-            height: '4px',
+            height: '3px',
             bottom: 0,
-            transition: 'width 100ms ease',
+            transition: 'width 600ms ease',
         },
         roomSpaceSliderFill: {
             borderRadius: '2px',
@@ -43,9 +50,9 @@ export const RoomCard: React.SFC<RoomCardProps> = (props) => {
             zIndex: 2,
             background: 'rgba(92, 178, 178, 0.8)',
             width: `${props.room.occupancy * 20}px`,
-            height: '4px',
+            height: '3px',
             bottom: 0,
-            transition: 'width 100ms ease',
+            transition: 'width 600ms ease',
         },
         roomSpaceSliderContainer: {
             position: 'relative',
@@ -59,7 +66,7 @@ export const RoomCard: React.SFC<RoomCardProps> = (props) => {
             left: `calc(${props.room.occupancy * 20 + 2}px - 0.6em)`,
             bottom: '6px',
             zIndex: 3,
-            transition: 'left 100ms ease',
+            transition: 'left 600ms ease',
         },
         cardRoomSpaceArea: {
             display: 'flex',
@@ -69,12 +76,12 @@ export const RoomCard: React.SFC<RoomCardProps> = (props) => {
 
     return (
         <Card>
-            <CardActionArea style={styles.cardActionArea}>
-                <Typography variant={"h4"}>
+            <CardActionArea onClick={props.onClick} style={styles.cardActionArea}>
+                <Typography variant={"h4"} color={"inherit"}>
                     {number}
                 </Typography>
                 <CardContent style={styles.cardContent}>
-                    <Typography variant={"body2"}>
+                    <Typography variant={"body2"} color={"inherit"}>
                         {capacity - occupancy} miejsc wolnych z {capacity}
                     </Typography>
                 </CardContent>

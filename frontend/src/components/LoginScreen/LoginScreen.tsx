@@ -9,6 +9,7 @@ import Typography from "@material-ui/core/Typography/Typography";
 import React from 'react';
 import {FacultyLogo} from "../FacultyLogo";
 import {loginScreenStyles} from './LoginScreenStyles';
+import {NavLink} from "react-router-dom";
 
 
 class LoginScreen extends React.Component<WithStyles <typeof loginScreenStyles>> {
@@ -18,23 +19,30 @@ class LoginScreen extends React.Component<WithStyles <typeof loginScreenStyles>>
         return (
             <div className={classes.container}>
                 <Grid container={true} justify={"center"} alignItems={"center"}>
-                    <Grid item={true} lg={5} md={8} xs={10}>
+                    <Grid item={true} xl={5} lg={6} md={8} xs={10}>
                         <Paper
                             square={true}
                             className={classes.loginCard}
                         >
                             <FacultyLogo size={15}/>
-                            <Typography color="primary" align="center" variant="display2">
+                            <Typography color="primary" align="center" variant="h3">
                                 Jesienny Rajd Mechanika
                             </Typography>
                             <form className={classes.form}>
                                 <FormControl margin="normal" required={true} fullWidth={false}>
                                     <InputLabel htmlFor="login">Login</InputLabel>
-                                    <Input id="login" name="login" autoComplete="login" autoFocus={true}/>
+                                    <Input
+                                        id="login"
+                                        className={classes.input}
+                                        name="login"
+                                        autoComplete="login"
+                                        autoFocus={true}
+                                    />
                                 </FormControl>
                                 <FormControl margin="normal" required={true} fullWidth={false}>
                                     <InputLabel htmlFor="password">Hasło</InputLabel>
                                     <Input
+                                        className={classes.input}
                                         name="password"
                                         type="password"
                                         id="password"
@@ -44,10 +52,10 @@ class LoginScreen extends React.Component<WithStyles <typeof loginScreenStyles>>
                                 <Button
                                     type="submit"
                                     fullWidth={false}
-                                    variant="raised"
+                                    variant="contained"
                                     color="primary"
                                 >
-                                    Zaloguj
+                                    <NavLink className={classes.buttonLink} to={'AddingRoomMates'}>Zaloguj</NavLink>
                                 </Button>
                             </form>
                         </Paper>
@@ -55,8 +63,8 @@ class LoginScreen extends React.Component<WithStyles <typeof loginScreenStyles>>
                 </Grid>
             </div>
         );
-
     }
+
 }
 
 export default withStyles(loginScreenStyles)(LoginScreen);

@@ -26,6 +26,9 @@ export const loginScreenStyles = createStyles({
         justifyContent: 'space-between',
         '& > button': {
             marginTop: '1.5em',
+        },
+        '& > div > label': {
+            color: '#FFF',
         }
     },
     loginCard: {
@@ -42,7 +45,17 @@ export const loginScreenStyles = createStyles({
         },
         '& form': {
             marginTop: '1em',
-            marginBottom: '2em',
+            marginBottom: '3em',
         }
     },
+    input: {
+        color: '#FFF',
+        '&::before': {
+            borderColor: '#FFF !important',
+        },
+    },
+    buttonLink: {
+        textDecoration: 'none',
+        color: 'inherit',
+    }
 });

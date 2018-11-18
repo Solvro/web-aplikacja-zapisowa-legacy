@@ -8,6 +8,7 @@ export const chooseRoomModalStyles = (theme: Theme) => createStyles({
         padding: theme.spacing.unit * 4,
     },
     paper: {
+        position: 'relative',
         flexDirection: 'column',
         padding: theme.spacing.unit * 4,
         paddingTop: 0,
@@ -29,5 +30,29 @@ export const chooseRoomModalStyles = (theme: Theme) => createStyles({
                 },
             }
         },
-    }
+    },
+    modal: {
+        left: '25vw',
+        top: '30vh',
+    },
+    modalPaper: {
+        width: '50vw',
+        textAlign: 'center',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        '& > *': {
+            margin: theme.spacing.unit * 3,
+        },
+    },
+    buttonWrapper: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: theme.spacing.unit * 4,
+    },
+    button: {
+        marginRight: '12px'
+    },
 });
