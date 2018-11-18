@@ -10,6 +10,8 @@ import LoginScreen from "./components/LoginScreen/LoginScreen";
 import UserFormRoute from "./components/UserFormRoute/UserFormRoute";
 import AddRoomMatesModal from "./components/AddRoomMatesModal/AddRoomMatesModal";
 import SummaryRoute from "./components/SummaryRoute/SummaryRoute";
+import { PrivateRoute } from './components/PrivateRoute';
+
 
 const styles = createStyles({
     main: {
@@ -35,9 +37,9 @@ class App extends React.Component<WithStyles<typeof styles> & RouteComponentProp
                       </Toolbar>
                   </AppBar>
                   <Switch>
-                      <Route path={'/AddingRoomMates'} component={AddRoomMatesModal}/>
-                      <Route path={'/RoomBooking'} component={UserFormRoute}/>
-                      <Route path={'/Summary'} component={SummaryRoute}/>
+                      <PrivateRoute path={'/AddingRoomMates'} component={AddRoomMatesModal}/>
+                      <PrivateRoute path={'/RoomBooking'} component={UserFormRoute}/>
+                      <PrivateRoute path={'/Summary'} component={SummaryRoute}/>
                       <Route path={'/'} component={LoginScreen}/>
                   </Switch>
               </div>
