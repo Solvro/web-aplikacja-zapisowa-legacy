@@ -1,6 +1,8 @@
 Django==2.1
 psycopg2==2.7.5
 djangorestframework==3.8.2
-djangorestframework_simplejwt
 django-rest-swagger
 django-cors-headers==2.4.0
+djangorestframework-simplejwt==3.2.3
+channels==2.1.5
+channels_redis==2.3.1

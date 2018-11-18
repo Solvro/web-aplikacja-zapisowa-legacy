@@ -15,9 +15,12 @@ services:
            - "8000:8000"
        depends_on:
            - "db"
+           - "redis"
        volumes:
            - "./backend/aplikacja_zapisowa:/app"
     db:
        image: "postgres:latest"
        volumes:
            - "aplikacja-zapisowa_postgress-volume"
+    redis:
+       image: "redis:5-alpine"
