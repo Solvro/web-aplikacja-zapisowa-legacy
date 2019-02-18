@@ -7,7 +7,6 @@ export default class CreateTripRoute extends Component {
     this.state = {};
   }
 
-
   render() {
     return (
       <div>

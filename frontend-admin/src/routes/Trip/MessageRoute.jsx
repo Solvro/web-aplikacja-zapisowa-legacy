@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
+import {withRouter} from "react-router-dom";
 
-export default class MessageRoute extends Component {
+class MessageRoute extends Component {
 
   constructor(props) {
     super(props);
@@ -9,10 +10,14 @@ export default class MessageRoute extends Component {
 
 
   render() {
+    const { match } = this.props;
     return (
       <div>
         Message
+        { match.params.id }
       </div>
     );
   }
 }
+
+export default withRouter(MessageRoute);

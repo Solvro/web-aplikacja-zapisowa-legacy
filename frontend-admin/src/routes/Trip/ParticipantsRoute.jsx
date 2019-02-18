@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
+import {withRouter} from "react-router-dom";
 
-export default class ParticipantsRoute extends Component {
+class ParticipantsRoute extends Component {
 
   constructor(props) {
     super(props);
@@ -9,10 +10,14 @@ export default class ParticipantsRoute extends Component {
 
 
   render() {
+    const { match } = this.props;
     return (
       <div>
         Participants
+        { match.params.id }
       </div>
     );
   }
 }
+
+export default withRouter(ParticipantsRoute);

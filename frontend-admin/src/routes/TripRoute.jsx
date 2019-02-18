@@ -16,7 +16,6 @@ const styles = theme => ({
     flexGrow: 1,
     padding: theme.spacing.unit * 3,
   },
-  toolbar: theme.mixins.toolbar,
 });
 
 function ClippedDrawer(props) {
@@ -26,25 +25,24 @@ function ClippedDrawer(props) {
     <div className={classes.root}>
       <TripMenu />
       <main className={classes.content}>
-        <div className={classes.toolbar} />
         <Switch>
           <Route
-            path="/trips/:id/edit"
+            path="/trips/:id(\d+)/edit"
             exact
             component={EditRoute}
           />
           <Route
-            path="/trips/:id/message"
+            path="/trips/:id(\d+)/message"
             exact
             component={MessageRoute}
           />
           <Route
-            path="/trips/:id/participants"
+            path="/trips/:id(\d+)/participants"
             exact
             component={ParticipantsRoute}
           />
           <Route
-            path="/trips/:id/rooms"
+            path="/trips/:id(\d+)/rooms"
             exact
             component={RoomsRoute}
           />

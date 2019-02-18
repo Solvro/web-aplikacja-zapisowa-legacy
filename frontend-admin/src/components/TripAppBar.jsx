@@ -1,5 +1,5 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import {withStyles} from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -10,7 +10,7 @@ const styles = theme => ({
   },
 });
 
-const SimpleAppBar = ({ classes }) => (
+const SimpleAppBar = ({classes}) => (
   <AppBar position="fixed" className={classes.root}>
     <Toolbar>
       <Typography variant="h6" color="inherit" noWrap>

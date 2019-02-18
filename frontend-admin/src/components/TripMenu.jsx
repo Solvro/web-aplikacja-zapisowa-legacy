@@ -2,12 +2,51 @@ import React from 'react';
 import List from "@material-ui/core/List/List";
 import ListItem from "@material-ui/core/ListItem/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon/ListItemIcon";
-import InboxIcon from "@material-ui/core/SvgIcon/SvgIcon";
+import DashboardIcon from "@material-ui/icons/Dashboard";
+import HotelIcon from "@material-ui/icons/Hotel";
+import PeopleIcon from "@material-ui/icons/People";
+import EmailIcon from "@material-ui/icons/Email";
+import ChartIcon from "@material-ui/icons/InsertChart";
+import EditIcon from "@material-ui/icons/Edit";
 import ListItemText from "@material-ui/core/ListItemText/ListItemText";
 import Drawer from "@material-ui/core/Drawer/Drawer";
-import { withStyles } from "@material-ui/core";
+import {withStyles} from "@material-ui/core";
+import {withRouter} from "react-router-dom";
 
 const drawerWidth = 240;
+
+const menuItems = [
+  {
+    text: 'Wycieczki',
+    icon: <DashboardIcon/>,
+    goTo: () => `/trips/`,
+  },
+  {
+    text: 'Pokoje',
+    icon: <HotelIcon/>,
+    goTo: id => `/trips/${id}/rooms`,
+  },
+  {
+    text: 'Uczestnicy',
+    icon: <PeopleIcon/>,
+    goTo: id => `/trips/${id}/participants`,
+  },
+  {
+    text: 'Wyślij wiadomość',
+    icon: <EmailIcon/>,
+    goTo: id => `/trips/${id}/message`,
+  },
+  {
+    text: 'Statystyki',
+    icon: <ChartIcon/>,
+    goTo: id => `/trips/${id}`,
+  },
+  {
+    text: 'Edycja wycieczki',
+    icon: <EditIcon/>,
+    goTo: id => `/trips/${id}/edit`,
+  },
+];
 
 const styles = theme => ({
   drawer: {
@@ -20,7 +59,7 @@ const styles = theme => ({
   toolbar: theme.mixins.toolbar,
 });
 
-const TripMenu = ({ classes }) => (
+const TripMenu = ({classes, history, match}) => (
   <Drawer
     className={classes.drawer}
     variant="permanent"
@@ -28,14 +67,20 @@ const TripMenu = ({ classes }) => (
       paper: classes.drawerPaper,
     }}
   >
-    <div className={classes.toolbar} />
+    <div className={classes.toolbar}/>
     <List>
-      <ListItem button key="Inbox">
-        <ListItemIcon><InboxIcon /></ListItemIcon>
-        <ListItemText primary="Inbox" />
-      </ListItem>
+      {menuItems.map(({text, icon, goTo}) => (
+        <ListItem
+          button
+          key={text}
+          onClick={() => history.push(goTo(match.params.id))}
+        >
+          <ListItemIcon>{icon}</ListItemIcon>
+          <ListItemText primary={text}/>
+        </ListItem>
+      ))}
     </List>
   </Drawer>
 );
 
-export default withStyles(styles)(TripMenu);
+export default withRouter(withStyles(styles)(TripMenu));

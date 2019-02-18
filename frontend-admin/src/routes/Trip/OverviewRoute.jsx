@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
+import {withRouter} from "react-router-dom";
 
-export default class OverviewRoute extends Component {
-
+class OverviewRoute extends Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -9,10 +9,14 @@ export default class OverviewRoute extends Component {
 
 
   render() {
+    const { match } = this.props;
     return (
       <div>
         Overview
+        { match.params.id }
       </div>
     );
   }
 }
+
+export default withRouter(OverviewRoute);
