@@ -1,14 +1,11 @@
 import React from "react"
 import {withStyles} from "@material-ui/core"
 import {Card, CardContent, CardHeader } from "@material-ui/core"
-import indigo from "@material-ui/core/colors/indigo"
 
-const styles = theme =>({
+const styles = theme => ({
     header: {
-        // TODO: derive color from theme
-        // backgroundColor: theme.palette.primary.light,
-        backgroundColor: indigo[50],
-        padding: "16px",
+        backgroundColor: theme.palette.primary[50],
+        padding: theme.custom.padding,
     }
 });
 

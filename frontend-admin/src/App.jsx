@@ -1,5 +1,7 @@
 import React from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import { MuiThemeProvider } from '@material-ui/core/styles'
+import theme from './theme'
 import 'typeface-roboto';
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
 import {withStyles} from "@material-ui/core";
@@ -17,6 +19,7 @@ const styles = theme => ({
 const App = ({classes}) => (
   <React.Fragment>
     <CssBaseline/>
+    <MuiThemeProvider theme={theme}>
     <BrowserRouter>
       <Switch>
         <Route path="/trips">
@@ -48,6 +51,7 @@ const App = ({classes}) => (
         <Route component={NoMatchRoute}/>
       </Switch>
     </BrowserRouter>
+    </MuiThemeProvider>
   </React.Fragment>
 );
 
