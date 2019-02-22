@@ -1,5 +1,6 @@
 import React from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import 'typeface-roboto';
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
 import {withStyles} from "@material-ui/core";
 import CreateTripRoute from './routes/CreateTripRoute';
