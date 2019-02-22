@@ -17,7 +17,7 @@ class OverviewRoute extends Component {
         Overview
         { match.params.id }
         <Tile title={"Informacje"} icon={<DescriptionIcon color="primary"/>}>
-            <Button color="primary">Klik</Button>
+            <Button color="secondary">Klik</Button>
         </Tile>
       </div>
     );
