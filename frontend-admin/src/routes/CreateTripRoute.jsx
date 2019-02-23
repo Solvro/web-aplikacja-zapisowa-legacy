@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ManageTripScreen from '../screens/ManageTripScreen/ManageTripScreen';
 
 export default class CreateTripRoute extends Component {
 
@@ -9,9 +10,7 @@ export default class CreateTripRoute extends Component {
 
   render() {
     return (
-      <div>
-        Create Trip
-      </div>
+      <ManageTripScreen />
     );
   }
 }
