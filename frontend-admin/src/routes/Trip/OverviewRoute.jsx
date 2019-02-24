@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-import Tile from "../../components/Tile"
-import DescriptionIcon from '@material-ui/icons/Description'
-import { GridList, GridListTile, List } from '@material-ui/core';
-import CalendarIcon from '@material-ui/icons/DateRange'
+import { GridList, GridListTile } from '@material-ui/core';
 import DashboardHeader from '../../components/DashboardHeader';
-import ContentListItem from '../../components/ContentListItem';
+import InformationTile from '../../components/InformationTile';
+import StatisticsTile from '../../components/StatisticsTile';
 
 class OverviewRoute extends Component {
   constructor(props) {
@@ -26,14 +24,12 @@ class OverviewRoute extends Component {
             />
           </GridListTile>
 
-          <GridListTile>
-            <Tile title={"Informacje"} icon={<DescriptionIcon color="primary" />}>
-              <List>
-                <ContentListItem title={'Termin wycieczki'} value={'Kappa'} icon={CalendarIcon}/>
-                <ContentListItem title={'Termin wycieczki'} value={'Kappa'} icon={CalendarIcon}/>
-                <ContentListItem title={'Termin wycieczki'} value={'Kappa'} icon={CalendarIcon}/>
-              </List>
-            </Tile>
+          <GridListTile cols={1}>
+            <InformationTile/>
+          </GridListTile>
+
+          <GridListTile cols={1}>
+            <StatisticsTile/>
           </GridListTile>
         </GridList>
       </div>

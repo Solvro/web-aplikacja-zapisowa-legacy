@@ -13,6 +13,9 @@ const styles = theme => ({
   secondary: {
     color: theme.palette.text.primary,
     fontSize: theme.typography.fontSize * 1.5
+  },
+  icon: {
+    color: theme.palette.common.black,
   }
 });
 
@@ -22,7 +25,7 @@ class ContentListItem extends React.Component {
     return (
         <ListItem>
           <ListItemIcon>
-            <Icon fontSize='large'/>
+            <Icon className={classes.icon} fontSize='large'/>
           </ListItemIcon>
           <ListItemText
             classes={{
