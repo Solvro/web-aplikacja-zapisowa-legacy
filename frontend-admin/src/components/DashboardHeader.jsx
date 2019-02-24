@@ -39,7 +39,7 @@ class DashboardHeader extends React.Component {
                                 <Typography variant='h5'>{title}</Typography>
                             </Grid>
                             <Grid item xs={8}>
-                                <Typography wrap color='textSecondary' className={classes.subtitle}>{subtitle}</Typography>
+                                <Typography color='textSecondary' className={classes.subtitle}>{subtitle}</Typography>
                             </Grid>
                         </Grid>
                     </Grid>
@@ -55,7 +55,7 @@ class DashboardHeader extends React.Component {
                                 <Typography variant='h5'>{date.day}</Typography>
                             </Grid>
                             <Grid item xs>
-                                <Typography wrap color='textSecondary' className={[classes.subtitle, classes.date]}>{date.full}</Typography>
+                                <Typography color='textSecondary' className={[classes.subtitle, classes.date].join(' ')}>{date.full}</Typography>
                             </Grid>
                         </Grid>
                     </Grid>

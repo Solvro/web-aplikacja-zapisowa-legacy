@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import { withRouter } from "react-router-dom";
+import { withRouter } from 'react-router-dom';
 import Tile from "../../components/Tile"
-import DescriptionIcon from "@material-ui/icons/Description"
-import { Button, GridList, GridListTile } from '@material-ui/core';
+import DescriptionIcon from '@material-ui/icons/Description'
+import { GridList, GridListTile, List } from '@material-ui/core';
+import CalendarIcon from '@material-ui/icons/DateRange'
 import DashboardHeader from '../../components/DashboardHeader';
+import ContentListItem from '../../components/ContentListItem';
 
 class OverviewRoute extends Component {
   constructor(props) {
@@ -12,10 +14,10 @@ class OverviewRoute extends Component {
   }
 
   render() {
-    const { match } = this.props;
+    // const { match } = this.props;
     return (
       <div>
-        <GridList cellHeight={180} cols={3} spacing={16}>
+        <GridList cellHeight={'auto'} cols={3} spacing={16}>
           <GridListTile key="Subheader" cols={3} style={{ height: 'auto' }}>
             <DashboardHeader
               title='Jesienny Rajd Mechanika'
@@ -26,7 +28,11 @@ class OverviewRoute extends Component {
 
           <GridListTile>
             <Tile title={"Informacje"} icon={<DescriptionIcon color="primary" />}>
-              <Button color="secondary">Klik</Button>
+              <List>
+                <ContentListItem title={'Termin wycieczki'} value={'Kappa'} icon={CalendarIcon}/>
+                <ContentListItem title={'Termin wycieczki'} value={'Kappa'} icon={CalendarIcon}/>
+                <ContentListItem title={'Termin wycieczki'} value={'Kappa'} icon={CalendarIcon}/>
+              </List>
             </Tile>
           </GridListTile>
         </GridList>
