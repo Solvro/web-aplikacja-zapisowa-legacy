@@ -1,4 +1,4 @@
-import { withStyles } from "@material-ui/core";
+import { withStyles } from '@material-ui/core';
 import React from 'react';
 import { tripCardStyles } from './TripCardStyle';
 import Card from '@material-ui/core/Card';

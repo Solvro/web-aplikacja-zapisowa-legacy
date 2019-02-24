@@ -1,9 +1,9 @@
-import { withStyles } from "@material-ui/core";
-import Grid from "@material-ui/core/Grid/Grid";
+import { withStyles } from '@material-ui/core';
+import Grid from '@material-ui/core/Grid/Grid';
 import React from 'react';
 import { manageTripScreenStyles } from './ManageTripScreenStyle';
-import Paper from "@material-ui/core/Paper/Paper";
-import TripCard from "./TripCard";
+import Paper from '@material-ui/core/Paper/Paper';
+import TripCard from './TripCard';
 import Typography from '@material-ui/core/Typography';
 import { withRouter } from 'react-router-dom';
 // import { tripsMock } from '../mockData/trips';
