@@ -1,7 +1,7 @@
 Django==2.1
 psycopg2==2.7.5
 djangorestframework==3.8.2
-django-rest-swagger
+drf-yasg==1.13.0
 django-cors-headers==2.4.0
 djangorestframework-simplejwt==3.2.3
 channels==2.1.5

@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 
+from drf_yasg.utils import swagger_auto_schema
+
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -64,6 +66,8 @@ class StudentView(APIView):
     if not settings.DEBUG:
         permission_classes = (IsAuthenticated, )
 
+    @swagger_auto_schema(responses={200: StudentSerializer()},
+                         operation_description="Gets student by username",)
     def get(self, request, username):
         u = User.objects.get(username=username)
         queryset = Student.objects.all()
