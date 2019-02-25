@@ -43,7 +43,7 @@ class FormTextInput extends React.Component {
                 label={<div>{Icon ? <Icon fontSize='small' style={{ verticalAlign: 'text-bottom' }} /> : null} {label}</div>}
                 fullWidth
                 margin='normal'
-                variant="filled"
+                variant='standard'
                 className={classes.input}
                 InputLabelProps={{
                     classes: {
