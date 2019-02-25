@@ -9,9 +9,7 @@ export default class CreateTripRoute extends Component {
 
   render() {
     return (
-      <div>
-        Create Trip
-      </div>
+      <div></div>
     );
   }
 }

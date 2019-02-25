@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {Link} from "react-router-dom";
+import ManageTripScreen from '../screens/ManageTripScreen/ManageTripScreen';
 
 export default class ManageTripsRoute extends Component {
 
@@ -10,18 +11,6 @@ export default class ManageTripsRoute extends Component {
 
 
   render() {
-    return (
-      <div>
-        Manage Trips
-        <ul>
-          <li>
-            <Link to="/trips/1">Trip 1</Link>
-          </li>
-          <li>
-            <Link to="/trips/69">Trip 69</Link>
-          </li>
-        </ul>
-      </div>
-    );
+    return <ManageTripScreen />
   }
 }
