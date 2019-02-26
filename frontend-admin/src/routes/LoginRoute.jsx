@@ -1,18 +1,9 @@
 import React, { Component } from 'react';
+import LoginScreen from '../screens/LoginScreen/LoginScreen'
 
 export default class LoginRoute extends Component {
 
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-
-
   render() {
-    return (
-      <div>
-        Login
-      </div>
-    );
+    return <div style={{height: '100vh'}}><LoginScreen /></div>
   }
 }
