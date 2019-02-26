@@ -22,7 +22,7 @@ python manage.py shell
 And then in django shell:
 ```
 from enrolmentpanel.models import (User, Organiser, Event)
-u = User.objects.create_user("organizator", "haslo")
+u = User.objects.create_user(username="organizator", password="haslo")
 u.is_organiser = True
 u.save()
 o = Organiser(faculty=11, user=u)
@@ -59,3 +59,13 @@ Then inside of container execute:
 python manage.py migrate enrolmentpanel
 ```
 Then all migrations should be applied ;)
+
+
+## Tips 'n tricks ;~~)
+
+Sometimes, your `DB` refuses to work, then the best is to drop whole database and bootstrap it! In order to drop `DB`, inside your docker container run: 
+```
+python manage.py flush
+```
+And accept it by wiriting `yes`.
+Next the best option is to bootstrap `DB`, but this function will be made soon :D 

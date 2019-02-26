@@ -13,6 +13,7 @@ from enrolmentpanel.serializers import StudentSerializer
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+
     @classmethod
     def get_token(cls, user):
         token = super(CustomTokenObtainPairSerializer, cls).get_token(user)
@@ -45,9 +46,11 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         data = super(CustomTokenObtainPairSerializer, self).validate(attrs)
 
         token = self.get_token(self.user)
-        data['student'] = token['student']
-        data['room'] = token['room']
-        data['roomMates'] = token['roomMates']
+
+        if self.user.is_participant:
+            data['student'] = token['student']
+            data['room'] = token['room']
+            data['roomMates'] = token['roomMates']
 
         return data
 
