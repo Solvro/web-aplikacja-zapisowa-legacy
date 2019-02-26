@@ -67,7 +67,7 @@ class StudentView(APIView):
         permission_classes = (IsAuthenticated, )
 
     @swagger_auto_schema(responses={200: StudentSerializer()},
-                         operation_description="Gets student by username",)
+                         operation_description="Gets student by username")
     def get(self, request, username):
         u = User.objects.get(username=username)
         queryset = Student.objects.all()

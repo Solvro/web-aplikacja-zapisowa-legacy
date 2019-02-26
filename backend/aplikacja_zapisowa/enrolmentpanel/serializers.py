@@ -22,6 +22,9 @@ class PartialRoomSerializer(serializers.ModelSerializer):
 
 class StudentSerializer(serializers.ModelSerializer):
 
+    def create(self, validated_data):
+        return Student.objects.create(**validated_data)
+
     class Meta:
         model = Student
-        fields = ('name', 'faculty', 'pk')
+        fields = '__all__'
