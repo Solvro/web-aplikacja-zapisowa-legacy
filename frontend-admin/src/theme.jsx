@@ -10,6 +10,13 @@ const theme = createMuiTheme({
     secondary: cyan
     // error: will use the default color
   },
+  overrides: {
+    MuiCircularProgress: {
+      colorSecondary: {
+        color: indigo[200]
+      }
+    }
+  }
 });
 
 export default theme
