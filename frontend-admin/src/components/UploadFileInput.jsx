@@ -52,17 +52,19 @@ class UploadFileInput extends React.Component {
     }
 
     render() {
-        const { classes, label } = this.props
+        const { classes, label, ...other } = this.props
         return (
             <FormControl fullWidth className={classes.root}>
                 <InputLabel shrink={!!this.state.file} htmlFor="adornment-fileselect">{label}</InputLabel>
                 <input ref={this.inputRef} type='file' style={{ visibility: 'hidden' }} onChange={this.handleFileSelected} />
                 <Input
+                    {...other}
                     id="adornment-fileselect"
                     type={'text'}
                     readOnly
                     onChange={this.handleSelectFile}
                     onClick={this.handleOpenFileSelect}
+                    onKeyPressCapture={this.handleOpenFileSelect}
                     startAdornment={
                         this.state.file ?
                             <InputAdornment className={classes.chip} position="start">
@@ -73,6 +75,7 @@ class UploadFileInput extends React.Component {
                         <InputAdornment position="end">
                             <IconButton
                                 aria-label="Select file to upload"
+                                tabIndex={-1}
                             >
                                 <UploadIcon />
                             </IconButton>
