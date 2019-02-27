@@ -9,7 +9,6 @@ from drf_yasg.utils import swagger_auto_schema
 
 from .permissions import IsOrganiserAccount
 from enrolmentpanel.models import Event
-from enrolmentpanel.utils.model_utils import create_new_student
 from enrolmentpanel.serializers import StudentSerializer
 
 
