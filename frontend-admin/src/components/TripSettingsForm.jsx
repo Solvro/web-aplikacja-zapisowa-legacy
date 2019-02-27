@@ -64,24 +64,68 @@ class TripSettingsForm extends React.Component {
         const { classes } = this.props
         return (
             <form>
-                <Paper className={classes.root}>
-                    <Grid
-                        container
-                        justify="center"
-                        alignItems="stretch"
-                        spacing={formItemSpacing}
-                    >
-                        <Grid item xs={12}><FormTextInput autoFocus id={'tripName'} name={'tripName'} onChange={this.handleChange('tripName')} fullWidth icon={DateIcon} label={'Nazwa wycieczki'} /></Grid>
-                        <Grid item xs={12}><FormTextInput id={'tripDesc'} name={'tripDesc'} onChange={this.handleChange('tripDesc')} fullWidth multiline rows='4' maxCharLength={120} icon={DescriptionIcon} label={'Opis'} /></Grid>
-                        <Grid item xs={12}><FormTextInput id={'tripLocation'} name={'tripLocation'} onChange={this.handleChange('tripLocation')} fullWidth icon={LocationIcon} label={'Miejsce wycieczki'} /></Grid>
-                        <Grid item xs={12}><FormTextInput id={'tripHotel'} name={'tripHotel'} onChange={this.handleChange('tripHotel')} fullWidth icon={HotelIcon} label={'Ośrodek noclegowy'} /></Grid>
-                        <Grid item xs={12} sm={6}>
-                            <UploadFileInput id={'participantsFile'} name={'participantsFile'} onChange={this.handleChange('participantsFile')} label={'Uczestnicy'} />
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <UploadFileInput id={'bgImageFile'} name={'bgImageFile'} onChange={this.handleChange('bgImageFile')} label={'Zdjęcie tła'} />
-                        </Grid>
-                        <MuiPickersUtilsProvider utils={MomentUtils}>
+                <MuiPickersUtilsProvider utils={MomentUtils}>
+                    <Paper className={classes.root}>
+                        <Grid
+                            container
+                            justify="center"
+                            alignItems="stretch"
+                            spacing={formItemSpacing}
+                        >
+                            <Grid item xs={12}>
+                                <FormTextInput
+                                    autoFocus
+                                    id={'tripName'}
+                                    name={'tripName'}
+                                    onChange={this.handleChange('tripName')}
+                                    fullWidth
+                                    icon={DateIcon}
+                                    label={'Nazwa wycieczki'} />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <FormTextInput
+                                    id={'tripDesc'}
+                                    name={'tripDesc'}
+                                    onChange={this.handleChange('tripDesc')}
+                                    fullWidth
+                                    multiline
+                                    rows='4'
+                                    maxCharLength={120}
+                                    icon={DescriptionIcon}
+                                    label={'Opis'} />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <FormTextInput
+                                    id={'tripLocation'}
+                                    name={'tripLocation'}
+                                    onChange={this.handleChange('tripLocation')}
+                                    fullWidth
+                                    icon={LocationIcon}
+                                    label={'Miejsce wycieczki'} />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <FormTextInput
+                                    id={'tripHotel'}
+                                    name={'tripHotel'}
+                                    onChange={this.handleChange('tripHotel')}
+                                    fullWidth
+                                    icon={HotelIcon}
+                                    label={'Ośrodek noclegowy'} />
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <UploadFileInput
+                                    id={'participantsFile'}
+                                    name={'participantsFile'}
+                                    onChange={this.handleChange('participantsFile')}
+                                    label={'Uczestnicy'} />
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <UploadFileInput
+                                    id={'bgImageFile'}
+                                    name={'bgImageFile'}
+                                    onChange={this.handleChange('bgImageFile')}
+                                    label={'Zdjęcie tła'} />
+                            </Grid>
                             <Grid item xs={12} sm={6}>
                                 <DatePicker
                                     fullWidth
@@ -96,19 +140,22 @@ class TripSettingsForm extends React.Component {
                                 <DatePicker
                                     fullWidth
                                     margin="normal"
-                                    label={<LabelWithIcon fontSize='small' icon={DateIcon} label='Data zakończenia' />}
+                                    label={<LabelWithIcon fontSize='small' icon={DateIcon} label='Data zakończeniaaaaa' />}
                                     onChange={this.handleDateChange('dateEnd')}
                                     value={this.state.dateEnd}
                                     id={'dateEnd'} name={'dateEnd'}
                                 />
                             </Grid>
-                        </MuiPickersUtilsProvider>
 
-                        <Grid item className={classes.button} xs={12}>
-                            <Button onClick={this.handleSend} variant='contained' color="primary">Stwórz</Button>
+                            <Grid item className={classes.button} xs={12}>
+                                <Button
+                                    onClick={this.handleSend}
+                                    variant='contained'
+                                    color="primary">Stwórz</Button>
+                            </Grid>
                         </Grid>
-                    </Grid>
-                </Paper>
+                    </Paper>
+                </MuiPickersUtilsProvider>
             </form>
         )
     }
