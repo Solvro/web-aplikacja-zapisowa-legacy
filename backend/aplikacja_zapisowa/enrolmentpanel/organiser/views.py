@@ -30,6 +30,7 @@ class CreateStudentView(APIView):
     @swagger_auto_schema(request_body=StudentSerializer,
                          operation_description="Creates student")
     def post(self, request):
-        student_serializer = StudentSerializer(request.data)
-        student_serializer.is_valid()
+        student_serializer = StudentSerializer(data=request.data)
+        if student_serializer.is_valid(raise_exception=True):
+            student_serializer.save()
         return Response(student_serializer.data)

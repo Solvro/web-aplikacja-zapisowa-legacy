@@ -76,7 +76,7 @@ class Room(models.Model):
 
 class StudentManager(models.Manager):
 
-    def create(self, index, event_pk, sex, name, faculty):
+    def create(self, index, event, sex, name, faculty):
         username, password = self.__generate_student_credentials(index)
         student_user = User.objects.create_user(
             username=username,
@@ -84,8 +84,6 @@ class StudentManager(models.Manager):
         )
         student_user.is_participant = True
         student_user.save()
-
-        event = Event.objects.get(pk=event_pk)
 
         new_student = Student(
             user=student_user,

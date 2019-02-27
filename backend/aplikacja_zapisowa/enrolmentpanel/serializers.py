@@ -5,6 +5,8 @@ from enrolmentpanel.models import (
     Student
 )
 
+import re
+
 
 class RoomSerializer(serializers.ModelSerializer):
     
@@ -25,6 +27,11 @@ class StudentSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         return Student.objects.create(**validated_data)
 
+    def validate_index(self, value):
+        if re.fullmatch(r"^\d*$", value):
+            return value
+        raise serializers.ValidationError("Index contains not digit character")
+
     class Meta:
         model = Student
-        fields = '__all__'
+        fields = ("name", "index", "faculty", "sex", "event")
