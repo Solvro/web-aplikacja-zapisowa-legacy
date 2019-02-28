@@ -2,17 +2,17 @@ import React from 'react'
 
 class TextLengthCounter extends React.Component {
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
             error: false
         }
     }
 
     componentDidUpdate() {
-        const { current, max, onError } = this.props
+        const { current, max, onError } = this.props;
         if(onError) {
-            const before = this.state.error
-            let after = before
+            const before = this.state.error;
+            let after = before;
 
             if(current > max) {
                 after = true
@@ -23,7 +23,7 @@ class TextLengthCounter extends React.Component {
             if(before !== after) {
                 this.setState({
                     error: after
-                })
+                });
                 onError({
                     target: {
                         value: after
@@ -34,7 +34,7 @@ class TextLengthCounter extends React.Component {
     }
 
     render() {
-        const { current, max } = this.props
+        const { current, max } = this.props;
         return (
             <span>
                 {current} / {max}
