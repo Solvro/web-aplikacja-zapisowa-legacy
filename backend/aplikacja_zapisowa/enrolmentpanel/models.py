@@ -11,7 +11,23 @@ class User(AbstractUser):
     is_organiser = models.BooleanField(default=False)
 
 
+class OrganiserManager(models.Manager):
+
+    def create(self, username, password, faculty):
+        organiser_user = User.objects.create_user(
+            username=username,
+            password=password
+        )
+        organiser_user.is_organiser = True
+        organiser_user.save()
+        organiser = Organiser(faculty=faculty, user=organiser_user)
+        organiser.save()
+        return organiser
+
+
 class Organiser(models.Model):
+    objects = OrganiserManager()
+
     faculty = models.PositiveSmallIntegerField()
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True, related_name='organiser')
 
@@ -100,7 +116,7 @@ class StudentManager(models.Manager):
 
         # for development purposes
         if settings.DEBUG:
-            print(username, password)
+            return new_student, username, password
 
         return new_student
 

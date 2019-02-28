@@ -2,7 +2,9 @@ from rest_framework import serializers
 
 from enrolmentpanel.models import (
     Room,
-    Student
+    Student,
+    Organiser,
+    User
 )
 
 import re
@@ -35,3 +37,21 @@ class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
         fields = ("name", "index", "faculty", "sex", "event")
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ("username", "password")
+
+
+class OrganiserSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+
+    def create(self, validated_data):
+        user = validated_data.pop('user')
+        return Organiser.objects.create(user['username'], user['password'], **validated_data)
+
+    class Meta:
+        model = Organiser
+        fields = "__all__"
