@@ -9,11 +9,7 @@ export default class CreateTripRoute extends Component {
   }
 
   render() {
-    return (
-      <div>
-        <TripSettingsForm/>
-      </div>
-    );
+    return <TripSettingsForm />;
   }
 }
 

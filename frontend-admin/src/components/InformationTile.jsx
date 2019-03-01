@@ -8,13 +8,13 @@ import LocationIcon from '@material-ui/icons/LocationOn'
 import BedIcon from '@material-ui/icons/LocalHotel'
 
 function InformationTile(props) {
-    return <Tile title={"Informacje"} icon={<DescriptionIcon color="primary" />}>
-        <List>
-            <ContentListItem title={'Termin wycieczki'} value={'Kappa'} icon={CalendarIcon} />
-            <ContentListItem title={'Termin wycieczki'} value={'Kappa'} icon={LocationIcon} />
-            <ContentListItem title={'Termin wycieczki'} value={'Kappa'} icon={BedIcon} />
-        </List>
-    </Tile>
+  return <Tile title={"Informacje"} icon={<DescriptionIcon color="primary" />}>
+    <List>
+      <ContentListItem title={'Termin wycieczki'} value={'Kappa'} icon={CalendarIcon} />
+      <ContentListItem title={'Termin wycieczki'} value={'Kappa'} icon={LocationIcon} />
+      <ContentListItem title={'Termin wycieczki'} value={'Kappa'} icon={BedIcon} />
+    </List>
+  </Tile>
 }
 
 export default InformationTile;
