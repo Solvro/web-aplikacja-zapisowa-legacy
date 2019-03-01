@@ -33,7 +33,7 @@ class UploadFileInput extends React.Component {
 
   handleFileSelected(event) {
     const files = this.inputRef.current.files
-    if (files.length > 0) {
+    if (files.length) {
       this.setState({
         file: files[0]
       })
