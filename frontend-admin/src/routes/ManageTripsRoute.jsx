@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import {Link} from "react-router-dom";
 import ManageTripScreen from '../screens/ManageTripScreen/ManageTripScreen';
 
 export default class ManageTripsRoute extends Component {
