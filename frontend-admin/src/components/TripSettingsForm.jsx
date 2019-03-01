@@ -2,7 +2,7 @@ import React from 'react'
 import { withStyles, Grid, Button, Paper } from '@material-ui/core';
 import DateIcon from '@material-ui/icons/DateRange';
 import HotelIcon from '@material-ui/icons/LocalHotel';
-import LocationIcon from "@material-ui/icons/LocationOn";
+import LocationIcon from '@material-ui/icons/LocationOn';
 import DescriptionIcon from '@material-ui/icons/Description';
 import FormTextInput from './FormTextInput';
 import UploadFileInput from './UploadFileInput';
@@ -68,8 +68,8 @@ class TripSettingsForm extends React.Component {
           <Paper className={classes.root}>
             <Grid
               container
-              justify="center"
-              alignItems="stretch"
+              justify='center'
+              alignItems='stretch'
               spacing={formItemSpacing}
             >
               <Grid item xs={12}>
@@ -129,7 +129,7 @@ class TripSettingsForm extends React.Component {
               <Grid item xs={12} sm={6}>
                 <DatePicker
                   fullWidth
-                  margin="normal"
+                  margin='normal'
                   label={<LabelWithIcon fontSize='small' icon={DateIcon} label='Data rozpoczęcia' />}
                   onChange={this.handleDateChange('dateStart')}
                   value={this.state.dateStart}
@@ -139,7 +139,7 @@ class TripSettingsForm extends React.Component {
               <Grid item xs={12} sm={6}>
                 <DatePicker
                   fullWidth
-                  margin="normal"
+                  margin='normal'
                   label={<LabelWithIcon fontSize='small' icon={DateIcon} label='Data zakończeniaaaaa' />}
                   onChange={this.handleDateChange('dateEnd')}
                   value={this.state.dateEnd}
@@ -151,7 +151,7 @@ class TripSettingsForm extends React.Component {
                 <Button
                   onClick={this.handleSend}
                   variant='contained'
-                  color="primary">Stwórz</Button>
+                  color='primary'>Stwórz</Button>
               </Grid>
             </Grid>
           </Paper>

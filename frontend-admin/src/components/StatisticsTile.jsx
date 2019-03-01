@@ -9,12 +9,12 @@ import StatisticsProgress from './StatisticsProgress';
 
 function StatisticsTile(props) {
 
-  return <Tile title={"Statystyki"} icon={<TrendingIcon color="primary" />}>
+  return <Tile title={'Statystyki'} icon={<TrendingIcon color='primary' />}>
     <Grid
       container
-      direction="row"
-      justify="center"
-      alignItems="stretch"
+      direction='row'
+      justify='center'
+      alignItems='stretch'
       spacing={16}
     >
       <ContentGridItem

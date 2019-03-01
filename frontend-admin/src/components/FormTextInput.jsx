@@ -26,7 +26,7 @@ class FormTextInput extends React.Component {
     return (
       <TextField
         {...other}
-        id="filled-full-width"
+        id='filled-full-width'
         label={<LabelWithIcon fontSize='small' icon={icon} label={label} />}
         margin='normal'
         variant='standard'

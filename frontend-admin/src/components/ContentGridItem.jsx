@@ -25,9 +25,9 @@ class ContentGridItem extends React.Component {
       <Grid {...other} item>
         <Grid
           container
-          direction="column"
-          justify="center"
-          alignItems="center"
+          direction='column'
+          justify='center'
+          alignItems='center'
         >
           <Grid item>{icon}</Grid>
           <Grid item>{title}</Grid>

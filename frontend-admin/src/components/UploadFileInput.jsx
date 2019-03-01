@@ -72,7 +72,7 @@ class UploadFileInput extends React.Component {
               </InputAdornment> : null
           }
           endAdornment={
-            <InputAdornment position="end">
+            <InputAdornment position='end'>
               <IconButton
                 aria-label='Select file to upload'
                 tabIndex={-1}

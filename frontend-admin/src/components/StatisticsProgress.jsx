@@ -18,8 +18,8 @@ function StatisticsProgress(props) {
     value={<Typography variant='subtitle2'>{description}</Typography>}
     icon={
       <div style={{ position: 'relative' }}>
-        <CircularProgress thickness={thickness} style={{ position: 'absolute' }} size={size} color='secondary' variant="static" value={100} />
-        <CircularProgress thickness={thickness} size={size} variant="static" value={value} />
+        <CircularProgress thickness={thickness} style={{ position: 'absolute' }} size={size} color='secondary' variant='static' value={100} />
+        <CircularProgress thickness={thickness} size={size} variant='static' value={value} />
       </div>} />
 }
 
