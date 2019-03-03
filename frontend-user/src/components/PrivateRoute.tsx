@@ -1,53 +1,73 @@
 import * as React from "react";
 import {Redirect, Route, RouteComponentProps, RouteProps} from "react-router-dom";
-import { verifyUser } from '../store/api';
+import {verifyUser} from '../store/api';
+import {RoomMate} from "../store/RoomMate/types";
+import {connect, Dispatch} from "react-redux";
+import {ApplicationState} from "../store";
+import {signIn} from "../store/RoomMate/actions";
 
 
 interface PrivateRouteProps extends RouteProps {
-  component: React.ComponentType<RouteComponentProps<any>> | React.ComponentType<any>
+    component: React.ComponentType<RouteComponentProps<{}>> | React.ComponentType<any>
+    signIn(user: RoomMate): void;
 }
 
-type RenderComponent = (props: RouteComponentProps<any>) => React.ReactNode;
+const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>): Partial<PrivateRouteProps> => {
+    return {
+        signIn(user: RoomMate) {
+            dispatch(signIn(user));
+        }
+    }
+};
 
-export class PrivateRoute extends Route<PrivateRouteProps> {
+const mapStateToProps = (state: ApplicationState, ownProps: Partial<PrivateRouteProps>) => {
+    return {...ownProps};
+};
 
-  state = {
-    loggedIn: false,
-    authorized: false
-  }
+type RenderComponent = (props: RouteComponentProps<{}>) => React.ReactNode;
 
-  validateIsLogged = async () => {
-    const token = await localStorage.getItem('token');
-    const verifyResult = token && await verifyUser(token);
-    const isLogged = token && verifyResult;
-    return  isLogged;
-  }
+class PrivateRoute extends Route<PrivateRouteProps> {
 
-  componentWillMount(){
-   this.validateIsLogged()
-      .then(isLogged => {
-        if(isLogged === true )
-          this.setState({loggedIn: true})
-        this.setState({authorized: true})
-      })
-      .catch(err => {
-        this.setState({authorized: true})
-      })
-  }
+    state = {
+        loggedIn: false,
+        authorized: false
+    };
 
-  render () {
-    const {component: Component, ...rest}: PrivateRouteProps = this.props;
-    const renderComponent: RenderComponent = (props) => (
-      this.state.loggedIn
-        ? <Component {...props} />
-        : <Redirect to='/' />
-    );
+    validateIsLogged = async () => {
+        const token = await localStorage.getItem('token');
+        const student = JSON.parse((await localStorage.getItem('signedInStudent')!));
+        this.props.signIn(student);
+        const verifyResult = token && await verifyUser(token);
+        const isLogged = token && verifyResult;
+        return isLogged;
+    };
 
-    return (
-        this.state.authorized ?
-        <Route {...rest} render={renderComponent} />
-        : <div></div>
+    componentWillMount() {
+        this.validateIsLogged()
+            .then(isLogged => {
+                if (isLogged === true)
+                    this.setState({loggedIn: true});
+                this.setState({authorized: true})
+            })
+            .catch(err => {
+                this.setState({authorized: true})
+            })
+    }
 
-    );
-  }
+    render() {
+        const {component: Component, ...rest}: PrivateRouteProps = this.props;
+        const renderComponent: RenderComponent = (props) => (
+            this.state.loggedIn
+                ? <Component {...props} />
+                : <Redirect to='/'/>
+        );
+
+        return (
+            this.state.authorized ?
+                <Route {...rest} render={renderComponent}/>
+                : <div></div>
+        );
+    }
 }
+
+export default connect(mapStateToProps, mapDispatchToProps)(PrivateRoute);

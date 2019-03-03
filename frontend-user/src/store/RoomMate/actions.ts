@@ -13,6 +13,8 @@ export const removeRoomMate = createStandardAction(RoomMateType.REMOVE_ROOM_MATE
 
 export const removeError = createStandardAction(RoomMateType.REMOVE_ERROR)<number>();
 
+export const signIn = createStandardAction(RoomMateType.SIGN_IN)<RoomMate>();
+
 export const initFetchRoomMate = (username: string) => {
     return async (dispatch: Dispatch<RoomMateState>) => {
         dispatch(fetchRoomMate.request());

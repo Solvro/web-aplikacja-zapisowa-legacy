@@ -9,7 +9,7 @@ export async function fetchStudent(username: string) {
     try {
         const token = await localStorage.getItem('token');
         const student = await instance.get(`/students/${username}`, {headers: {'Authorization': `Bearer ${token}`}});
-        return await student.data;
+        return student.data;
     } catch (error) {
         console.log(`Error: ${error}`);
     } finally {
@@ -19,8 +19,7 @@ export async function fetchStudent(username: string) {
 
 export async function authorizeUser(username: string, password: string) {
     try {
-        const token = await instance.post(`/token`, { username, password });
-        return token.data.access;
+        return (await instance.post(`/token`, { username, password })).data;
     } catch (error) {
         console.log(`Error: ${error}`);
     }

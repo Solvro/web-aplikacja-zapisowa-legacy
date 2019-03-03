@@ -26,6 +26,7 @@ type AddRoomMatesModalProps = {
     isFetching: boolean;
     roomMates: RoomMate[];
     errors: ApplicationError[];
+    user: RoomMate;
     addRoomMate(login: string): void;
     removeRoomMate(login: string): void;
     removeError(id: number): void;
@@ -37,6 +38,7 @@ const mapStateToProps = (state: ApplicationState): Partial<AddRoomMatesModalProp
         isFetching: state.roomMateState.fetching,
         status: state.roomMateState.status,
         errors: state.roomMateState.errors,
+        user: state.roomMateState.user,
     }
 };
 const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>): Partial<AddRoomMatesModalProps> => {
@@ -55,9 +57,6 @@ const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>): Partial<AddRo
 
 class AddRoomMatesModal extends React.Component<WithStyles<typeof addRoomMatesModalStyles> & AddRoomMatesModalProps> {
     state = {
-        user: {
-            name: "Michał"
-        },
         inputCode: "",
     };
 
@@ -104,7 +103,7 @@ class AddRoomMatesModal extends React.Component<WithStyles<typeof addRoomMatesMo
                             variant={"h5"}
                             color={"inherit"}
                         >
-                            Cześć {this.state.user.name}!
+                            Cześć {this.props.user.name}!
                         </Typography>
                         <Typography
                             className={classes.description}

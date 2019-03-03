@@ -10,7 +10,7 @@ import LoginScreen from "./components/LoginScreen/LoginScreen";
 import UserFormRoute from "./components/UserFormRoute/UserFormRoute";
 import AddRoomMatesModal from "./components/AddRoomMatesModal/AddRoomMatesModal";
 import SummaryRoute from "./components/SummaryRoute/SummaryRoute";
-import { PrivateRoute } from './components/PrivateRoute';
+import PrivateRoute from './components/PrivateRoute';
 
 
 const styles = createStyles({
@@ -21,7 +21,7 @@ const styles = createStyles({
     }
 });
 
-class App extends React.Component<WithStyles<typeof styles> & RouteComponentProps> {
+class App extends React.Component<WithStyles<typeof styles> & RouteComponentProps<{}>> {
 
   public render() {
     const { classes } = this.props;
