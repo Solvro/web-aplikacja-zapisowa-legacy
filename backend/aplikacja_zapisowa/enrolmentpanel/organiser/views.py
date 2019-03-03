@@ -5,9 +5,11 @@ from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from drf_yasg.utils import swagger_auto_schema
+
 from .permissions import IsOrganiserAccount
 from enrolmentpanel.models import Event
-from enrolmentpanel.utils.model_utils import create_new_student
+from enrolmentpanel.serializers import StudentSerializer
 
 
 class TestView(APIView):
@@ -24,21 +26,10 @@ class CreateStudentView(APIView):
 
     permission_classes = (IsAuthenticated, IsOrganiserAccount)
 
+    @swagger_auto_schema(request_body=StudentSerializer,
+                         operation_description="Creates student")
     def post(self, request):
-        event_pk = request.data.get("event")
-        student_index = request.data.get("index")
-        student_sex = request.data.get("sex")
-        name = request.data.get("name")
-        faculty = request.data.get("faculty")
-
-        event = Event.objects.get(pk=event_pk)
-
-        create_new_student(
-            student_index,
-            event,
-            student_sex,
-            name,
-            faculty
-        )
-
-        return Response({"status": "maybe ok"})
+        student_serializer = StudentSerializer(data=request.data)
+        if student_serializer.is_valid(raise_exception=True):
+            student_serializer.save()
+        return Response(student_serializer.data)

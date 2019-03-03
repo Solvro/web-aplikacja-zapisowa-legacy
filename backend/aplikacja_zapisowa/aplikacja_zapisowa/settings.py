@@ -42,8 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'rest_framework',
+    'drf_yasg',
     'enrolmentpanel',
-    'rest_framework_swagger',
     'channels',
 ]
 
@@ -155,14 +155,6 @@ if DEBUG:
 else:
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-# Swagger settings
-SWAGGER_SETTINGS = {
-    'SECURITY_DEFINITIONS': {
-        'basic': {
-            'type': 'basic'
-        }
-    },
-}
 
 #CORS settings
 CORS_ORIGIN_ALLOW_ALL = DEBUG

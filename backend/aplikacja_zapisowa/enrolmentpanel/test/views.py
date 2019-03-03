@@ -5,10 +5,13 @@ from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 
+from drf_yasg.utils import swagger_auto_schema
+
 import json
 
-from enrolmentpanel.models import Organiser, User, Event
-from enrolmentpanel.utils.model_utils import create_new_student
+from enrolmentpanel.models import Organiser, User, Event, Student
+from enrolmentpanel.serializers import OrganiserSerializer, StudentSerializer
+
 
 # Create your views here.
 class TestView(APIView):
@@ -43,25 +46,22 @@ class CreateOrganiserUserView(APIView):
             )
         raise KeyError
 
+    @swagger_auto_schema(request_body=OrganiserSerializer,
+                         operation_description="Creates organiser")
     def post(self, request):
-        username, password, faculty = self.get_elements_from_body(request.data)
-
-        user = User.objects.create_user(
-            username=username,
-            password=password
-            )
-        user.is_organiser = True
-        user.save()
-        organiser = Organiser.objects.create(faculty=faculty, user=user)
-        organiser.save()
+        organiser_serializer = OrganiserSerializer(data=request.data)
+        if organiser_serializer.is_valid(raise_exception=True):
+            organiser_serializer.save()
         return Response({"status": "ok"})
 
 
 class CreateStudentView(APIView):
 
+    @swagger_auto_schema(request_body=StudentSerializer,
+                         operation_description="Creates student")
     def post(self, request):
         event = Event.objects.all()[0]
-        usr, pas = create_new_student(
+        _, usr, pas = Student.objects.create(
             request.data.get('index'),
             event,
             'M',
