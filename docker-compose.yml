@@ -1,11 +1,20 @@
 version: "2"
 services:
-    frontend:
-       build: "./frontend"
+    frontend-user:
+       build: "./frontend-user"
        ports: 
            - 3000:3000
        volumes:
-           - "./frontend:/app"
+           - "./frontend-user:/app"
+           - "/app/node_modules"
+       environment:
+           - NODE_ENV development
+    frontend-admin:
+       build: "./frontend-admin"
+       ports: 
+           - 3001:3000
+       volumes:
+           - "./frontend-admin:/app"
            - "/app/node_modules"
        environment:
            - NODE_ENV development

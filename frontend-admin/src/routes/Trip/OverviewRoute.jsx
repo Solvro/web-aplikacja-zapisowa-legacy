@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import {withRouter} from "react-router-dom";
-import Tile from "../../components/Tile"
-import DescriptionIcon from "@material-ui/icons/Description"
-import { Button } from '@material-ui/core';
+import { withRouter } from 'react-router-dom';
+import { GridList, GridListTile } from '@material-ui/core';
 import DashboardHeader from '../../components/DashboardHeader';
+import InformationTile from '../../components/InformationTile';
+import StatisticsTile from '../../components/StatisticsTile';
 
 class OverviewRoute extends Component {
   constructor(props) {
@@ -12,19 +12,26 @@ class OverviewRoute extends Component {
   }
 
   render() {
-    const { match } = this.props;
+    // const { match } = this.props;
     return (
       <div>
-        Overview
-        { match.params.id }
-        <DashboardHeader 
-        title='Jesienny Rajd Mechanika'
-        subtitle='Wieloletnia tradycja wydziału mechanicznego, głuchołazy bla bla'
-        date={{day: 'Piątek', full: '31 marca'}}
-        />
-        <Tile title={"Informacje"} icon={<DescriptionIcon color="primary"/>}>
-            <Button color="secondary">Klik</Button>
-        </Tile>
+        <GridList cellHeight={'auto'} cols={3} spacing={16}>
+          <GridListTile key="Subheader" cols={3} style={{ height: 'auto' }}>
+            <DashboardHeader
+              title='Jesienny Rajd Mechanika'
+              subtitle='Wieloletnia tradycja wydziału mechanicznego, głuchołazy bla bla'
+              date={{ day: 'Piątek', full: '31 marca' }}
+            />
+          </GridListTile>
+
+          <GridListTile cols={1}>
+            <InformationTile/>
+          </GridListTile>
+
+          <GridListTile cols={1}>
+            <StatisticsTile/>
+          </GridListTile>
+        </GridList>
       </div>
     );
   }

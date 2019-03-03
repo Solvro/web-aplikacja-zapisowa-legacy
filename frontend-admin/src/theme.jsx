@@ -1,5 +1,5 @@
 import { createMuiTheme } from '@material-ui/core/styles';
-import {indigo, cyan} from '@material-ui/core/colors';
+import {indigo, cyan} from '@material-ui/core/colors'
 
 const theme = createMuiTheme({
   custom: {
@@ -13,6 +13,13 @@ const theme = createMuiTheme({
   typography: {
     useNextVariants: true,
   },
+  overrides: {
+    MuiCircularProgress: {
+      colorSecondary: {
+        color: indigo[200],
+      }
+    }
+  }
 });
 
 export default theme;
