@@ -7,16 +7,19 @@ const theme = createMuiTheme({
   },
   palette: {
     primary: indigo,
-    secondary: cyan
+    secondary: cyan,
     // error: will use the default color
+  },
+  typography: {
+    useNextVariants: true,
   },
   overrides: {
     MuiCircularProgress: {
       colorSecondary: {
-        color: indigo[200]
+        color: indigo[200],
       }
     }
   }
 });
 
-export default theme
+export default theme;
