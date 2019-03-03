@@ -1,7 +1,9 @@
 from django.contrib.auth.models import AbstractUser
+from django.conf import settings
 from django.db import models
 
 from enrolmentpanel.exceptions import NotPositiveNumberOfPeople
+from enrolmentpanel.utils.email_utils import StudentRegisterMail
 
 
 class User(AbstractUser):
@@ -9,7 +11,23 @@ class User(AbstractUser):
     is_organiser = models.BooleanField(default=False)
 
 
+class OrganiserManager(models.Manager):
+
+    def create(self, username, password, faculty):
+        organiser_user = User.objects.create_user(
+            username=username,
+            password=password
+        )
+        organiser_user.is_organiser = True
+        organiser_user.save()
+        organiser = Organiser(faculty=faculty, user=organiser_user)
+        organiser.save()
+        return organiser
+
+
 class Organiser(models.Model):
+    objects = OrganiserManager()
+
     faculty = models.PositiveSmallIntegerField()
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True, related_name='organiser')
 
@@ -72,11 +90,53 @@ class Room(models.Model):
         self.save()
 
 
+class StudentManager(models.Manager):
+
+    def create(self, index, event, sex, name, faculty):
+        username, password = self.__generate_student_credentials(index)
+        student_user = User.objects.create_user(
+            username=username,
+            password=password
+        )
+        student_user.is_participant = True
+        student_user.save()
+
+        new_student = Student(
+            user=student_user,
+            event=event,
+            index=index,
+            sex=sex,
+            name=name,
+            faculty=faculty
+        )
+
+        new_student.save()
+        mail = StudentRegisterMail(event, index, username, password)
+        mail.send_email()
+
+        # for development purposes
+        if settings.DEBUG:
+            return new_student, username, password
+
+        return new_student
+
+    def __generate_student_credentials(self, index):
+        """
+        Generates login from index and random 5 sign
+        from [2-9a-hjk-n-p-zA-HJ-Z]
+        :return: username
+        """
+        username = index + '_' + User.objects.make_random_password(5)
+        password = index + User.objects.make_random_password()
+        return username, password
+
+
 class Student(models.Model):
     SEX_CHOICES = (
         ('M', 'Male'),
         ('F', 'Female'),
     )
+    objects = StudentManager()
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True, related_name='participant')
     event = models.ForeignKey(Event, on_delete=models.CASCADE)

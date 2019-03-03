@@ -31,7 +31,7 @@ e = Event(name="rajd_nazwa", max_people=69, organizer=o)
 e.save()
 ```
 Now you have your db ready to do some basic stuff.
-In order to add new users, ther is special development only endpoint `/api/test/add_user`. You bother it with `POST`, with body as follows:
+In order to add new users, ther is special development only endpoint `/api/test/add_student`. You bother it with `POST`, with body as follows:
 ```
 {
 	"index": "236368",

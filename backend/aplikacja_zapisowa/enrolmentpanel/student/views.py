@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
@@ -10,11 +11,15 @@ from enrolmentpanel.models import Room, Student, User
 from enrolmentpanel.serializers import RoomSerializer
 from enrolmentpanel.utils.notify_utils import notify_consumers_on_room_change
 
+import json
+
 
 class TestView(APIView):
 
     permission_classes = (IsAuthenticated, IsStudentAccount)
 
+    @swagger_auto_schema(responses={200: "{\"sub\": \"marine\"}"},
+                         operation_description="Test")
     def get(self, request):
         data = {
             'sub': 'marine'
@@ -32,7 +37,12 @@ class SoloRoomView(APIView):
         )
 
         return suitable_rooms[0]
-
+    
+    @swagger_auto_schema(responses={200: json.dumps({
+                                    "room_number": 10,
+                                    "capacity": 5
+                                })},
+                        operation_description="Registers solo user")
     def post(self, request):
         student = Student.objects.get(user=request.user)
         room = self.get_room_for_solo(student)
@@ -66,7 +76,7 @@ class GroupRoomView(APIView):
         for student in students:
             if not student.room is None:
                 raise Exception
-
+    
     def post(self, request):
         user_names = self.get_users_from_request(request)
         students = self.get_students_from_users(user_names)
