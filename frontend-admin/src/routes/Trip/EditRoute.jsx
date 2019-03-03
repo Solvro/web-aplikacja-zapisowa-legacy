@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import {withRouter} from "react-router-dom";
+import { withRouter } from 'react-router-dom';
+import TripSettingsForm from '../../components/TripSettingsForm';
 
 class EditRoute extends Component {
   constructor(props) {
@@ -9,12 +10,8 @@ class EditRoute extends Component {
 
 
   render() {
-    const { match } = this.props;
     return (
-      <div>
-        EditTrip
-        { match.params.id }
-      </div>
+      <TripSettingsForm />
     );
   }
 }

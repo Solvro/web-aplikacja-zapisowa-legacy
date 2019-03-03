@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import {withRouter} from "react-router-dom";
+import { withRouter } from 'react-router-dom';
+import SendMessagePanel from '../../components/SendMessagePanel';
 
 class MessageRoute extends Component {
-
   constructor(props) {
     super(props);
     this.state = {};
@@ -10,12 +10,8 @@ class MessageRoute extends Component {
 
 
   render() {
-    const { match } = this.props;
     return (
-      <div>
-        Message
-        { match.params.id }
-      </div>
+      <SendMessagePanel />
     );
   }
 }

@@ -7,37 +7,45 @@ class FormTextInput extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: '',
-      error: false
-    }
+      error: false,
+    };
+    this.handleChange = this.handleChange.bind(this);
   }
 
-  handleChange = (name, onChange) => event => {
-    this.setState({
-      [name]: event.target.value,
-    });
-    if (onChange) {
-      onChange(event)
-    }
-  };
+  handleChange(name) {
+    return (event) => {
+      this.setState({
+        [name]: event.target.value,
+      });
+    };
+  }
 
   render() {
-    const { label, icon, maxCharLength, onChange, ...other } = this.props;
+    const {
+      label, icon, maxCharLength, onChange, value, ...other
+    } = this.props;
+    const { error } = this.state;
     return (
       <TextField
         {...other}
-        id='filled-full-width'
-        label={<LabelWithIcon fontSize='small' icon={icon} label={label} />}
-        margin='normal'
-        variant='standard'
-        error={this.state.error}
-        onChange={this.handleChange('value', onChange)}
-        helperText={maxCharLength ?
-          <TextLengthCounter onError={this.handleChange('error', null)} current={this.state.value.length}
-            max={maxCharLength} /> : null}
+        id="filled-full-width"
+        label={<LabelWithIcon fontSize="small" icon={icon} label={label} />}
+        margin="normal"
+        variant="standard"
+        error={error}
+        value={value}
+        onChange={onChange}
+        helperText={maxCharLength
+          ? (
+            <TextLengthCounter
+              onError={this.handleChange('error')}
+              current={value ? value.length : 0}
+              max={maxCharLength}
+            />
+          ) : null}
       />
-    )
+    );
   }
 }
 
-export default FormTextInput
+export default FormTextInput;

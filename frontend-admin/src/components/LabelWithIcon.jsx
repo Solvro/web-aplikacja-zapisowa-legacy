@@ -1,10 +1,14 @@
-import React from 'react'
+import React from 'react';
 
 function LabelWithIcon(props) {
-  const { icon: Icon, label, ...other } = props
+  const { icon: Icon, label, ...other } = props;
   return (
-    <div>{Icon ? <Icon {...other} style={{ verticalAlign: 'text-bottom' }} /> : null} {label}</div>
-  )
+    <div>
+      {Icon ? <Icon {...other} style={{ verticalAlign: 'text-bottom' }} /> : null}
+      {' '}
+      {label}
+    </div>
+  );
 }
 
-export default LabelWithIcon
+export default LabelWithIcon;

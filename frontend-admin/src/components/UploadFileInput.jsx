@@ -19,12 +19,9 @@ const styles = {
 class UploadFileInput extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      file: null,
-    };
     this.inputRef = React.createRef();
-    this.handleOpenFileSelect = this.handleOpenFileSelect.bind(this);
     this.handleFileSelected = this.handleFileSelected.bind(this);
+    this.handleOpenFileSelect = this.handleOpenFileSelect.bind(this);
     this.handleFileCancel = this.handleFileCancel.bind(this);
   }
 
@@ -33,48 +30,53 @@ class UploadFileInput extends React.Component {
     this.inputRef.current.click();
   }
 
-  handleFileSelected() {
-    const { files, onChange } = this.inputRef.current;
-    if (files.length) {
-      this.setState({
-        file: files[0],
-      });
-      onChange({
-        target: {
-          value: files[0],
-        },
-      });
-    }
+  handleFileSelected(onChange) {
+    return () => {
+      const { files } = this.inputRef.current;
+      if (files.length) {
+        onChange({
+          target: {
+            value: files[0],
+          },
+        });
+      }
+    };
   }
 
-  handleFileCancel() {
-    this.inputRef.current.files = null;
-    this.inputRef.current.value = null;
-    this.setState({ file: null });
+  handleFileCancel(onDelete) {
+    return () => {
+      this.inputRef.current.files = null;
+      this.inputRef.current.value = null;
+      onDelete({
+        target: {
+          value: null,
+        },
+      });
+    };
   }
 
   render() {
-    const { classes, label, ...other } = this.props;
-    const { file } = this.state;
+    const {
+      classes, label, value, onChange, ...other
+    } = this.props;
     return (
       <FormControl fullWidth className={classes.root}>
-        <InputLabel shrink={!!file} htmlFor="adornment-fileselect">{label}</InputLabel>
-        <input ref={this.inputRef} type="file" style={{ visibility: 'hidden' }} onChange={this.handleFileSelected} />
+        <InputLabel shrink={!!value} htmlFor="adornment-fileselect">{label}</InputLabel>
+        <input ref={this.inputRef} type="file" style={{ visibility: 'hidden' }} onChange={this.handleFileSelected(onChange)} />
         <Input
           {...other}
           id="adornment-fileselect"
           type="text"
           readOnly
-          onChange={this.handleSelectFile}
           onClick={this.handleOpenFileSelect}
           onKeyPressCapture={this.handleOpenFileSelect}
           startAdornment={
-            file
+            value
               ? (
                 <InputAdornment className={classes.chip} position="start">
                   <Chip
-                    onDelete={this.handleFileCancel}
-                    label={file.name}
+                    onDelete={this.handleFileCancel(onChange)}
+                    label={value.name}
                     className={classes.chip}
                   />
                 </InputAdornment>

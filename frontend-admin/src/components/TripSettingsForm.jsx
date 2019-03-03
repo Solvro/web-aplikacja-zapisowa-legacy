@@ -1,13 +1,17 @@
-import React from 'react'
-import { withStyles, Grid, Button, Paper } from '@material-ui/core';
+import React from 'react';
+import {
+  withStyles, Grid, Button, Paper,
+} from '@material-ui/core';
 import DateIcon from '@material-ui/icons/DateRange';
 import HotelIcon from '@material-ui/icons/LocalHotel';
 import LocationIcon from '@material-ui/icons/LocationOn';
 import DescriptionIcon from '@material-ui/icons/Description';
+import ImageIcon from '@material-ui/icons/Image';
+import AttachmentIcon from '@material-ui/icons/Attachment';
+import { DatePicker, MuiPickersUtilsProvider } from 'material-ui-pickers';
+import MomentUtils from '@date-io/moment';
 import FormTextInput from './FormTextInput';
 import UploadFileInput from './UploadFileInput';
-import { DatePicker, MuiPickersUtilsProvider } from 'material-ui-pickers';
-import MomentUtils from '@date-io/moment'
 import LabelWithIcon from './LabelWithIcon';
 
 const styles = theme => ({
@@ -22,16 +26,16 @@ const styles = theme => ({
     textAlign: 'center',
 
     '& Button': {
-      width: '50%'
-    }
-  }
+      width: '50%',
+    },
+  },
 });
 
 const formItemSpacing = 16;
 
 class TripSettingsForm extends React.Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       tripName: '',
       tripDesc: '',
@@ -41,124 +45,151 @@ class TripSettingsForm extends React.Component {
       bgImageFile: null,
       dateStart: new Date(),
       dateEnd: new Date(),
-    }
+    };
+    this.handleDateChange = this.handleDateChange.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSend = this.handleSend.bind(this);
   }
 
-  handleDateChange = name => date => {
-    this.setState({
-      [name]: date,
-    });
-  };
+  handleDateChange(name) {
+    return (date) => {
+      this.setState({
+        [name]: date,
+      });
+    };
+  }
 
-  handleChange = name => event => {
-    this.setState({
-      [name]: event.target.value,
-    });
-  };
+  handleChange(name) {
+    return (event) => {
+      this.setState({
+        [name]: event.target.value,
+      });
+    };
+  }
 
-  handleSend = () => {
-    console.log(this.state)
+  handleSend() {
+    console.log(this.state);
   }
 
   render() {
-    const { classes } = this.props
+    const {
+      tripName, tripDesc, tripLocation, tripHotel, participantsFile, bgImageFile, dateStart, dateEnd,
+    } = this.state;
+    const { classes } = this.props;
     return (
       <form>
         <MuiPickersUtilsProvider utils={MomentUtils}>
           <Paper className={classes.root}>
             <Grid
               container
-              justify='center'
-              alignItems='stretch'
+              justify="center"
+              alignItems="stretch"
               spacing={formItemSpacing}
             >
               <Grid item xs={12}>
                 <FormTextInput
                   autoFocus
-                  id={'tripName'}
-                  name={'tripName'}
+                  id="tripName"
+                  name="tripName"
+                  value={tripName}
                   onChange={this.handleChange('tripName')}
                   fullWidth
                   icon={DateIcon}
-                  label={'Nazwa wycieczki'} />
+                  label="Nazwa wycieczki"
+                />
               </Grid>
               <Grid item xs={12}>
                 <FormTextInput
-                  id={'tripDesc'}
-                  name={'tripDesc'}
+                  id="tripDesc"
+                  name="tripDesc"
+                  value={tripDesc}
                   onChange={this.handleChange('tripDesc')}
                   fullWidth
                   multiline
-                  rows='4'
+                  rows="4"
                   maxCharLength={120}
                   icon={DescriptionIcon}
-                  label={'Opis'} />
+                  label="Opis"
+                />
               </Grid>
               <Grid item xs={12}>
                 <FormTextInput
-                  id={'tripLocation'}
-                  name={'tripLocation'}
+                  id="tripLocation"
+                  name="tripLocation"
+                  value={tripLocation}
                   onChange={this.handleChange('tripLocation')}
                   fullWidth
                   icon={LocationIcon}
-                  label={'Miejsce wycieczki'} />
+                  label="Miejsce wycieczki"
+                />
               </Grid>
               <Grid item xs={12}>
                 <FormTextInput
-                  id={'tripHotel'}
-                  name={'tripHotel'}
+                  id="tripHotel"
+                  name="tripHotel"
+                  value={tripHotel}
                   onChange={this.handleChange('tripHotel')}
                   fullWidth
                   icon={HotelIcon}
-                  label={'Ośrodek noclegowy'} />
+                  label="Ośrodek noclegowy"
+                />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <UploadFileInput
-                  id={'participantsFile'}
-                  name={'participantsFile'}
+                  id="participantsFile"
+                  name="participantsFile"
+                  value={participantsFile}
                   onChange={this.handleChange('participantsFile')}
-                  label={'Uczestnicy'} />
+                  label={<LabelWithIcon fontSize="small" icon={AttachmentIcon} label="Uczestnicy" />}
+                />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <UploadFileInput
-                  id={'bgImageFile'}
-                  name={'bgImageFile'}
+                  id="bgImageFile"
+                  name="bgImageFile"
+                  value={bgImageFile}
                   onChange={this.handleChange('bgImageFile')}
-                  label={'Zdjęcie tła'} />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <DatePicker
-                  fullWidth
-                  margin='normal'
-                  label={<LabelWithIcon fontSize='small' icon={DateIcon} label='Data rozpoczęcia' />}
-                  onChange={this.handleDateChange('dateStart')}
-                  value={this.state.dateStart}
-                  id={'dateStart'} name={'dateStart'}
+                  label={<LabelWithIcon fontSize="small" icon={ImageIcon} label="Zdjęcie tła" />}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <DatePicker
                   fullWidth
-                  margin='normal'
-                  label={<LabelWithIcon fontSize='small' icon={DateIcon} label='Data zakończeniaaaaa' />}
+                  margin="normal"
+                  label={<LabelWithIcon fontSize="small" icon={DateIcon} label="Data rozpoczęcia" />}
+                  onChange={this.handleDateChange('dateStart')}
+                  value={dateStart}
+                  id="dateStart"
+                  name="dateStart"
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <DatePicker
+                  fullWidth
+                  margin="normal"
+                  label={<LabelWithIcon fontSize="small" icon={DateIcon} label="Data zakończeniaaaaa" />}
                   onChange={this.handleDateChange('dateEnd')}
-                  value={this.state.dateEnd}
-                  id={'dateEnd'} name={'dateEnd'}
+                  value={dateEnd}
+                  id="dateEnd"
+                  name="dateEnd"
                 />
               </Grid>
 
               <Grid item className={classes.button} xs={12}>
                 <Button
                   onClick={this.handleSend}
-                  variant='contained'
-                  color='primary'>Stwórz</Button>
+                  variant="contained"
+                  color="secondary"
+                >
+                  Stwórz
+                </Button>
               </Grid>
             </Grid>
           </Paper>
         </MuiPickersUtilsProvider>
       </form>
-    )
+    );
   }
 }
 
-export default withStyles(styles)(TripSettingsForm)
+export default withStyles(styles)(TripSettingsForm);
