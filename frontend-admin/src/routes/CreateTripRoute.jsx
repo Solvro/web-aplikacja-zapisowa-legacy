@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import TripSettingsForm from '../components/TripSettingsForm';
 
 export default class CreateTripRoute extends Component {
 
@@ -8,8 +9,7 @@ export default class CreateTripRoute extends Component {
   }
 
   render() {
-    return (
-      <div></div>
-    );
+    return <TripSettingsForm />;
   }
 }
+
