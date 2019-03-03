@@ -30,7 +30,7 @@ class StudentSerializer(serializers.ModelSerializer):
         return Student.objects.create(**validated_data)
 
     def validate_index(self, value):
-        if re.fullmatch(r"^\d*$", value):
+        if re.fullmatch(r"^\d+$", value):
             return value
         raise serializers.ValidationError("Index contains not digit character")
 
