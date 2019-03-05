@@ -15,13 +15,13 @@ export interface RoomMateState {
 const addedYetERROR = (name: string) => `Student ${name} już znajduje się na liście`;
 const notExistERROR = (username: string) => `Student o loginie ${username} nie istnieje`;
 const emptyUsernameERROR = `Login użytkownika nie może być pusty`;
-
-// export const maxSpaceExeededERROR = () TODO: wywalić error kiedy liczba osób w grupie jest większa niż pojemność największego pokoju
+const signInFailedERROR = `Błędny login lub hasło`;
 
 export const StudentErrors = {
     addedYet: addedYetERROR,
     notExist: notExistERROR,
     emptyUsername: emptyUsernameERROR,
+    signInFailed: signInFailedERROR,
 };
 
 export interface ApplicationError {

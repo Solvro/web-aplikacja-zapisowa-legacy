@@ -11,6 +11,7 @@ import UserFormRoute from "./components/UserFormRoute/UserFormRoute";
 import AddRoomMatesModal from "./components/AddRoomMatesModal/AddRoomMatesModal";
 import SummaryRoute from "./components/SummaryRoute/SummaryRoute";
 import PrivateRoute from './components/PrivateRoute';
+import ErrorDisplay from "./components/ErrorDisplay";
 
 
 const styles = createStyles({
@@ -42,6 +43,7 @@ class App extends React.Component<WithStyles<typeof styles> & RouteComponentProp
                       <PrivateRoute path={'/Summary'} component={SummaryRoute}/>
                       <Route path={'/'} component={LoginScreen}/>
                   </Switch>
+                  <ErrorDisplay />
               </div>
           </div>
     );

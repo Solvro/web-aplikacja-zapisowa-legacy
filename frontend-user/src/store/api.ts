@@ -19,7 +19,11 @@ export async function fetchStudent(username: string) {
 
 export async function authorizeUser(username: string, password: string) {
     try {
-        return (await instance.post(`/token`, { username, password })).data;
+        const result = await instance.post(`/token`, { username, password });
+        if (result)
+            return result.data;
+        else
+            return "error";
     } catch (error) {
         console.log(`Error: ${error}`);
     }
