@@ -32,4 +32,4 @@ class CreateStudentView(APIView):
         student_serializer = StudentSerializer(data=request.data)
         if student_serializer.is_valid(raise_exception=True):
             student_serializer.save()
-        return Response(student_serializer.data)
+        return Response(student_serializer.initial_data)
