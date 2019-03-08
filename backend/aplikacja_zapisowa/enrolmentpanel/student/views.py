@@ -1,13 +1,23 @@
 from django.shortcuts import render
-from drf_yasg.utils import swagger_auto_schema
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.exceptions import APIException
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .permissions import IsStudentAccount
-from enrolmentpanel.models import Room, Student, User
+from drf_yasg.utils import swagger_auto_schema
+
+from .permissions import (
+    IsStudentAccount,
+    IsStudentParticipatingInEvent
+)
+from enrolmentpanel.models import (
+    Event,
+    Room,
+    Student, 
+    User
+)
 from enrolmentpanel.serializers import RoomSerializer
 from enrolmentpanel.utils.notify_utils import notify_consumers_on_room_change
 
@@ -19,7 +29,7 @@ class TestView(APIView):
     permission_classes = (IsAuthenticated, IsStudentAccount)
 
     @swagger_auto_schema(responses={200: "{\"sub\": \"marine\"}"},
-                         operation_description="Test")
+                         operation_description="Test endpoint for students auth")
     def get(self, request):
         data = {
             'sub': 'marine'
@@ -29,25 +39,33 @@ class TestView(APIView):
 
 class SoloRoomView(APIView):
 
-    permission_classes = (IsAuthenticated, IsStudentAccount)
+    permission_classes = (
+        IsAuthenticated,
+        IsStudentAccount,
+        IsStudentParticipatingInEvent
+    )
 
-    def get_room_for_solo(self, student):
-        suitable_rooms = Room.objects.filter(
-            event=student.event, vacancies__gte=1
-        )
+    def get_room_for_solo(self, event):
+        suitable_room = Room.objects.filter(
+            event=event, vacancies__gte=1
+        ).last()
 
-        return suitable_rooms[0]
+        return suitable_room
     
     @swagger_auto_schema(responses={200: json.dumps({
                                     "room_number": 10,
                                     "capacity": 5
                                 })},
                         operation_description="Registers solo user")
-    def post(self, request):
-        student = Student.objects.get(user=request.user)
-        room = self.get_room_for_solo(student)
+    def post(self, request, event_name):
+        student = request.user.participant
+        event = Event.objects.get(pk=event_name)
+
+        self.check_object_permissions(request, event)
+
+        room = self.get_room_for_solo(event)
         room.add_people([student])
-        notify_consumers_on_room_change(room)
+        notify_consumers_on_room_change(event_name, room)
 
         return Response({
             "room_number": room.number,
@@ -68,7 +86,7 @@ class GroupRoomView(APIView):
 
     def get_students_from_users(self, user_names):
         users_models = [User.objects.get(username=u) for u in user_names]
-        students = [Student.objects.get(user=um) for um in users_models]
+        students = [um.participant for um in users_models]
 
         return students
 
@@ -76,15 +94,19 @@ class GroupRoomView(APIView):
         for student in students:
             if not student.room is None:
                 raise Exception
-    
-    def post(self, request):
+
+    def post(self, request, event_name, room_no):
         user_names = self.get_users_from_request(request)
         students = self.get_students_from_users(user_names)
+        event = Event.objects.get(pk=event_name)
+
+        self.check_object_permissions(request, event)
+
         self.validate_students(students)
 
-        room = Room.objects.get(number=request.data['room']['number'])
+        room = Room.objects.get(number=room_no)
 
         room.add_people(students)
-        notify_consumers_on_room_change(room)
+        notify_consumers_on_room_change(event_name, room)
 
         return Response({'status': 'ok'})

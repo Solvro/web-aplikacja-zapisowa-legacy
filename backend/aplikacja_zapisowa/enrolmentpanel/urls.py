@@ -17,12 +17,10 @@ urlpatterns = [
     path('auth/', include('rest_framework.urls')),
     path('organiser/', include('enrolmentpanel.organiser.urls')),
     path('student/', include('enrolmentpanel.student.urls')),
-    path('token', CustomTokenObtainPairView.as_view()),
-    path('token/refresh', TokenRefreshView.as_view()),
     path('token/', CustomTokenObtainPairView.as_view()),
     path('token/refresh/', TokenRefreshView.as_view()),
-    path('token/verify', TokenVerifyView.as_view()),
-    path('students/<username>', StudentView.as_view()),
+    path('token/verify/', TokenVerifyView.as_view()),
+    path('students/<event_name>/<username>/', StudentView.as_view()),
 ]
 
 if settings.DEBUG:

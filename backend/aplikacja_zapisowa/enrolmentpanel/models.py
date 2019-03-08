@@ -39,7 +39,7 @@ class Organiser(models.Model):
 class Event(models.Model):
     name = models.CharField(max_length=150, primary_key=True)
     max_people = models.PositiveIntegerField()
-    organizer = models.ForeignKey(Organiser, on_delete=models.CASCADE)
+    organiser = models.ForeignKey(Organiser, on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
         if self.max_people > 0:

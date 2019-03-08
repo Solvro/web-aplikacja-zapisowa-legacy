@@ -3,6 +3,7 @@ from django.shortcuts import get_object_or_404
 
 from drf_yasg.utils import swagger_auto_schema
 
+from rest_framework.exceptions import APIException
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -10,8 +11,9 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from enrolmentpanel.models import Student, User
+from enrolmentpanel.models import Student, User, Event
 from enrolmentpanel.serializers import StudentSerializer
+from enrolmentpanel.organiser.permissions import IsEventOwner
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -21,7 +23,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         token = super(CustomTokenObtainPairSerializer, cls).get_token(user)
 
         if user.is_participant:
-            logged_student = Student.objects.get(user=user)
+            logged_student = user.participant
             serializer = StudentSerializer(logged_student)
 
             token['student'] = serializer.data
@@ -64,14 +66,25 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 class StudentView(APIView):
 
     if not settings.DEBUG:
-        permission_classes = (IsAuthenticated, )
+        permission_classes = (IsAuthenticated, IsEventOwner)
 
     @swagger_auto_schema(responses={200: StudentSerializer()},
                          operation_description="Gets student by username")
-    def get(self, request, username):
+    def get(self, request, event_name, username):
+        e = Event.objects.get(pk=event_name)
         u = User.objects.get(username=username)
+
+        try:
+            self.check_object_permissions(request, e)
+        except APIException:
+            # TODO
+            raise Exception
+
         queryset = Student.objects.all()
         student = get_object_or_404(queryset, user=u)
-        serializer = StudentSerializer(student)
-
-        return Response(serializer.data)
+        if e == student.event:
+            serializer = StudentSerializer(student)
+            return Response(serializer.data)
+        else:
+            # TODO
+            raise Exception

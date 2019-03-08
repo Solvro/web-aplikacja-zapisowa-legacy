@@ -27,7 +27,7 @@ u.is_organiser = True
 u.save()
 o = Organiser(faculty=11, user=u)
 o.save()
-e = Event(name="rajd_nazwa", max_people=69, organizer=o)
+e = Event(name="rajd_nazwa", max_people=69, organiser=o)
 e.save()
 ```
 Now you have your db ready to do some basic stuff.
