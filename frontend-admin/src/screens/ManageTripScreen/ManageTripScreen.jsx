@@ -14,7 +14,6 @@ class ManageTripScreen extends React.Component {
     constructor(props){
         super(props);
 
-
         this.createNewTrip = this.createNewTrip.bind(this);
         this.state = {
             trips: [
