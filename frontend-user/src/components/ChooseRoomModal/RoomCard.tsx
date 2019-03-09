@@ -77,8 +77,8 @@ export const RoomCard: React.SFC<RoomCardProps> = (props) => {
     return (
         <Card>
             <CardActionArea onClick={props.onClick} style={styles.cardActionArea}>
-                <Typography variant={"h4"} color={"inherit"}>
-                    {number}
+                <Typography variant={"h6"} color={"inherit"}>
+                    Pokój nr {number}
                 </Typography>
                 <CardContent style={styles.cardContent}>
                     <Typography variant={"body2"} color={"inherit"}>

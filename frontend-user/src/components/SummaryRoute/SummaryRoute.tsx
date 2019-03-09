@@ -2,14 +2,22 @@ import * as React from "react";
 import SummaryRouteStyles from "./SummaryRouteStyles";
 import {Grid, Paper, Typography, withStyles, WithStyles} from "@material-ui/core";
 import {RoomMate} from "../../store/RoomMate/types";
-import {Room} from "../ChooseRoomModal/RoomCard";
 //@ts-ignore
 import {Planet} from "react-kawaii";
+import {ApplicationState} from "../../store";
+import {connect} from "react-redux";
 
 interface SummaryRouteProps {
     roomMates: RoomMate[],
-    room: Room,
+    user: RoomMate,
 }
+
+const mapStateToProps = (state: ApplicationState): Partial<SummaryRouteProps> => {
+    return {
+        roomMates: state.roomMateState.roomMates,
+        user: state.roomMateState.user,
+    }
+};
 
 class SummaryRoute extends React.Component<WithStyles<typeof SummaryRouteStyles> & SummaryRouteProps> {
 
@@ -40,15 +48,21 @@ class SummaryRoute extends React.Component<WithStyles<typeof SummaryRouteStyles>
                                     ?
                                     <span>
                                         <Typography
-                                            variant={"body1"}>Numer pokoju: {this.props.room.number}</Typography>
+                                            variant={"body1"}>Numer pokoju: {"this.props.room.number"}</Typography>
                                         <Typography variant={"body1"}>Znajomi z twojej grupy pokojowej:</Typography>
-                                        {this.props.roomMates.map(rm => <Typography
-                                            variant={"body2"}>{rm.name}</Typography>)}
+                                        {this.props.roomMates.map((rm, idx)  =>
+                                            (<Typography
+                                                variant={"body2"}
+                                                key={idx}
+                                                >
+                                                    {rm.name}
+                                            </Typography>
+                                            ))}
                                     </span>
                                     :
                                     (<span>
                                         <Typography variant={"h5"}>
-                                            Świetnie, że jedziesz z nami Michał!
+                                            Świetnie, że jedziesz z nami {this.props.user.name}!
                                         </Typography>
                                         <Typography variant={"subheading"}>
                                             Kiedy krasnoludki przydzielą Cię do pokoju, od razu damy Ci znać
@@ -63,4 +77,4 @@ class SummaryRoute extends React.Component<WithStyles<typeof SummaryRouteStyles>
     }
 }
 
-export default withStyles(SummaryRouteStyles, {withTheme: true})(SummaryRoute);
+export default connect(mapStateToProps)(withStyles(SummaryRouteStyles, {withTheme: true})(SummaryRoute));

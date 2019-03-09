@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {Button, Grid, Modal, Paper, Typography, withStyles, WithStyles} from "@material-ui/core";
 import {chooseRoomModalStyles} from "./ChooseRoomModalStyles";
-import {loggedUser} from "../../fake/UsersData";
 import {UserChip} from "../UserChip/UserChip";
 import {Room, RoomCard} from "./RoomCard";
 import {roomsToChoose} from "../../fake/RoomsData";
@@ -11,20 +10,19 @@ import {connect} from "react-redux";
 import BackButton from "../BackButton";
 import {NavLink} from "react-router-dom";
 
-const fakeState = {
-    loggedUser,
-};
-
 type ChooseRoomModalProps = {
     roomMates: RoomMate[];
+    user: RoomMate;
 }
 const mapStateToProps = (state: ApplicationState): Partial<ChooseRoomModalProps> => {
-    return {roomMates: state.roomMateState.roomMates}
+    return {
+        roomMates: state.roomMateState.roomMates,
+        user: state.roomMateState.user,
+    }
 };
 
 class ChooseRoomModal extends React.Component<WithStyles<typeof chooseRoomModalStyles> & ChooseRoomModalProps> {
     state = {
-        loggedUser: fakeState.loggedUser,
         rooms: roomsToChoose,
         isModalVisible: false,
         pickedRoom: {
@@ -34,12 +32,8 @@ class ChooseRoomModal extends React.Component<WithStyles<typeof chooseRoomModalS
         },
     };
 
-    componentDidMount() {
-        this.changeOccupancy();
-    }
-
     public render(): React.ReactNode {
-        const {classes} = this.props;
+        const {classes, roomMates, user} = this.props;
         return (
             <Grid
                 container={true}
@@ -95,12 +89,12 @@ class ChooseRoomModal extends React.Component<WithStyles<typeof chooseRoomModalS
                     <Grid container={true} className={classes.userChipsContainer}>
                         <Grid item={true} xs={12} sm={6}>
                             <UserChip
-                                faculty={this.state.loggedUser.faculty}
-                                name={this.state.loggedUser.name}
+                                faculty={user.faculty}
+                                name={user.name}
                                 isLoggedUser={true}
                             />
                         </Grid>
-                        {this.props.roomMates.map((user, index) => {
+                        {roomMates.map((user, index) => {
                             return (
                                 <Grid item={true} xs={12} sm={6} key={index}>
                                     <UserChip
@@ -126,21 +120,6 @@ class ChooseRoomModal extends React.Component<WithStyles<typeof chooseRoomModalS
                 </Paper>
             </Grid>
         );
-    }
-
-    // o kant dupy rozbić fakowa metoda
-    changeOccupancy = () => {
-        setTimeout(() => {
-            const newRooms = [...this.state.rooms];
-            const rand = Math.floor(Math.random() * this.state.rooms.length);
-            const changedRoom = this.state.rooms[rand];
-            changedRoom.occupancy = Math.floor(Math.random() * changedRoom.capacity);
-            newRooms[rand] = changedRoom;
-            this.setState({
-                rooms: newRooms,
-            });
-            this.changeOccupancy();
-        },Math.random() * 3000 + 600)
     }
 }
 
