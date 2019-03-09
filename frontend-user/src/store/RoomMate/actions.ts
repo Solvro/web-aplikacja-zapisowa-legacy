@@ -6,12 +6,16 @@ import {Dispatch} from "react-redux";
 export const fetchRoomMate = createAsyncAction(
     RoomMateType.ADD_ROOM_MATE_REQUEST,
     RoomMateType.ADD_ROOM_MATE_SUCCESS,
-    RoomMateType.ADD_ROOM_MATE_FAILURE
+    RoomMateType.ADD_ROOM_MATE_FAILURE,
 )<void, RoomMate, String>();
 
 export const removeRoomMate = createStandardAction(RoomMateType.REMOVE_ROOM_MATE)<string>();
 
 export const removeError = createStandardAction(RoomMateType.REMOVE_ERROR)<number>();
+
+export const signIn = createStandardAction(RoomMateType.SIGN_IN)<RoomMate>();
+
+export const addError = createStandardAction(RoomMateType.ADD_ERROR)<string>();
 
 export const initFetchRoomMate = (username: string) => {
     return async (dispatch: Dispatch<RoomMateState>) => {

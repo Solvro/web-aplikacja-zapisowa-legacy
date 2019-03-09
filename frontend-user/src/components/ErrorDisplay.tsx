@@ -2,6 +2,9 @@ import {createStyles, Icon, IconButton, Slide, SnackbarContent, Theme, withStyle
 import * as React from "react";
 import {Close} from "@material-ui/icons";
 import {ApplicationError} from "../store/RoomMate/types";
+import {ApplicationState} from "../store";
+import {connect, Dispatch} from "react-redux";
+import {removeError} from "../store/RoomMate/actions";
 
 const errorDisplayStyles = (theme: Theme) => createStyles({
     error: {
@@ -27,19 +30,26 @@ const errorDisplayStyles = (theme: Theme) => createStyles({
     },
 });
 
-interface ErrorSnackbarProps {
+interface ErrorDisplayProps {
     errors: ApplicationError[];
-
     removeError(id: number): void;
 }
 
-class ErrorDisplay extends React.PureComponent<ErrorSnackbarProps & WithStyles<typeof errorDisplayStyles>> {
+const mapStateToProps = (state: ApplicationState): Partial<ErrorDisplayProps> => ({
+    errors: state.roomMateState.errors
+});
+
+const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>): Partial<ErrorDisplayProps> => ({
+    removeError: id => dispatch(removeError(id))
+});
+
+class ErrorDisplay extends React.PureComponent<ErrorDisplayProps & WithStyles<typeof errorDisplayStyles>> {
     render() {
         const {classes, errors} = this.props;
         return (
             <div className={classes.errorsContainer}>
                 {errors.map(error => (
-                    <Slide direction={"right"} in={true} mountOnEnter={true} unmountOnExit={true}>
+                    <Slide key={error.id} direction={"right"} in={true} mountOnEnter={true} unmountOnExit={true}>
                         <SnackbarContent
                             key={error.id}
                             className={classes.error}
@@ -68,7 +78,7 @@ class ErrorDisplay extends React.PureComponent<ErrorSnackbarProps & WithStyles<t
     }
 }
 
-export default withStyles(errorDisplayStyles, {withTheme: true})(ErrorDisplay);
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(errorDisplayStyles, {withTheme: true})(ErrorDisplay));
 
 
 
