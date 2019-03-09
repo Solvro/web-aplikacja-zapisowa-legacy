@@ -77,7 +77,7 @@ class AddRoomMatesModal extends React.Component<WithStyles<typeof addRoomMatesMo
     };
 
     public render(): React.ReactNode {
-        const {classes, isFetching, roomMates} = this.props;
+        const {removeRoomMate, classes, isFetching, roomMates, user} = this.props;
         return (
             <div className={classes.container}>
                 <Grid
@@ -97,7 +97,7 @@ class AddRoomMatesModal extends React.Component<WithStyles<typeof addRoomMatesMo
                             variant={"h5"}
                             color={"inherit"}
                         >
-                            Cześć {this.props.user.name}!
+                            Cześć {user.name}!
                         </Typography>
                         <Typography
                             className={classes.description}
@@ -134,7 +134,7 @@ class AddRoomMatesModal extends React.Component<WithStyles<typeof addRoomMatesMo
                         <Grid container={true} className={classes.userChipsContainer}>
                             {roomMates.map((roomMate: RoomMate, index: number) => (
                                 <Grid key={index} item={true} sm={6}>
-                                    <UserChip key={index} onDelete={() => this.props.removeRoomMate(roomMate.login)}
+                                    <UserChip key={index} onDelete={() => removeRoomMate(roomMate.login)}
                                               faculty={roomMate.faculty} name={roomMate.name}/>
                                 </Grid>
                             ))}
@@ -144,7 +144,7 @@ class AddRoomMatesModal extends React.Component<WithStyles<typeof addRoomMatesMo
                                 className={classes.button}
                                 variant={"contained"}
                                 color={roomMates.length > 0 ? "primary" : "default"}
-                                disabled={roomMates.length == 0}
+                                disabled={roomMates.length === 0}
                             >
                                 <NavLink to={'/RoomBooking'} style={{textDecoration: 'none', color: 'inherit'}}>
                                     Utwórz grupę
@@ -152,7 +152,7 @@ class AddRoomMatesModal extends React.Component<WithStyles<typeof addRoomMatesMo
                             </Button>
                             <Button
                                 variant={"contained"}
-                                color={roomMates.length == 0 ? "primary" : "default"}
+                                color={roomMates.length === 0 ? "primary" : "default"}
                                 disabled={roomMates.length > 0}
                             >
                                 <NavLink to={'/Summary'} style={{textDecoration: 'none', color: 'inherit'}}>

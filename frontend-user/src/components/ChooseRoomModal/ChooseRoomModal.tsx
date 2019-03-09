@@ -33,7 +33,7 @@ class ChooseRoomModal extends React.Component<WithStyles<typeof chooseRoomModalS
     };
 
     public render(): React.ReactNode {
-        const {classes} = this.props;
+        const {classes, roomMates, user} = this.props;
         return (
             <Grid
                 container={true}
@@ -89,12 +89,12 @@ class ChooseRoomModal extends React.Component<WithStyles<typeof chooseRoomModalS
                     <Grid container={true} className={classes.userChipsContainer}>
                         <Grid item={true} xs={12} sm={6}>
                             <UserChip
-                                faculty={this.props.user.faculty}
-                                name={this.props.user.name}
+                                faculty={user.faculty}
+                                name={user.name}
                                 isLoggedUser={true}
                             />
                         </Grid>
-                        {this.props.roomMates.map((user, index) => {
+                        {roomMates.map((user, index) => {
                             return (
                                 <Grid item={true} xs={12} sm={6} key={index}>
                                     <UserChip

@@ -35,11 +35,16 @@ class PrivateRoute extends Route<PrivateRouteProps> {
 
     validateIsLogged = async () => {
         const token = await localStorage.getItem('token');
-        const student = JSON.parse((await localStorage.getItem('signedInStudent')!));
-        this.props.signIn(student);
-        const verifyResult = token && await verifyUser(token);
-        const isLogged = token && verifyResult;
-        return isLogged;
+        try {
+            const student = JSON.parse((await localStorage.getItem('signedInStudent')!));
+            this.props.signIn(student);
+            const verifyResult = token && await verifyUser(token);
+            const isLogged = token && verifyResult;
+            return isLogged;
+        } catch (e) {
+            console.log(e);
+            return ;
+        }
     };
 
     componentWillMount() {
