@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 const style = {
   display: 'flex',
@@ -9,10 +9,10 @@ const style = {
   color: 'white',
   height: '100%',
   width: '50%',
-    padding: '6%',
+  padding: '6%',
 };
 
-const BadgeCell = props => <div style={style}>{ props.children }</div>;
+const BadgeCell = ({ children }) => <div style={style}>{ children }</div>;
 
 
 export default BadgeCell;

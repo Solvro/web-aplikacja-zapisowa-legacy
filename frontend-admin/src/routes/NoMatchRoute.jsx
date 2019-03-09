@@ -15,7 +15,7 @@ export default () => (
         <Link to="/login">Or Sign In</Link>
       </li>
       <li>
-        <Link to="/trips/table">table</Link>
+        <Link to="/table">table</Link>
       </li>
     </ul>
   </div>

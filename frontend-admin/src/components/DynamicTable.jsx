@@ -29,7 +29,6 @@ const styles = theme => ({
     minWidth: 700,
   },
   row: {
-
     '&:nth-of-type(even)': {
       backgroundColor: 'rgba(50, 50, 50, 0.1)',
     },
@@ -41,17 +40,10 @@ const styles = theme => ({
 });
 
 const StyledTableRow = withStyles({
-
   root: {
     borderRadius: 25,
     height: 48,
-  },
-  '&:nth-of-type(even)': {
     backgroundColor: 'rgba(20, 20, 20, 0.2)',
-  },
-
-  '&:nth-of-type(odd)': {
-    backgroundColor: 'rgba(20, 20, 20, 0.1)',
   },
 })(TableRow);
 
@@ -82,9 +74,10 @@ function DynamicTable(props) {
         <TableHead>
           <TableRow>
             <CustomTableCell>Numer</CustomTableCell>
-            <CustomTableCell numeric>Pojemnośc</CustomTableCell>
-            <CustomTableCell numeric>Miejsca wolne</CustomTableCell>
-            <CustomTableCell numeric>Rodzaj</CustomTableCell>
+            <CustomTableCell align="center">Pojemnośc</CustomTableCell>
+            <CustomTableCell align="center">Miejsca wolne</CustomTableCell>
+            <CustomTableCell align="center">Miejsca zajęte</CustomTableCell>
+            <CustomTableCell align="center">Rodzaj</CustomTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -93,10 +86,10 @@ function DynamicTable(props) {
               <CustomTableCell component="th" scope="row">
                 {row.name}
               </CustomTableCell>
-              <CustomTableCell numeric>{row.calories}</CustomTableCell>
-              <CustomTableCell numeric>{row.fat}</CustomTableCell>
-              <CustomTableCell numeric>{row.carbs}</CustomTableCell>
-              <CustomTableCell numeric>{row.protein}</CustomTableCell>
+              <CustomTableCell align="center">{row.calories}</CustomTableCell>
+              <CustomTableCell align="center">{row.fat}</CustomTableCell>
+              <CustomTableCell align="center">{row.carbs}</CustomTableCell>
+              <CustomTableCell align="center">{row.protein}</CustomTableCell>
             </StyledTableRow>
           ))}
         </TableBody>
