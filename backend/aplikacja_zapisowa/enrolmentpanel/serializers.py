@@ -1,13 +1,18 @@
+from django.core.files import File
+
 from rest_framework import serializers
 
 from enrolmentpanel.models import (
     Room,
     Student,
     Organiser,
-    User
+    User,
+    Event
 )
 
 import re
+import base64
+
 
 
 class RoomSerializer(serializers.ModelSerializer):
@@ -55,3 +60,35 @@ class OrganiserSerializer(serializers.ModelSerializer):
     class Meta:
         model = Organiser
         fields = "__all__"
+
+
+class EventSerializer(serializers.ModelSerializer):
+
+    base64_image = serializers.SerializerMethodField()
+
+    def get_base64_image(self, obj):
+        """
+        Converts image to base64 when Event is got
+        """
+        if obj.image.name:
+            with open(obj.image.path, 'rb') as f:
+                image = File(f)
+                data = base64.b64encode(image.read())
+            return data
+        return "No image"
+
+    def create(self, validated_data):
+        organizer = Organiser.objects.get(user=self.context.get('user'))
+        return Event.objects.create(organizer=organizer, **validated_data)
+
+    class Meta:
+        model = Event
+        fields = ("name",
+                  "description",
+                  "place",
+                  "accommodation",
+                  "image",
+                  "beginning_date",
+                  "ending_date",
+                  "base64_image")
+        extra_kwargs = {'image': {'write_only': True}}
