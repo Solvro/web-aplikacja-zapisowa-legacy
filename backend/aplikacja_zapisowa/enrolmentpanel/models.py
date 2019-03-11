@@ -35,19 +35,22 @@ class Organiser(models.Model):
         self.user.delete()
         return super().delete(*args, **kwargs)
 
+    def __str__(self):
+        return self.user.__str__()
+
 
 class Event(models.Model):
-    name = models.CharField(max_length=150, primary_key=True)
-    max_people = models.PositiveIntegerField()
+    name = models.CharField(max_length=50, primary_key=True)
+    description = models.CharField(max_length=120)
+    place = models.TextField(default=None, null=True)
+    accommodation = models.TextField(default=None, null=True)
+    image = models.ImageField(default=None, null=True)
+    beginning_date = models.DateField(null=False)
+    ending_date = models.DateField(null=False)
     organizer = models.ForeignKey(Organiser, on_delete=models.CASCADE)
 
-    def save(self, *args, **kwargs):
-        if self.max_people > 0:
-            super().save(*args, **kwargs)
-        else:
-            raise NotPositiveNumberOfPeople
 
-
+    
 class Room(models.Model):
     number = models.IntegerField()
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
