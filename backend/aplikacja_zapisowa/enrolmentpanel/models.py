@@ -1,9 +1,15 @@
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
+from django.core.files.storage import FileSystemStorage
 from django.db import models
 
 from enrolmentpanel.exceptions import NotPositiveNumberOfPeople
 from enrolmentpanel.utils.email_utils import StudentRegisterMail
+
+import os
+
+
+fs = FileSystemStorage(location=os.path.join(os.getcwd(), 'enrolmentpanel/static/images'))
 
 
 class User(AbstractUser):
@@ -44,7 +50,7 @@ class Event(models.Model):
     description = models.CharField(max_length=120)
     place = models.TextField(default=None, null=True)
     accommodation = models.TextField(default=None, null=True)
-    image = models.ImageField(default=None, null=True)
+    image = models.ImageField(default=None, null=True, storage=fs)
     beginning_date = models.DateField(null=False)
     ending_date = models.DateField(null=False)
     organizer = models.ForeignKey(Organiser, on_delete=models.CASCADE)
