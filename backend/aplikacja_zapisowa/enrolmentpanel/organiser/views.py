@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from rest_framework import status
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
@@ -47,9 +48,9 @@ class CreateEventView(APIView):
         event_serializer = EventSerializer(data=request.data, context={'user': request.user})
         if event_serializer.is_valid(raise_exception=True):
             event_serializer.save()
-        return Response(event_serializer.data)
+        return Response(status=status.HTTP_201_CREATED)
 
-    @swagger_auto_schema(respoonses={200: EventSerializer},
+    @swagger_auto_schema(responses={200: EventSerializer},
                          operation_description="Gets all organisers events")
     def get(self, request):
         event = Event.objects.filter(organizer__user=request.user)
