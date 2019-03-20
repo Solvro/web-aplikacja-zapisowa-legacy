@@ -101,6 +101,18 @@ class Room(models.Model):
 
 class StudentManager(models.Manager):
 
+    def bulk_create(self, objs, batch_size=None):
+        users = []
+        for student in objs:
+            username, password = self.__generate_student_credentials(student.index)
+            user = User(username=username, password=password, is_participant=True)
+            users.append(user)
+        saved_users = User.objects.bulk_create(users)
+        for student, user in zip(objs, saved_users):
+            student.user = user
+        super().bulk_create(objs, batch_size=batch_size)
+
+
     def create(self, index, event, sex, name, faculty):
         username, password = self.__generate_student_credentials(index)
         student_user = User.objects.create_user(
