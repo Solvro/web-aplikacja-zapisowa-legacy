@@ -10,8 +10,10 @@ from enrolmentpanel.models import (
     Event
 )
 
-import re
 import base64
+import codecs
+import csv
+import re
 
 
 
@@ -65,6 +67,7 @@ class OrganiserSerializer(serializers.ModelSerializer):
 class EventSerializer(serializers.ModelSerializer):
 
     base64_image = serializers.SerializerMethodField()
+    participants = serializers.FileField(write_only=True)
 
     def get_base64_image(self, obj):
         """
@@ -75,11 +78,21 @@ class EventSerializer(serializers.ModelSerializer):
                 image = File(f)
                 data = base64.b64encode(image.read())
             return data
-        return "No image"
+        return None
 
     def create(self, validated_data):
         organizer = Organiser.objects.get(user=self.context.get('user'))
-        return Event.objects.create(organizer=organizer, **validated_data)
+        participants_data = validated_data.pop('participants')
+        event = Event.objects.create(organizer=organizer, **validated_data)
+        participants_data.seek(0)
+        csv_reader = csv.DictReader(codecs.iterdecode(participants_data, 'utf-8'))
+
+        participants_list = []
+        for participant in csv_reader:
+            participants_list.append(Student(event=event, **participant))
+
+        Student.objects.bulk_create(participants_list)
+        return event
 
     class Meta:
         model = Event
@@ -90,5 +103,7 @@ class EventSerializer(serializers.ModelSerializer):
                   "image",
                   "beginning_date",
                   "ending_date",
-                  "base64_image")
-        extra_kwargs = {'image': {'write_only': True}}
+                  "base64_image",
+                  "participants")
+        read_only_fields = ("base_64_image", )
+        write_only_fields = ("participants", "image", )
