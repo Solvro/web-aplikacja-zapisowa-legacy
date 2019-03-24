@@ -17,17 +17,17 @@ export const signIn = createStandardAction(RoomMateType.SIGN_IN)<RoomMate>();
 
 export const addError = createStandardAction(RoomMateType.ADD_ERROR)<string>();
 
-export const initFetchRoomMate = (username: string) => {
+export const initFetchRoomMate = (username: string, eventName: string) => {
     return async (dispatch: Dispatch<RoomMateState>) => {
         dispatch(fetchRoomMate.request());
 
         let roomMate: RoomMate;
 
         try {
-            roomMate = await fetchStudent(username);
-            const {name, faculty} = roomMate;
+            roomMate = await fetchStudent(username, eventName);
+            const {name, faculty, event, index, sex} = roomMate;
             if (roomMate) {
-                dispatch(fetchRoomMate.success({name, faculty, login: username}))
+                dispatch(fetchRoomMate.success({name, faculty, login: username, event, index, sex}))
             } else {
                 dispatch(fetchRoomMate.failure(StudentErrors.notExist(username)));
             }
