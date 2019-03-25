@@ -17,3 +17,14 @@ $ ./boostrap.sh
 ```
 While `docker` is running.
 All info and data about users should be printed to your `stdout`
+
+
+## Simualate how WebSockets works
+
+If you want check how WebSockets works you can use `simulation script` which creates test user for event `testowy` and randomly adds and removes user to/from rooms. 
+
+Websockets are located under path: `ws://localhost:8000/ws/<event_name>/rooms/`. In order to run simulation you need to run command: 
+```
+$ ./ws-simulator.sh
+```
+If You want to stop simulation just `CTRL-C` out of script ;)
