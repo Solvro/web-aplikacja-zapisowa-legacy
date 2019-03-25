@@ -59,7 +59,7 @@ class StudentTestCase(TestCase):
         self.admin = Admin(user=user_admin,
                            faculty=2)
         self.admin.save()
-        self.event = Event(name='Event1', max_people=100, organizer=self.admin)
+        self.event = Event(name='Event1', max_people=100, organiser=self.admin)
         self.event.save()
         self.student = Student(event=self.event,
                                index=self.index,
@@ -67,7 +67,7 @@ class StudentTestCase(TestCase):
         self.student.save()
 
     def test_one_student_in_more_rallies(self):
-        event_another = Event(name='Event2', max_people=200, organizer=self.admin)
+        event_another = Event(name='Event2', max_people=200, organiser=self.admin)
         event_another.save()
         student1 = Student(event=event_another,
                            index=self.index,
@@ -99,11 +99,11 @@ class EventTestCase(TestCase):
                            faculty=faculty)
         self.admin.save()
 
-        self.event = Event(name='Event1', max_people=100, organizer=self.admin)
+        self.event = Event(name='Event1', max_people=100, organiser=self.admin)
         self.event.save()
 
     def test_doubled_event(self):
-        event2 = Event(name='Event1', max_people=200, organizer=self.admin)
+        event2 = Event(name='Event1', max_people=200, organiser=self.admin)
         self.assertIsNot(self.event, event2)
         # Exception is not thrown but number of rallies stays the same
         event2.save()
@@ -113,8 +113,8 @@ class EventTestCase(TestCase):
         self.admin.delete()
         self.assertEqual(len(Event.objects.all()), 0)
 
-    def test_get_event_by_organizer(self):
-        events = Event.objects.filter(organizer__user__username='sernikjamnika').all()
+    def test_get_event_by_organiser(self):
+        events = Event.objects.filter(organiser__user__username='sernikjamnika').all()
         events[0].delete()
         self.assertEqual(len(Event.objects.all()), 0)
     # def test_deletion(self):

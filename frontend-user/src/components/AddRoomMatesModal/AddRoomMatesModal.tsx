@@ -15,20 +15,19 @@ import {addRoomMatesModalStyles} from "./AddRoomMatesModalStyles";
 import {connect, Dispatch} from "react-redux";
 import {ApplicationState} from "../../store";
 import {ApplicationError, RoomMate} from "../../store/RoomMate/types";
-import {initFetchRoomMate, removeError, removeRoomMate} from "../../store/RoomMate/actions";
+import {initFetchRoomMate, removeRoomMate} from "../../store/RoomMate/actions";
 import {UserChip} from "../UserChip/UserChip";
 import {GroupAdd} from "@material-ui/icons";
 import {NavLink} from "react-router-dom";
-import ErrorDisplay from "../ErrorDisplay";
 
 type AddRoomMatesModalProps = {
     status: string;
     isFetching: boolean;
     roomMates: RoomMate[];
     errors: ApplicationError[];
+    user: RoomMate;
     addRoomMate(login: string): void;
     removeRoomMate(login: string): void;
-    removeError(id: number): void;
 }
 
 const mapStateToProps = (state: ApplicationState): Partial<AddRoomMatesModalProps> => {
@@ -37,6 +36,7 @@ const mapStateToProps = (state: ApplicationState): Partial<AddRoomMatesModalProp
         isFetching: state.roomMateState.fetching,
         status: state.roomMateState.status,
         errors: state.roomMateState.errors,
+        user: state.roomMateState.user,
     }
 };
 const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>): Partial<AddRoomMatesModalProps> => {
@@ -47,17 +47,11 @@ const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>): Partial<AddRo
         removeRoomMate(login) {
             dispatch(removeRoomMate(login));
         },
-        removeError(id) {
-            dispatch(removeError(id));
-        }
     }
 };
 
 class AddRoomMatesModal extends React.Component<WithStyles<typeof addRoomMatesModalStyles> & AddRoomMatesModalProps> {
     state = {
-        user: {
-            name: "Michał"
-        },
         inputCode: "",
     };
 
@@ -83,10 +77,9 @@ class AddRoomMatesModal extends React.Component<WithStyles<typeof addRoomMatesMo
     };
 
     public render(): React.ReactNode {
-        const {classes, removeError, errors, isFetching, roomMates} = this.props;
+        const {removeRoomMate, classes, isFetching, roomMates, user} = this.props;
         return (
             <div className={classes.container}>
-                <ErrorDisplay removeError={removeError} errors={errors}/>
                 <Grid
                     container={true}
                     item={true}
@@ -104,7 +97,7 @@ class AddRoomMatesModal extends React.Component<WithStyles<typeof addRoomMatesMo
                             variant={"h5"}
                             color={"inherit"}
                         >
-                            Cześć {this.state.user.name}!
+                            Cześć {user.name}!
                         </Typography>
                         <Typography
                             className={classes.description}
@@ -128,7 +121,7 @@ class AddRoomMatesModal extends React.Component<WithStyles<typeof addRoomMatesMo
                                 endAdornment: (
                                     <InputAdornment position={"end"}>
                                         <IconButton onClick={this.handleClickGroupIcon}>
-                                            <GroupAdd />
+                                            <GroupAdd/>
                                         </IconButton>
                                         {isFetching && <CircularProgress
                                             size={24}
@@ -140,28 +133,32 @@ class AddRoomMatesModal extends React.Component<WithStyles<typeof addRoomMatesMo
                         />
                         <Grid container={true} className={classes.userChipsContainer}>
                             {roomMates.map((roomMate: RoomMate, index: number) => (
-                                <Grid item={true} sm={6}>
-                                    <UserChip key={index} onDelete={() => this.props.removeRoomMate(roomMate.login)} faculty={roomMate.faculty} name={roomMate.name}/>
+                                <Grid key={index} item={true} sm={6}>
+                                    <UserChip key={index} onDelete={() => removeRoomMate(roomMate.login)}
+                                              faculty={roomMate.faculty} name={roomMate.name}/>
                                 </Grid>
                             ))}
                         </Grid>
                         <div className={classes.buttonWrapper}>
-
-                            <NavLink to={'/RoomBooking'} style={{textDecoration: 'none', color: 'inherit'}}>
-                                <Button
-                                    className={classes.button}
-                                    variant={"contained"}
-                                    color={this.props.roomMates.length > 0 ? "primary" : "default"}
-                                >
+                            <Button
+                                className={classes.button}
+                                variant={"contained"}
+                                color={roomMates.length > 0 ? "primary" : "default"}
+                                disabled={roomMates.length === 0}
+                            >
+                                <NavLink to={'/RoomBooking'} style={{textDecoration: 'none', color: 'inherit'}}>
                                     Utwórz grupę
-                                </Button>
-                            </NavLink>
-
-                            <NavLink to={'/RoomBooking'} style={{textDecoration: 'none', color: 'inherit'}}>
-                                <Button variant={"contained"} color={"primary"}>
+                                </NavLink>
+                            </Button>
+                            <Button
+                                variant={"contained"}
+                                color={roomMates.length === 0 ? "primary" : "default"}
+                                disabled={roomMates.length > 0}
+                            >
+                                <NavLink to={'/Summary'} style={{textDecoration: 'none', color: 'inherit'}}>
                                     Jestem sam
-                                </Button>
-                            </NavLink>
+                                </NavLink>
+                            </Button>
                         </div>
                     </Paper>
                 </Grid>

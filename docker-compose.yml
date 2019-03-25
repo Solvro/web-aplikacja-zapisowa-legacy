@@ -8,7 +8,7 @@ services:
            - "./frontend-user:/app"
            - "/app/node_modules"
        environment:
-           - NODE_ENV development
+           - NODE_ENV=development
     frontend-admin:
        build: "./frontend-admin"
        ports: 
@@ -17,7 +17,7 @@ services:
            - "./frontend-admin:/app"
            - "/app/node_modules"
        environment:
-           - NODE_ENV development
+           - NODE_ENV=development
     backend:
        build: "./backend"
        ports:
