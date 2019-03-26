@@ -4,3 +4,4 @@ __pycache__
 frontend/yarn.lock
 .idea
 .vscode
+backend/aplikacja_zapisowa/enrolmentpanel/static/images/*
