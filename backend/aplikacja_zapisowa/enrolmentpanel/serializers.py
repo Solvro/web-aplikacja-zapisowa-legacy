@@ -66,18 +66,16 @@ class OrganiserSerializer(serializers.ModelSerializer):
 
 class EventSerializer(serializers.ModelSerializer):
 
-    base64_image = serializers.SerializerMethodField()
+    image_link = serializers.SerializerMethodField()
     participants = serializers.FileField(write_only=True)
 
-    def get_base64_image(self, obj):
+    def get_image_link(self, obj):
         """
-        Converts image to base64 when Event is got
+        Gets image's absolute uri
         """
         if obj.image.name:
-            with open(obj.image.path, 'rb') as f:
-                image = File(f)
-                data = base64.b64encode(image.read())
-            return data
+            image_url = obj.image.url
+            return f"localhost:8000/static/images/{image_url}"
         return None
 
     def create(self, validated_data):
@@ -103,7 +101,9 @@ class EventSerializer(serializers.ModelSerializer):
                   "image",
                   "beginning_date",
                   "ending_date",
-                  "base64_image",
+                  "image_link",
                   "participants")
-        read_only_fields = ("base_64_image", )
-        write_only_fields = ("participants", "image", )
+        read_only_fields = ("image_link", )
+        extra_kwargs = {'image': {'write_only': True},
+                        'participants': {'write_only': True}}
+
