@@ -1,9 +1,15 @@
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
+from django.core.files.storage import FileSystemStorage
 from django.db import models
 
 from enrolmentpanel.exceptions import NotPositiveNumberOfPeople
 from enrolmentpanel.utils.email_utils import StudentRegisterMail
+
+import os
+
+
+fs = FileSystemStorage(location=os.path.join(os.getcwd(), 'enrolmentpanel/static/images'))
 
 
 class User(AbstractUser):
@@ -35,19 +41,22 @@ class Organiser(models.Model):
         self.user.delete()
         return super().delete(*args, **kwargs)
 
+    def __str__(self):
+        return self.user.__str__()
+
 
 class Event(models.Model):
-    name = models.CharField(max_length=150, primary_key=True)
-    max_people = models.PositiveIntegerField()
-    organiser = models.ForeignKey(Organiser, on_delete=models.CASCADE)
+    name = models.CharField(max_length=50, primary_key=True)
+    description = models.CharField(max_length=120)
+    place = models.TextField(default=None, null=True)
+    accommodation = models.TextField(default=None, null=True)
+    image = models.ImageField(default=None, null=True, storage=fs)
+    beginning_date = models.DateField(null=False)
+    ending_date = models.DateField(null=False)
+    organizer = models.ForeignKey(Organiser, on_delete=models.CASCADE)
 
-    def save(self, *args, **kwargs):
-        if self.max_people > 0:
-            super().save(*args, **kwargs)
-        else:
-            raise NotPositiveNumberOfPeople
 
-
+    
 class Room(models.Model):
     number = models.IntegerField()
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
@@ -91,6 +100,18 @@ class Room(models.Model):
 
 
 class StudentManager(models.Manager):
+
+    def bulk_create(self, objs, batch_size=None):
+        users = []
+        for student in objs:
+            username, password = self.__generate_student_credentials(student.index)
+            user = User(username=username, password=password, is_participant=True)
+            users.append(user)
+        saved_users = User.objects.bulk_create(users)
+        for student, user in zip(objs, saved_users):
+            student.user = user
+        super().bulk_create(objs, batch_size=batch_size)
+
 
     def create(self, index, event, sex, name, faculty):
         username, password = self.__generate_student_credentials(index)
