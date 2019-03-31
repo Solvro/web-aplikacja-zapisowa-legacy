@@ -29,7 +29,7 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS('Creating event...'))
 
         event_data = EVENT.copy()
-        event_data.update({'organiser': o})
+        event_data.update({'organizer': o})
 
         e = Event(**event_data)
         e.save()
