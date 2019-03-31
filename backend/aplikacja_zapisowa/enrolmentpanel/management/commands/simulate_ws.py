@@ -31,7 +31,7 @@ class Command(BaseCommand):
                 "faculty": 9,
                 "event": event
             }
-            s = Student.objects.create(**student_data)
+            s, _, _ = Student.objects.create(**student_data)
             self.stdout.write(self.style.SUCCESS('test user created!'))
         except Exception:
             s = Student.objects.get(index=123)
