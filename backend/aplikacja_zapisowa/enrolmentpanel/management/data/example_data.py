@@ -1,3 +1,5 @@
+from datetime import datetime
+
 ROOMS = [
     {
         "number": 1,
@@ -15,7 +17,9 @@ ROOMS = [
 
 EVENT = {
     "name": "testowy",
-    "max_people": 69
+    "description": "jakis testowy event",
+    "beginning_date": datetime.now(),
+    "ending_date": datetime(2069, 1, 1)
 }
 
 USERS = [
