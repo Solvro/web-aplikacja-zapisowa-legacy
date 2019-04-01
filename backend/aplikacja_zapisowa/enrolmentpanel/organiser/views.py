@@ -63,7 +63,7 @@ class CreateEventView(APIView):
             event_serializer.save()
         return Response(status=status.HTTP_201_CREATED)
 
-    @swagger_auto_schema(responses={200: EventSerializer},
+    @swagger_auto_schema(responses={200: EventSerializer(many=True)},
                          operation_description="Gets all organisers events")
     def get(self, request):
         event = Event.objects.filter(organizer__user=request.user)
