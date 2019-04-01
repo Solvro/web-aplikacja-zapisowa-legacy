@@ -8,6 +8,6 @@ export default class CreateTripRoute extends Component {
   }
 
   render() {
-    return <TripSettingsForm />;
+    return <TripSettingsForm {...this.props} />;
   }
 }

@@ -1,12 +1,13 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import { Route, Switch } from "react-router-dom";
+import { Switch } from "react-router-dom";
 import EditRoute from "./Trip/EditRoute";
 import MessageRoute from "./Trip/MessageRoute";
 import ParticipantsRoute from "./Trip/ParticipantsRoute";
 import RoomsRoute from "./Trip/RoomsRoute";
 import OverviewRoute from "./Trip/OverviewRoute";
 import TripMenu from "../components/TripMenu";
+import PrivateRoute from '../components/PrivateRoute';
 
 const styles = theme => ({
   root: {
@@ -26,27 +27,27 @@ function ClippedDrawer(props) {
       <TripMenu />
       <main className={classes.content}>
         <Switch>
-          <Route
+          <PrivateRoute
             path="/trips/:id(\d+)/edit"
             exact
             component={EditRoute}
           />
-          <Route
+          <PrivateRoute
             path="/trips/:id(\d+)/message"
             exact
             component={MessageRoute}
           />
-          <Route
+          <PrivateRoute
             path="/trips/:id(\d+)/participants"
             exact
             component={ParticipantsRoute}
           />
-          <Route
+          <PrivateRoute
             path="/trips/:id(\d+)/rooms"
             exact
             component={RoomsRoute}
           />
-          <Route
+          <PrivateRoute
             component={OverviewRoute}
           />
         </Switch>

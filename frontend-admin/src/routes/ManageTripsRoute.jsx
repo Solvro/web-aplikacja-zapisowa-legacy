@@ -9,6 +9,6 @@ export default class ManageTripsRoute extends Component {
 
 
   render() {
-    return <ManageTripScreen />;
+    return <ManageTripScreen {...this.props} />;
   }
 }
