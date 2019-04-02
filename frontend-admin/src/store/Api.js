@@ -42,3 +42,53 @@ export async function getAllEvents() {
     return null;
   }
 }
+
+async function createEvent(data) {
+  const config = {
+    headers: {
+      Authorization: 'Basic dGVzdF9vcmc6dGVzdDEyMzQ=',
+      'Content-Type': 'multipart/form-data',
+    },
+  };
+  // eslint-disable-next-line no-undef
+  const formData = new FormData();
+
+  console.log('BEFORE', data);
+
+  // Object.keys(data).forEach((key) => {
+  //   if (data[key] instanceof Date) {
+  //     const formatted = data[key].toISOString().slice(0, 10);
+  //     // eslint-disable-next-line no-param-reassign
+  //     data[key] = formatted;
+  //   }
+  // });
+
+  Object.entries(data).forEach((arr) => {
+    formData.append(arr[0], arr[1]);
+  });
+
+  console.log('AFTER', data);
+
+  try {
+    const response = await instance.post(
+      '/organiser/event',
+      formData,
+      config,
+    );
+    const statusOK = response && response.status === 201;
+    return statusOK;
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+}
+
+export async function handleCreateTrip(formState) {
+  console.log(`Creating event ${formState.name}...`);
+  const response = await createEvent(formState);
+  if (response) {
+    console.log(`Success creating event: ${formState.name}`);
+  } else {
+    console.error(`Could not create event ${formState.name}`)
+  }
+}

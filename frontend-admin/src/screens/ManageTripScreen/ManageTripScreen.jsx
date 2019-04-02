@@ -45,7 +45,8 @@ class ManageTripScreen extends React.Component {
     async loadEvents() {
         const events = await getAllEvents();
         events.map((evt) => {
-            evt.image = evt.image_link
+            // TODO: remove 'http://' when backend fixes this issue.
+            evt.image = "http://" + evt.image_link;
         })
         return events;
     }
