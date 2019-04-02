@@ -49,7 +49,6 @@ class TripSettingsForm extends React.Component {
     };
     this.handleDateChange = this.handleDateChange.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    this.handleSend = this.handleSend.bind(this);
   }
 
   handleDateChange(name) {
@@ -67,10 +66,6 @@ class TripSettingsForm extends React.Component {
         [name]: event.target.value,
       });
     };
-  }
-
-  handleSend() {
-    console.log(this.state);
   }
 
   render() {
@@ -181,7 +176,7 @@ class TripSettingsForm extends React.Component {
 
               <Grid item className={classes.button} xs={12}>
                 <Button
-                  onClick={(() => onSubmit(this.state)) || this.handleSend}
+                  onClick={(() => onSubmit(this.state))}
                   variant="contained"
                   color="secondary"
                 >

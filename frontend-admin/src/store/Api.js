@@ -2,7 +2,6 @@ const axios = require('axios');
 
 const instance = axios.create({
   baseURL: 'http://localhost:8000/api/',
-  timeout: 1000,
 });
 
 export async function authorizeUser(username, password) {
@@ -50,24 +49,13 @@ async function createEvent(data) {
       'Content-Type': 'multipart/form-data',
     },
   };
+
   // eslint-disable-next-line no-undef
   const formData = new FormData();
-
-  console.log('BEFORE', data);
-
-  // Object.keys(data).forEach((key) => {
-  //   if (data[key] instanceof Date) {
-  //     const formatted = data[key].toISOString().slice(0, 10);
-  //     // eslint-disable-next-line no-param-reassign
-  //     data[key] = formatted;
-  //   }
-  // });
 
   Object.entries(data).forEach((arr) => {
     formData.append(arr[0], arr[1]);
   });
-
-  console.log('AFTER', data);
 
   try {
     const response = await instance.post(
@@ -89,6 +77,6 @@ export async function handleCreateTrip(formState) {
   if (response) {
     console.log(`Success creating event: ${formState.name}`);
   } else {
-    console.error(`Could not create event ${formState.name}`)
+    console.error(`Could not create event ${formState.name}`);
   }
 }

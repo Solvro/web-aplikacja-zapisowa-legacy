@@ -44,16 +44,16 @@ class ManageTripScreen extends React.Component {
 
     async loadEvents() {
         const events = await getAllEvents();
-        events.map((evt) => {
-            // TODO: remove 'http://' when backend fixes this issue.
+        events.forEach((evt) => {
             evt.image = "http://" + evt.image_link;
+            delete evt.image_link;
+            // TODO: remove 'http://' when backend fixes this issue.
         })
         return events;
     }
 
     async componentDidMount() {
         const events = await this.loadEvents()
-        console.log(events)
         this.setState({
             trips: [...events, addNewEventTileDetails]
         })
