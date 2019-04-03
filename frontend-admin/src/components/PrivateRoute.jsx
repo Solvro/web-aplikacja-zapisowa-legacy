@@ -5,17 +5,15 @@ import { verifyUser } from '../store/Api';
 
 class PrivateRoute extends React.Component {
 
-  state = {
-    loggedIn: false,
-    authorized: false
-  }
+    state = {
+      loggedIn: false,
+      authorized: false
+    }
 
-/* eslint-disable no-console */
   validateIsLogged = async () => {
     const token = await localStorage.getItem('token');
     const verifyResult = token && await verifyUser(token);
     const isLogged = token && verifyResult;
-    console.log("Sprawdzam czy user ma poprawny token: ", isLogged, verifyResult);
     return  isLogged;
   }
 

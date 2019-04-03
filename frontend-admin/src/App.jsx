@@ -9,7 +9,6 @@ import CreateTripRoute from './routes/CreateTripRoute';
 import TableRoute from './routes/TableRoute';
 import LoginRoute from './routes/LoginRoute';
 import NoMatchRoute from './routes/NoMatchRoute';
-import TripRoute from './routes/TripRoute';
 import ManageTripsRoute from './routes/ManageTripsRoute';
 import TripAppBar from './components/TripAppBar';
 import PrivateRoute from './components/PrivateRoute';
@@ -28,17 +27,7 @@ const App = ({ classes }) => (
       <BrowserRouter>
         <Switch>
           <PrivateRoute
-            path="/trips/:id(\d+)"
-            component={TripRoute}
-          />
-          <PrivateRoute
-            path="/trips/create"
-            exact
-            component={CreateTripRoute}
-          />
-          <PrivateRoute
             path="/trips"
-            exact
             component={ManageTripsRoute}
           />
           <Route

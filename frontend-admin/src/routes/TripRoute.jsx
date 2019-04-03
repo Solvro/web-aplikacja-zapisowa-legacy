@@ -29,7 +29,6 @@ function ClippedDrawer(props) {
         <Switch>
           <PrivateRoute
             path="/trips/:id(\d+)/edit"
-            exact
             component={EditRoute}
           />
           <PrivateRoute
@@ -47,7 +46,7 @@ function ClippedDrawer(props) {
             exact
             component={RoomsRoute}
           />
-          <PrivateRoute
+          <PrivateRoute path={`${props.match.path}`}
             component={OverviewRoute}
           />
         </Switch>
