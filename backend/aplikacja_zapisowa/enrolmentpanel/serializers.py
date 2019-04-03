@@ -2,6 +2,17 @@ from django.core.files import File
 
 from rest_framework import serializers
 
+from enrolmentpanel.exceptions import (
+    CSVEncodingError,
+    CSVNoHeaderError,
+    CSVInvalidDataError,
+    CSVColumnHeaderError
+)
+
+from django.db import (
+    IntegrityError
+)
+
 from enrolmentpanel.models import (
     Room,
     Student,
@@ -14,8 +25,9 @@ import base64
 import codecs
 import csv
 import re
+import logging
 
-
+logger = logging.getLogger(__name__)
 
 class RoomSerializer(serializers.ModelSerializer):
     
@@ -78,18 +90,43 @@ class EventSerializer(serializers.ModelSerializer):
             return f"localhost:8000/static/images/{image_url}"
         return None
 
+    def validate_participants(self, participants):
+        has_header = csv.Sniffer().has_header(str(participants.read(1024)))
+        participants.seek(0)
+        if not has_header:
+            raise CSVNoHeaderError()
+        try:
+            csv_reader = csv.DictReader(codecs.iterdecode(participants, 'utf-8'))
+        except UnicodeEncodeError:
+            raise CSVEncodingError()
+        return csv_reader
+
     def create(self, validated_data):
         organizer = Organiser.objects.get(user=self.context.get('user'))
         participants_data = validated_data.pop('participants')
         event = Event.objects.create(organizer=organizer, **validated_data)
-        participants_data.seek(0)
-        csv_reader = csv.DictReader(codecs.iterdecode(participants_data, 'utf-8'))
-
         participants_list = []
-        for participant in csv_reader:
-            participants_list.append(Student(event=event, **participant))
 
-        Student.objects.bulk_create(participants_list)
+        try:
+            for line_no, participant in enumerate(participants_data):
+                participants_list.append(Student(event=event, **participant))
+            Student.objects.bulk_create(participants_list)
+
+        except ValueError as e:
+            wrong_data = e.__str__().split()[-1]
+            raise CSVInvalidDataError(line_no=line_no, wrong_data=wrong_data)
+
+        except TypeError as e:
+            if 'literal' in e.__str__():
+                wrong_data = e.__str__().split()[-1]
+                raise CSVInvalidDataError(line_no=line_no, wrong_data=wrong_data)
+            wrong_data = e.__str__().split()[0]
+            raise CSVNoHeaderError(line_no=line_no, wrong_data=wrong_data)
+
+        except IntegrityError as e:
+            column = re.search(r'\"(.*)\"', e.__str__())
+            raise CSVColumnHeaderError(column=column.group(1))
+
         return event
 
     class Meta:
