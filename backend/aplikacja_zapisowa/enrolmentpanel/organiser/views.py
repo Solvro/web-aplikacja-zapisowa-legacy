@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.shortcuts import render
 from rest_framework import status
 from rest_framework.parsers import MultiPartParser
@@ -54,14 +55,15 @@ class CreateEventView(APIView):
     parser_classes = (MultiPartParser,)
 
     @swagger_auto_schema(request_body=EventSerializer,
-                         operation_description="Creates event")
+                         operation_description="Creates event. Creation is atomic.")
+    @transaction.atomic
     def post(self, request):
         event_serializer = EventSerializer(data=request.data, context={'user': request.user})
         if event_serializer.is_valid(raise_exception=True):
             event_serializer.save()
         return Response(status=status.HTTP_201_CREATED)
 
-    @swagger_auto_schema(responses={200: EventSerializer},
+    @swagger_auto_schema(responses={200: EventSerializer(many=True)},
                          operation_description="Gets all organisers events")
     def get(self, request):
         event = Event.objects.filter(organizer__user=request.user)
