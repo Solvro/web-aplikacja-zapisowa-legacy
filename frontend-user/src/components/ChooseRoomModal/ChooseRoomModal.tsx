@@ -68,7 +68,7 @@ class ChooseRoomModal extends React.Component<WithStyles<typeof chooseRoomModalS
     }
 
     public render(): React.ReactNode {
-        const {classes, roomMates, user} = this.props;
+        const { classes, roomMates, user } = this.props;
         return (
             <Grid
                 container={true}
@@ -148,7 +148,7 @@ class ChooseRoomModal extends React.Component<WithStyles<typeof chooseRoomModalS
                             return (
                                 <Grid item={true} xs={12} sm={6} md={4} lg={3} style={{padding: '0.5em'}} key={index}>
                                     <RoomCard onClick={() => this.setState({isModalVisible: true, pickedRoom: room})}
-                                              desiredSpace={this.props.roomMates.length} room={room}/>
+                                              desiredSpace={roomMates.length} room={room}/>
                                 </Grid>
                             );
                         })}
