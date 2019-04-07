@@ -28,7 +28,7 @@ class PartialRoomSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Room
-        fields = ("number", "vacancies")
+        fields = ("number", "vacancies", "max_capacity")
 
 
 class StudentSerializer(serializers.ModelSerializer):
