@@ -15,22 +15,18 @@ import ErrorDisplay from '../../components/ErrorDisplay';
 
 class LoginScreen extends React.Component {
 
-    state = {
-        username: '',
-        password: '',
-        loginError: false
-    }
-
-    componentWillMount(){
-        this.validateIsLogged()
-            .then(isLogged => {
-                if (isLogged)
-                    this.props.history.push('/AddingRoomMates')
-            });
+    constructor() {
+        super();
+        this.state = {
+            username: '',
+            password: '',
+            loginError: false
+        }
     }
 
     tryAuthorize = async e => {
         e.preventDefault();
+        console.log(this.props)
         const {username, password} = this.state;
         const token = await authorizeUser(username, password);
         if (token) {

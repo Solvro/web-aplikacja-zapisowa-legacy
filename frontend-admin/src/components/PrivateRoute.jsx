@@ -1,14 +1,14 @@
 import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
-import { verifyUser } from '../store/api';
+import { verifyUser } from '../store/Api';
 
 
-class PrivateRoute extends React.component {
+class PrivateRoute extends React.Component {
 
-  state = {
-    loggedIn: false,
-    authorized: false
-  }
+    state = {
+      loggedIn: false,
+      authorized: false
+    }
 
   validateIsLogged = async () => {
     const token = await localStorage.getItem('token');
@@ -44,6 +44,7 @@ class PrivateRoute extends React.component {
 
     );
   }
+
 }
 
 export default PrivateRoute;
