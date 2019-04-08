@@ -1,16 +1,16 @@
 from django.core.files import File
+from django.db import IntegrityError
+
 
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 
 from enrolmentpanel.exceptions import (
     CSVEncodingError,
     CSVNoHeaderError,
     CSVInvalidDataError,
-    CSVColumnHeaderError
-)
-
-from django.db import (
-    IntegrityError
+    CSVUniqueColumnError,
+    CSVErrorManager
 )
 
 from enrolmentpanel.models import (
@@ -25,9 +25,7 @@ import base64
 import codecs
 import csv
 import re
-import logging
 
-logger = logging.getLogger(__name__)
 
 class RoomSerializer(serializers.ModelSerializer):
     
@@ -43,6 +41,13 @@ class PartialRoomSerializer(serializers.ModelSerializer):
         fields = ("number", "vacancies")
 
 
+class StudentListSerializer(serializers.ListSerializer):
+
+    def create(self, validated_data):
+        students = [Student(**item) for item in validated_data]
+        return Student.objects.bulk_create(students)
+
+
 class StudentSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
@@ -54,6 +59,7 @@ class StudentSerializer(serializers.ModelSerializer):
         raise serializers.ValidationError("Index contains not digit character")
 
     class Meta:
+        list_serializer_class = StudentListSerializer
         model = Student
         fields = ("name", "index", "faculty", "sex", "event")
 
@@ -99,33 +105,26 @@ class EventSerializer(serializers.ModelSerializer):
             csv_reader = csv.DictReader(codecs.iterdecode(participants, 'utf-8'))
         except UnicodeEncodeError:
             raise CSVEncodingError()
-        return csv_reader
+        return list(csv_reader)
 
     def create(self, validated_data):
         organizer = Organiser.objects.get(user=self.context.get('user'))
         participants_data = validated_data.pop('participants')
         event = Event.objects.create(organizer=organizer, **validated_data)
-        participants_list = []
-
         try:
-            for line_no, participant in enumerate(participants_data):
-                participants_list.append(Student(event=event, **participant))
-            Student.objects.bulk_create(participants_list)
-
-        except ValueError as e:
-            wrong_data = e.__str__().split()[-1]
-            raise CSVInvalidDataError(line_no=line_no, wrong_data=wrong_data)
-
-        except TypeError as e:
-            if 'literal' in e.__str__():
-                wrong_data = e.__str__().split()[-1]
-                raise CSVInvalidDataError(line_no=line_no, wrong_data=wrong_data)
-            wrong_data = e.__str__().split()[0]
-            raise CSVNoHeaderError(line_no=line_no, wrong_data=wrong_data)
+            for participant in participants_data:
+                participant['event'] = event.name
+            students_serializer = StudentSerializer(data=participants_data, many=True)
+            if students_serializer.is_valid(raise_exception=True):
+                students_serializer.save()
 
         except IntegrityError as e:
-            column = re.search(r'\"(.*)\"', e.__str__())
-            raise CSVColumnHeaderError(column=column.group(1))
+            raise CSVUniqueColumnError(wrong_data=e.__str__())
+
+        except ValidationError as e:
+            index, code, column = CSVErrorManager.unpack_details(e.detail)
+            error = CSVErrorManager.create_error(index, code, column)
+            raise error
 
         return event
 
@@ -143,4 +142,3 @@ class EventSerializer(serializers.ModelSerializer):
         read_only_fields = ("image_link", )
         extra_kwargs = {'image': {'write_only': True},
                         'participants': {'write_only': True}}
-

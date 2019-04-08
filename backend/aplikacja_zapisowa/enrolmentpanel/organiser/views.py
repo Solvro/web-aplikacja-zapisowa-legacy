@@ -8,12 +8,14 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.exceptions import ValidationError
 
 from drf_yasg.utils import swagger_auto_schema
 
 from .permissions import (IsOrganiserAccount, IsEventOwner)
 from enrolmentpanel.models import Event
 from enrolmentpanel.serializers import StudentSerializer, EventSerializer
+from enrolmentpanel.exceptions import UniqueEventNameError
 
 
 class TestView(APIView):
@@ -59,11 +61,17 @@ class CreateEventView(APIView):
     @transaction.atomic
     def post(self, request):
         event_serializer = EventSerializer(data=request.data, context={'user': request.user})
-        if event_serializer.is_valid(raise_exception=True):
-            event_serializer.save()
+        try:
+            if event_serializer.is_valid(raise_exception=True):
+                event_serializer.save()
+        except ValidationError:
+            raise UniqueEventNameError
         return Response(status=status.HTTP_201_CREATED)
 
-    @swagger_auto_schema(responses={200: EventSerializer(many=True)},
+    @swagger_auto_schema(responses={
+        200: EventSerializer(many=True),
+        400: {"detail": "detail"}
+        },
                          operation_description="Gets all organisers events")
     def get(self, request):
         event = Event.objects.filter(organizer__user=request.user)
