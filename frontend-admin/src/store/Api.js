@@ -1,9 +1,14 @@
 const axios = require('axios');
 
-axios.defaults.headers.common.Authorization = `Bearer ${localStorage.getItem('token')}`;
-
 const instance = axios.create({
   baseURL: 'http://localhost:8000/api/',
+});
+
+instance.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  const newConfig = config;
+  newConfig.headers.Authorization = token ? `Bearer ${token}` : '';
+  return newConfig;
 });
 
 export async function authorizeUser(username, password) {
