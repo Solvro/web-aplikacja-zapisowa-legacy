@@ -41,7 +41,7 @@ export async function getAllEvents() {
   }
 }
 
-async function createEvent(data) {
+export async function createEvent(data) {
   const config = {
     headers: {
       'Content-Type': 'multipart/form-data',
@@ -66,8 +66,4 @@ async function createEvent(data) {
   } catch (error) {
     return false;
   }
-}
-
-export function handleCreateTrip(formState) {
-  return createEvent(formState);
 }

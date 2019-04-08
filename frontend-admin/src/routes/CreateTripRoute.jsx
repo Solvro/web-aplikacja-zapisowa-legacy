@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import TripSettingsForm from '../components/TripSettingsForm';
-import { handleCreateTrip } from '../store/Api';
+import { createEvent } from '../store/Api';
 
 class CreateTripRoute extends Component {
   constructor(props) {
@@ -15,7 +15,7 @@ class CreateTripRoute extends Component {
       <TripSettingsForm
         {...this.props}
         onSubmit={(data) => {
-          handleCreateTrip(data).then((statusOk) => {
+          createEvent(data).then((statusOk) => {
             if (statusOk) {
               history.push('/trips');
             } else {
