@@ -57,7 +57,8 @@ class CreateEventView(APIView):
     parser_classes = (MultiPartParser,)
 
     @swagger_auto_schema(request_body=EventSerializer,
-                         operation_description="Creates event. Creation is atomic.")
+                         operation_description="Creates event. Creation is atomic.",
+                         responses={400: "{\"detail\": \"detail\"}"})
     @transaction.atomic
     def post(self, request):
         event_serializer = EventSerializer(data=request.data, context={'user': request.user})
@@ -68,10 +69,7 @@ class CreateEventView(APIView):
             raise UniqueEventNameError
         return Response(status=status.HTTP_201_CREATED)
 
-    @swagger_auto_schema(responses={
-        200: EventSerializer(many=True),
-        400: {"detail": "detail"}
-        },
+    @swagger_auto_schema(responses={200: EventSerializer(many=True)},
                          operation_description="Gets all organisers events")
     def get(self, request):
         event = Event.objects.filter(organizer__user=request.user)
