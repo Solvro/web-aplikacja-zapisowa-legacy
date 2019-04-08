@@ -38,10 +38,6 @@ import csv
 import re
 import logging
 
-<<<<<<< HEAD
-=======
-logger = logging.getLogger(__name__)
->>>>>>> ceddbd8044716a27d3614f066e4c5ccdb75c61ac
 
 class RoomSerializer(serializers.ModelSerializer):
     
