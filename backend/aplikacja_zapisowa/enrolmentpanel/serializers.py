@@ -13,13 +13,6 @@ from enrolmentpanel.exceptions import (
     CSVErrorManager
 )
 
-from enrolmentpanel.exceptions import (
-    CSVEncodingError,
-    CSVNoHeaderError,
-    CSVInvalidDataError,
-    CSVColumnHeaderError
-)
-
 from django.db import (
     IntegrityError
 )
