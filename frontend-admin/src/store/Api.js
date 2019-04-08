@@ -1,5 +1,7 @@
 const axios = require('axios');
 
+axios.defaults.headers.common.Authorization = `Bearer ${localStorage.getItem('token')}`;
+
 const instance = axios.create({
   baseURL: 'http://localhost:8000/api/',
 });
@@ -24,15 +26,9 @@ export async function verifyUser(token) {
 }
 
 export async function getAllEvents() {
-  const config = {
-    headers: {
-      Authorization: 'Basic dGVzdF9vcmc6dGVzdDEyMzQ=',
-    },
-  };
   try {
     const response = await instance.get(
       '/organiser/event',
-      config,
     );
     return response.data;
   } catch (error) {
@@ -43,7 +39,6 @@ export async function getAllEvents() {
 async function createEvent(data) {
   const config = {
     headers: {
-      Authorization: 'Basic dGVzdF9vcmc6dGVzdDEyMzQ=',
       'Content-Type': 'multipart/form-data',
     },
   };
