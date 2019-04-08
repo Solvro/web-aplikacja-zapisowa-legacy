@@ -32,9 +32,7 @@ export async function verifyUser(token) {
 
 export async function getAllEvents() {
   try {
-    const response = await instance.get(
-      '/organiser/event',
-    );
+    const response = await instance.get('/organiser/event');
     return response.data;
   } catch (error) {
     return null;
@@ -65,5 +63,20 @@ export async function createEvent(data) {
     return statusOK;
   } catch (error) {
     return false;
+  }
+}
+
+export async function getEventDetails(eventName) {
+  try {
+    // const response = await instance.get(`/organiser/event/${eventName}`);
+    const response = {
+      data: {
+        name: eventName,
+        description: 'Wieloletnia tradycja wydziału mechanicznego, głuchołazy bla bla',
+      },
+    };
+    return response.data;
+  } catch (error) {
+    return null;
   }
 }
