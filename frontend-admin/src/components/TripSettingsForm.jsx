@@ -44,6 +44,7 @@ class TripSettingsForm extends React.Component {
       accommodation: '',
       participants: null,
       image: null,
+      rooms: null,
       beginning_date: currDate,
       ending_date: currDate,
     };
@@ -70,7 +71,7 @@ class TripSettingsForm extends React.Component {
 
   render() {
     const {
-      name, description, place, accommodation, participants, image, beginning_date, ending_date,
+      name, description, place, accommodation, participants, image, beginning_date, ending_date, rooms,
     } = this.state;
     const { classes, onSubmit } = this.props;
     return (
@@ -131,7 +132,7 @@ class TripSettingsForm extends React.Component {
                   label="Ośrodek noclegowy"
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={6} lg={4}>
                 <UploadFileInput
                   accept=".csv"
                   id="participants"
@@ -141,7 +142,17 @@ class TripSettingsForm extends React.Component {
                   label={<LabelWithIcon fontSize="small" icon={AttachmentIcon} label="Uczestnicy" />}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={6} lg={4}>
+                <UploadFileInput
+                  accept=".csv"
+                  id="rooms"
+                  name="rooms"
+                  value={rooms}
+                  onChange={this.handleChange('rooms')}
+                  label={<LabelWithIcon fontSize="small" icon={AttachmentIcon} label="Pokoje" />}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6} lg={4}>
                 <UploadFileInput
                   accept="image/*"
                   id="image"
