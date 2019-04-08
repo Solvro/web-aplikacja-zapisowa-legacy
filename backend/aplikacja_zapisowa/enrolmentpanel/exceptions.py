@@ -2,24 +2,16 @@ from django.core.exceptions import FieldError
 
 from rest_framework.exceptions import APIException
 
-<<<<<<< HEAD
 import re
 
-=======
->>>>>>> ceddbd8044716a27d3614f066e4c5ccdb75c61ac
 
 class NotPositiveNumberOfPeople(FieldError):
     pass
 
-<<<<<<< HEAD
-
-=======
->>>>>>> ceddbd8044716a27d3614f066e4c5ccdb75c61ac
 class CSVError(APIException):
     status_code = 400
     default_code = "bad_request"
     default_detail = ""
-<<<<<<< HEAD
     code = ""
 
 
@@ -30,20 +22,12 @@ class CSVEncodingError(CSVError):
 
 class CSVNoHeaderError(CSVError):
     code = "required"
-=======
-
-class CSVEncodingError(CSVError):
-    default_detail = "Kodowanie pliku ze studentami nie jest w 'utf-8 w pliku csv"
-
-class CSVNoHeaderError(CSVError):
->>>>>>> ceddbd8044716a27d3614f066e4c5ccdb75c61ac
     def __init__(self, line_no=1, wrong_data=None):
         self.detail = f"Brak lub błąd nagłówka z nazwami kolumn w pliku csv. Linia: {line_no}"
         if wrong_data is not None:
             self.detail += f", błąd: {wrong_data}"
         super().__init__(self)
 
-<<<<<<< HEAD
 
 class CSVUniqueColumnError(CSVError):
     code = "unique"
@@ -59,20 +43,10 @@ class CSVUniqueColumnError(CSVError):
 class CSVInvalidDataError(CSVError):
     code = "invalid"
     def __init__(self, line_no=1, wrong_data=None):
-=======
-class CSVColumnHeaderError(CSVError):
-    def __init__(self, column):
-        self.detail = f"Brak kolumny: {column}"
-        super().__init__(self)
-
-class CSVInvalidDataError(CSVError):
-    def __init__(self, line_no, wrong_data=None):
->>>>>>> ceddbd8044716a27d3614f066e4c5ccdb75c61ac
         self.detail = f"Niepoprawnie sformatowane dane w pliku csv. Linia: {line_no} "
         if wrong_data is not None:
             self.detail += f", błąd: {wrong_data}"
         super().__init__(self)
-<<<<<<< HEAD
 
 
 class CSVErrorManager:
@@ -102,5 +76,3 @@ class CSVErrorManager:
 class UniqueEventNameError(APIException):
     default_code = 400
     default_detail = "Już istnieje event o tej nazwie"
-=======
->>>>>>> ceddbd8044716a27d3614f066e4c5ccdb75c61ac
