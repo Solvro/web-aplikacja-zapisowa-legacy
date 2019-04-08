@@ -15,7 +15,7 @@ export default class ManageTripsRoute extends Component {
     return (
       <Switch>
         <PrivateRoute
-          path="/trips/:id(\d+)"
+          path="/trips/:id([\w ]+)"
           component={TripRoute}
         />
         <PrivateRoute
