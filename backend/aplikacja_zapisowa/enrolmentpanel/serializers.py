@@ -13,6 +13,17 @@ from enrolmentpanel.exceptions import (
     CSVErrorManager
 )
 
+from enrolmentpanel.exceptions import (
+    CSVEncodingError,
+    CSVNoHeaderError,
+    CSVInvalidDataError,
+    CSVColumnHeaderError
+)
+
+from django.db import (
+    IntegrityError
+)
+
 from enrolmentpanel.models import (
     Room,
     Student,
@@ -25,7 +36,12 @@ import base64
 import codecs
 import csv
 import re
+import logging
 
+<<<<<<< HEAD
+=======
+logger = logging.getLogger(__name__)
+>>>>>>> ceddbd8044716a27d3614f066e4c5ccdb75c61ac
 
 class RoomSerializer(serializers.ModelSerializer):
     
