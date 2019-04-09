@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {withRouter} from "react-router-dom";
+import TableCard from '../../components/TableCard';
 
 class ParticipantsRoute extends Component {
 
@@ -12,10 +13,9 @@ class ParticipantsRoute extends Component {
   render() {
     const { match } = this.props;
     return (
-      <div>
-        Participants
-        { match.params.id }
-      </div>
+      <>
+        <TableCard/>
+      </>
     );
   }
 }

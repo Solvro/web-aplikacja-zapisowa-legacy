@@ -18,27 +18,39 @@ const styles = theme => ({
   toolbar: theme.mixins.toolbar,
 });
 
+const renderContent = classes => (
+  <>
+    <TripAppBar />
+    <div className={classes.toolbar} />
+    <PrivateRoute
+      path="/trips"
+      component={ManageTripsRoute}
+    />
+    <PrivateRoute
+      path="/table"
+      component={TableRoute}
+    />
+  </>
+);
+
 const App = ({ classes }) => (
   <React.Fragment>
     <CssBaseline />
     <MuiThemeProvider theme={theme}>
-      <TripAppBar />
-      <div className={classes.toolbar} />
+
       <BrowserRouter>
         <Switch>
-          <PrivateRoute
-            path="/trips"
-            component={ManageTripsRoute}
-          />
           <Route
-            path="/login"
+            path="/"
+            exact
             component={LoginRoute}
           />
+
           <PrivateRoute
-            path="/table"
-            component={TableRoute}
+            path="/"
+            component={() => renderContent(classes)}
           />
-          <Route component={NoMatchRoute} />
+
         </Switch>
       </BrowserRouter>
     </MuiThemeProvider>

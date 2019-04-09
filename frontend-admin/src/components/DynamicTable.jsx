@@ -69,7 +69,7 @@ function DynamicTable(props) {
 
   return (
 
-    <Paper className={classes.root}>
+    // <Paper className={classes.root}>
       <Table className={classes.table}>
         <TableHead>
           <TableRow>
@@ -94,7 +94,7 @@ function DynamicTable(props) {
           ))}
         </TableBody>
       </Table>
-    </Paper>
+    // </Paper>
   );
 }
 
