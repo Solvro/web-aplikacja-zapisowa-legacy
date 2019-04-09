@@ -56,7 +56,6 @@ class Event(models.Model):
     organizer = models.ForeignKey(Organiser, on_delete=models.CASCADE)
 
 
-    
 class Room(models.Model):
     number = models.IntegerField()
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
@@ -110,7 +109,7 @@ class StudentManager(models.Manager):
         saved_users = User.objects.bulk_create(users)
         for student, user in zip(objs, saved_users):
             student.user = user
-        super().bulk_create(objs, batch_size=batch_size)
+        return super().bulk_create(objs, batch_size=batch_size)
 
 
     def create(self, index, event, sex, name, faculty):
