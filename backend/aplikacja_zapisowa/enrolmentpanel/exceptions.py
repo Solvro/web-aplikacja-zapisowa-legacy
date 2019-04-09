@@ -10,7 +10,6 @@ class NotPositiveNumberOfPeople(FieldError):
 
 class CSVError(APIException):
     status_code = 400
-    default_code = "bad_request"
     default_detail = ""
     code = ""
 
