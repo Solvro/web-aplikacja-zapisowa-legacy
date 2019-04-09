@@ -56,7 +56,6 @@ class Event(models.Model):
     organizer = models.ForeignKey(Organiser, on_delete=models.CASCADE)
 
 
-    
 class Room(models.Model):
     number = models.IntegerField()
     event = models.ForeignKey(Event, on_delete=models.CASCADE)

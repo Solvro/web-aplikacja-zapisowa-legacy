@@ -29,18 +29,29 @@ import base64
 import codecs
 import csv
 import re
-import logging
+
+
+class RoomListSerializer(serializers.ListSerializer):
+
+    def create(self, validated_data):
+        rooms = [Room(**item, event=self.context['event']) for item in validated_data]
+        return Room.objects.bulk_create(rooms)
 
 
 class RoomSerializer(serializers.ModelSerializer):
+
+    def create(self, validated_data):
+        return Room.objects.create(**validated_data, event=self.context['event'])
     
     class Meta:
+        list_serializer_class = RoomListSerializer
         model = Room
         fields = ("pk", "number", "max_capacity", "cur_capacity")
+        read_only_fields = ("pk", "cur_capacity")
 
 
 class PartialRoomSerializer(serializers.ModelSerializer):
-    
+
     class Meta:
         model = Room
         fields = ("number", "vacancies")
@@ -91,6 +102,7 @@ class EventSerializer(serializers.ModelSerializer):
 
     image_link = serializers.SerializerMethodField()
     participants = serializers.FileField(write_only=True)
+    rooms = serializers.FileField(write_only=True)
 
     def get_image_link(self, obj):
         """
@@ -101,20 +113,27 @@ class EventSerializer(serializers.ModelSerializer):
             return f"localhost:8000/static/images/{image_url}"
         return None
 
-    def validate_participants(self, participants):
-        has_header = csv.Sniffer().has_header(str(participants.read(1024)))
-        participants.seek(0)
+    def validate_csv_file(self, csv_file):
+        has_header = csv.Sniffer().has_header(str(csv_file.read(1024)))
+        csv_file.seek(0)
         if not has_header:
             raise CSVNoHeaderError()
         try:
-            csv_reader = csv.DictReader(codecs.iterdecode(participants, 'utf-8'))
+            csv_reader = csv.DictReader(codecs.iterdecode(csv_file, 'utf-8'))
         except UnicodeEncodeError:
             raise CSVEncodingError()
         return list(csv_reader)
 
+    def validate_rooms(self, rooms):
+        return self.validate_csv_file(rooms)
+
+    def validate_participants(self, participants):
+        return self.validate_csv_file(participants)
+
     def create(self, validated_data):
         organizer = Organiser.objects.get(user=self.context.get('user'))
         participants_data = validated_data.pop('participants')
+        rooms_data = validated_data.pop('rooms')
         event = Event.objects.create(organizer=organizer, **validated_data)
         try:
             for participant in participants_data:
@@ -122,6 +141,10 @@ class EventSerializer(serializers.ModelSerializer):
             students_serializer = StudentSerializer(data=participants_data, many=True)
             if students_serializer.is_valid(raise_exception=True):
                 students_serializer.save()
+
+            rooms_serializer = RoomSerializer(data=rooms_data, many=True, context={'event': event})
+            if rooms_serializer.is_valid(raise_exception=True):
+                rooms_serializer.save()
 
         except IntegrityError as e:
             raise CSVUniqueColumnError(wrong_data=e.__str__())
@@ -143,7 +166,9 @@ class EventSerializer(serializers.ModelSerializer):
                   "beginning_date",
                   "ending_date",
                   "image_link",
-                  "participants")
+                  "participants",
+                  "rooms")
         read_only_fields = ("image_link", )
         extra_kwargs = {'image': {'write_only': True},
-                        'participants': {'write_only': True}}
+                        'participants': {'write_only': True},
+                        'rooms': {'write_only': True}}
