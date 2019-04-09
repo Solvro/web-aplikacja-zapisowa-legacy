@@ -1,5 +1,8 @@
 from django.db import transaction
-from django.shortcuts import render
+from django.shortcuts import (
+    render,
+    get_object_or_404
+)
 from rest_framework import status
 from rest_framework.parsers import MultiPartParser
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
@@ -64,8 +67,20 @@ class CreateEventView(APIView):
         return Response(status=status.HTTP_201_CREATED)
 
     @swagger_auto_schema(responses={200: EventSerializer(many=True)},
-                         operation_description="Gets all organisers events")
+                         operation_description="Gets all organiser's events.")
     def get(self, request):
         event = Event.objects.filter(organizer__user=request.user)
         event_serializer = EventSerializer(event, many=True)
+        return Response(event_serializer.data)
+
+
+class DetailEventView(APIView):
+    permission_classes = (IsAuthenticated, IsOrganiserAccount)
+
+    @swagger_auto_schema(responses={200: EventSerializer(),
+                                    404: "{\"detail\": \"Not found\"}"},
+                         operation_description="Gets event's details.")
+    def get(self, request, event_name):
+        event = get_object_or_404(Event, organizer__user=request.user, name=event_name)
+        event_serializer = EventSerializer(event)
         return Response(event_serializer.data)
