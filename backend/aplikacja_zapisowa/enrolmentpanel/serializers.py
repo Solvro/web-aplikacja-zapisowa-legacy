@@ -151,8 +151,7 @@ class EventSerializer(serializers.ModelSerializer):
 
         except ValidationError as e:
             index, code, column = CSVErrorManager.unpack_details(e.detail)
-            error = CSVErrorManager.create_error(index, code, column)
-            raise error
+            raise CSVErrorManager.create_error(index, code, column)
 
         return event
 
