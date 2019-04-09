@@ -34,9 +34,9 @@ class CSVUniqueColumnError(CSVError):
     def __init__(self, line_no=1, wrong_data=None):
         unique_constrain = re.search(r'\"(.*)\"', wrong_data)
         # get name of column which is in unique constraint
-        column = unique_constrain.group(1).split("_")[2]
+        column = unique_constrain.group(1).split("_")[:-2]
         # put name of the column in human readable version
-        self.detail = f"Wartości w kolumnie {column} nie są unikalne."
+        self.detail = f"Wartości w kolumnie {'_'.join(column)} nie są unikalne."
         super().__init__(self)
 
 
