@@ -12,7 +12,10 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from enrolmentpanel.models import Student, User, Event
-from enrolmentpanel.serializers import StudentSerializer
+from enrolmentpanel.serializers import (
+    StudentSerializer,
+    OrganiserSerializer
+)
 from enrolmentpanel.organiser.permissions import IsEventOwner
 
 
@@ -43,6 +46,10 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
                     pass
 
             token['roomMates'] = serialized_room_mates
+        elif user.is_organiser:
+            organiser_data = OrganiserSerializer(user.organiser).data
+            organiser_data.pop("user")
+            token['organiserInfo'] = organiser_data
 
         return token
 
@@ -55,6 +62,8 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             data['student'] = token['student']
             data['room'] = token['room']
             data['roomMates'] = token['roomMates']
+        elif self.user.is_organiser:
+            data['organiser'] = token['organiserInfo']
 
         return data
 

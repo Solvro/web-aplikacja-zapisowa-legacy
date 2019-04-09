@@ -52,5 +52,6 @@ USERS = [
 ORGANISER = {
     "username": "test_org",
     "password": "test1234",
-    "faculty": 11
+    "faculty": 11,
+    "name": "Bateusz Rastrowy"
 }
