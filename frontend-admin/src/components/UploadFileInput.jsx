@@ -57,12 +57,12 @@ class UploadFileInput extends React.Component {
 
   render() {
     const {
-      classes, label, value, onChange, ...other
+      classes, label, value, onChange, accept, ...other
     } = this.props;
     return (
       <FormControl fullWidth className={classes.root}>
         <InputLabel shrink={!!value} htmlFor="adornment-fileselect">{label}</InputLabel>
-        <input ref={this.inputRef} type="file" style={{ visibility: 'hidden' }} onChange={this.handleFileSelected(onChange)} />
+        <input accept={accept} ref={this.inputRef} type="file" style={{ visibility: 'hidden' }} onChange={this.handleFileSelected(onChange)} />
         <Input
           {...other}
           id="adornment-fileselect"

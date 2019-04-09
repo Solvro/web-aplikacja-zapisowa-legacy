@@ -36,25 +36,27 @@ const formItemSpacing = 16;
 class TripSettingsForm extends React.Component {
   constructor(props) {
     super(props);
+    const currDate = new Date().toISOString().slice(0, 10);
     this.state = {
-      tripName: '',
-      tripDesc: '',
-      tripLocation: '',
-      tripHotel: '',
-      participantsFile: null,
-      bgImageFile: null,
-      dateStart: new Date(),
-      dateEnd: new Date(),
+      name: '',
+      description: '',
+      place: '',
+      accommodation: '',
+      participants: null,
+      image: null,
+      rooms: null,
+      beginning_date: currDate,
+      ending_date: currDate,
     };
     this.handleDateChange = this.handleDateChange.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    this.handleSend = this.handleSend.bind(this);
   }
 
   handleDateChange(name) {
     return (date) => {
+      const isoDate = date.format('YYYY-MM-DD');
       this.setState({
-        [name]: date,
+        [name]: isoDate.toString(),
       });
     };
   }
@@ -67,15 +69,11 @@ class TripSettingsForm extends React.Component {
     };
   }
 
-  handleSend() {
-    console.log(this.state);
-  }
-
   render() {
     const {
-      tripName, tripDesc, tripLocation, tripHotel, participantsFile, bgImageFile, dateStart, dateEnd,
+      name, description, place, accommodation, participants, image, beginning_date, ending_date, rooms,
     } = this.state;
-    const { classes } = this.props;
+    const { classes, onSubmit } = this.props;
     return (
       <form>
         <MuiPickersUtilsProvider utils={MomentUtils}>
@@ -89,10 +87,10 @@ class TripSettingsForm extends React.Component {
               <Grid item xs={12}>
                 <FormTextInput
                   autoFocus
-                  id="tripName"
-                  name="tripName"
-                  value={tripName}
-                  onChange={this.handleChange('tripName')}
+                  id="name"
+                  name="name"
+                  value={name}
+                  onChange={this.handleChange('name')}
                   fullWidth
                   icon={DateIcon}
                   label="Nazwa wycieczki"
@@ -100,10 +98,10 @@ class TripSettingsForm extends React.Component {
               </Grid>
               <Grid item xs={12}>
                 <FormTextInput
-                  id="tripDesc"
-                  name="tripDesc"
-                  value={tripDesc}
-                  onChange={this.handleChange('tripDesc')}
+                  id="description"
+                  name="description"
+                  value={description}
+                  onChange={this.handleChange('description')}
                   fullWidth
                   multiline
                   rows="4"
@@ -114,10 +112,10 @@ class TripSettingsForm extends React.Component {
               </Grid>
               <Grid item xs={12}>
                 <FormTextInput
-                  id="tripLocation"
-                  name="tripLocation"
-                  value={tripLocation}
-                  onChange={this.handleChange('tripLocation')}
+                  id="place"
+                  name="place"
+                  value={place}
+                  onChange={this.handleChange('place')}
                   fullWidth
                   icon={LocationIcon}
                   label="Miejsce wycieczki"
@@ -125,30 +123,42 @@ class TripSettingsForm extends React.Component {
               </Grid>
               <Grid item xs={12}>
                 <FormTextInput
-                  id="tripHotel"
-                  name="tripHotel"
-                  value={tripHotel}
-                  onChange={this.handleChange('tripHotel')}
+                  id="accommodation"
+                  name="accommodation"
+                  value={accommodation}
+                  onChange={this.handleChange('accommodation')}
                   fullWidth
                   icon={HotelIcon}
                   label="Ośrodek noclegowy"
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={6} lg={4}>
                 <UploadFileInput
-                  id="participantsFile"
-                  name="participantsFile"
-                  value={participantsFile}
-                  onChange={this.handleChange('participantsFile')}
+                  accept=".csv"
+                  id="participants"
+                  name="participants"
+                  value={participants}
+                  onChange={this.handleChange('participants')}
                   label={<LabelWithIcon fontSize="small" icon={AttachmentIcon} label="Uczestnicy" />}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={6} lg={4}>
                 <UploadFileInput
-                  id="bgImageFile"
-                  name="bgImageFile"
-                  value={bgImageFile}
-                  onChange={this.handleChange('bgImageFile')}
+                  accept=".csv"
+                  id="rooms"
+                  name="rooms"
+                  value={rooms}
+                  onChange={this.handleChange('rooms')}
+                  label={<LabelWithIcon fontSize="small" icon={AttachmentIcon} label="Pokoje" />}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6} lg={4}>
+                <UploadFileInput
+                  accept="image/*"
+                  id="image"
+                  name="image"
+                  value={image}
+                  onChange={this.handleChange('image')}
                   label={<LabelWithIcon fontSize="small" icon={ImageIcon} label="Zdjęcie tła" />}
                 />
               </Grid>
@@ -157,27 +167,27 @@ class TripSettingsForm extends React.Component {
                   fullWidth
                   margin="normal"
                   label={<LabelWithIcon fontSize="small" icon={DateIcon} label="Data rozpoczęcia" />}
-                  onChange={this.handleDateChange('dateStart')}
-                  value={dateStart}
-                  id="dateStart"
-                  name="dateStart"
+                  onChange={this.handleDateChange('beginning_date')}
+                  value={beginning_date}
+                  id="beginning_date"
+                  name="beginning_date"
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <DatePicker
                   fullWidth
                   margin="normal"
-                  label={<LabelWithIcon fontSize="small" icon={DateIcon} label="Data zakończeniaaaaa" />}
-                  onChange={this.handleDateChange('dateEnd')}
-                  value={dateEnd}
-                  id="dateEnd"
-                  name="dateEnd"
+                  label={<LabelWithIcon fontSize="small" icon={DateIcon} label="Data zakończenia" />}
+                  onChange={this.handleDateChange('ending_date')}
+                  value={ending_date}
+                  id="ending_date"
+                  name="ending_date"
                 />
               </Grid>
 
               <Grid item className={classes.button} xs={12}>
                 <Button
-                  onClick={this.handleSend}
+                  onClick={(() => onSubmit(this.state))}
                   variant="contained"
                   color="secondary"
                 >

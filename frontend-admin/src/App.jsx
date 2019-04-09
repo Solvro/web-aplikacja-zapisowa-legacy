@@ -9,9 +9,9 @@ import CreateTripRoute from './routes/CreateTripRoute';
 import TableRoute from './routes/TableRoute';
 import LoginRoute from './routes/LoginRoute';
 import NoMatchRoute from './routes/NoMatchRoute';
-import TripRoute from './routes/TripRoute';
 import ManageTripsRoute from './routes/ManageTripsRoute';
 import TripAppBar from './components/TripAppBar';
+import PrivateRoute from './components/PrivateRoute';
 
 
 const styles = theme => ({
@@ -22,35 +22,19 @@ const App = ({ classes }) => (
   <React.Fragment>
     <CssBaseline />
     <MuiThemeProvider theme={theme}>
+      <TripAppBar />
+      <div className={classes.toolbar} />
       <BrowserRouter>
         <Switch>
-          <Route path="/trips">
-            <>
-              <TripAppBar />
-              <div className={classes.toolbar} />
-              <Switch>
-                <Route
-                  path="/trips/:id(\d+)"
-                  component={TripRoute}
-                />
-                <Route
-                  path="/trips/create"
-                  exact
-                  component={CreateTripRoute}
-                />
-                <Route
-                  path="/trips"
-                  exact
-                  component={ManageTripsRoute}
-                />
-              </Switch>
-            </>
-          </Route>
+          <PrivateRoute
+            path="/trips"
+            component={ManageTripsRoute}
+          />
           <Route
             path="/login"
             component={LoginRoute}
           />
-          <Route
+          <PrivateRoute
             path="/table"
             component={TableRoute}
           />

@@ -6,8 +6,16 @@ import Paper from '@material-ui/core/Paper/Paper';
 import TripCard from './TripCard';
 import Typography from '@material-ui/core/Typography';
 import { withRouter } from 'react-router-dom';
+import { getAllEvents } from '../../store/Api'
 // import { tripsMock } from '../mockData/trips';
 
+const addNewEventTileDetails = {
+    name: 'AddingCard',
+    description: 'Kliknij aby dodać nową wycieczkę',
+    overlayText: '',
+    image: 'https://www.thoughtco.com/thmb/zQfnmMB7JGh55biV3b_ok_w79yE=/768x0/filters:no_upscale():max_bytes(150000):strip_icc()/simpsons1920-58b5a0013df78cdcd87a03bc.jpg',
+    onClick: () => {}
+}
 
 class ManageTripScreen extends React.Component {
 
@@ -17,13 +25,7 @@ class ManageTripScreen extends React.Component {
         this.createNewTrip = this.createNewTrip.bind(this);
         this.state = {
             trips: [
-                {
-                    name: 'AddingCard',
-                    description: 'Kliknij aby dodać nową wycieczkę',
-                    overlayText: '',
-                    image: 'https://www.thoughtco.com/thmb/zQfnmMB7JGh55biV3b_ok_w79yE=/768x0/filters:no_upscale():max_bytes(150000):strip_icc()/simpsons1920-58b5a0013df78cdcd87a03bc.jpg',
-                    onClick: this.createNewTrip
-                }
+                addNewEventTileDetails
             ]
         };
     }
@@ -39,6 +41,23 @@ class ManageTripScreen extends React.Component {
         }, ...trips];
         this.setState({ trips: updatedTrips });
     };
+
+    async loadEvents() {
+        const events = await getAllEvents();
+        events.forEach((evt) => {
+            evt.image = "http://" + evt.image_link;
+            delete evt.image_link;
+            // TODO: remove 'http://' when backend fixes this issue.
+        })
+        return events;
+    }
+
+    async componentDidMount() {
+        const events = await this.loadEvents()
+        this.setState({
+            trips: [...events, addNewEventTileDetails]
+        })
+    }
 
     render() {
         const { classes } = this.props;
