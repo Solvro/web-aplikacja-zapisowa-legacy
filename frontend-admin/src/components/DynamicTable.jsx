@@ -61,11 +61,9 @@ const renderCustomTableCell = content => (
 );
 
 
-let id = 0;
-function createData(capacity, freeSpots, busySpots, sex) {
-  id += 1;
+function createData(id, capacity, freeSpots, busySpots, sex) {
   return {
-    id: renderCustomTableCellWithComponent(id),
+    id: renderCustomTableCellWithComponent(id + 1),
     capacity: renderCustomTableCell(capacity),
     freeSpots: renderCustomTableCell(freeSpots),
     busySpots: renderCustomTableCell(busySpots),
@@ -75,7 +73,7 @@ function createData(capacity, freeSpots, busySpots, sex) {
 
 function DynamicTable(props) {
   const { classes, headers, rows } = props;
-  const parsedRows = rows.map(row => createData(row.capacity, row.freeSpots, row.busySpots, row.sex));
+  const parsedRows = rows.map((row, idx) => createData(idx, row.capacity, row.freeSpots, row.busySpots, row.sex));
 
 
   return (

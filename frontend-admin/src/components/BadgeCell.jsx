@@ -12,8 +12,6 @@ const styles = theme => ({
     height: '100%',
     width: '50%',
     padding: '10%',
-    paddingLeft: '20%',
-    paddingRight: '20%',
   },
 });
 
