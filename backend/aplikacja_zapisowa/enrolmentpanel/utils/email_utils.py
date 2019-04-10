@@ -1,14 +1,18 @@
 from django.core.mail import send_mail
 
 
-STUDENT_MAIL_SUBJECT = "Witaj {index}! Twoje konto jest juz gotowe!"
+STUDENT_MAIL_SUBJECT = "Zapisy na rajd {trip}"
 
 STUDENT_MAIL_TEMPLATE = """
-Witaj, {index} rejestracja do pokoi na rajd {trip} będzie wkrótce mozliwa:
-Oto twoje dane logowanie:
-Login: {login}
-Hasło: {password}
-Powodzenia przy rejestracji ;-)
+Witaj, {index}!\n
+Twoje konto jest juz gotowe!\n
+Rejestracja do pokoi na rajd {trip} będzie wkrótce możliwa!\n
+Oto twoje dane do logowania:\n
+Login: {login}\n
+Hasło: {password}\n
+Strona: <podać adres>\n
+Powodzenia przy rejestracji ;-)\n\n
+Wiadomość została wygenerowana automatycznie. Prosimy na nią nie odpowiadać.\n
 """
 
 
@@ -32,7 +36,7 @@ class BasicMail(object):
 class StudentRegisterMail(BasicMail):
 
     def __init__(self, event, index, username, password):
-        subject = STUDENT_MAIL_SUBJECT.format(index=index)
+        subject = STUDENT_MAIL_SUBJECT.format(trip=event.name)
         body = STUDENT_MAIL_TEMPLATE.format(
             index=index,
             trip=event.name,
