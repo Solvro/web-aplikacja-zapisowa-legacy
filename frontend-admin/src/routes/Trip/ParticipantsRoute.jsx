@@ -14,7 +14,7 @@ class ParticipantsRoute extends Component {
     const { match } = this.props;
     return (
       <>
-        <TableCard/>
+        <TableCard topic="Uczestnicy" header={[{key: 'dasda', value: 50}, {key: 'dasdddsadaa', value: 30}, {key: 'bbb', value: 501} ]} />
       </>
     );
   }

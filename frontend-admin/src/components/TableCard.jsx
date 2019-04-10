@@ -11,15 +11,55 @@ const styles = theme => ({
     marginTop: theme.spacing.unit * 3,
     overflowX: 'auto',
   },
+  headerContainer: {
+    display: 'flex',
+    flex: 1,
+    padding: theme.spacing.unit * 2,
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+  },
+  headerItem: {
+    flex: 1,
+    justifyContent: 'center',
+    textAlign: 'center',
+    flexDirection: 'column',
+  },
+  cardHeader: {
+    display: 'flex',
+    flex: 1,
+    justifyContent: 'center',
+    textAlign: 'center',
+    padding: theme.spacing.unit * 2,
+    fontWeight: 'bold',
+    backgroundColor: '#EEE',
+  },
 });
 
 const TableCard = (props) => {
-  const { classes } = props;
+  const { classes, topic, header } = props;
 
   return (
     <Paper className={classes.root}>
-			<DynamicTable />
-		</Paper>
+      <div className={classes.cardHeader}>
+        topic
+      </div>
+      <div className={classes.headerContainer}>
+        {
+        header.map(col => (
+          <div key={col.key} className={classes.headerItem}>
+            <div>
+              {col.key}
+            </div>
+            <div>
+              {col.value}
+            </div>
+          </div>
+        ))
+      }
+
+      </div>
+      <DynamicTable />
+    </Paper>
   );
 };
 

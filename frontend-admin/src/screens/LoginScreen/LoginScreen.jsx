@@ -68,7 +68,7 @@ class LoginScreen extends React.Component {
                             className={classes.loginCard}
                         >
                             <FacultyLogo size={15}/>
-                            <Typography color='default' align='center' variant='h3'>
+                            <Typography color='primary' align='center' variant='h3'>
                                 Jesienny Rajd Mechanika
                             </Typography>
                             <form onSubmit={this.tryAuthorize} className={classes.form}>

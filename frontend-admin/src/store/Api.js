@@ -1,3 +1,5 @@
+import createAuthRefreshInterceptor from 'axios-auth-refresh';
+
 const axios = require('axios');
 
 axios.defaults.headers.common.Authorization = `Bearer ${localStorage.getItem('token')}`;
@@ -5,6 +7,15 @@ axios.defaults.headers.common.Authorization = `Bearer ${localStorage.getItem('to
 const instance = axios.create({
   baseURL: 'http://localhost:8000/api/',
 });
+
+// głowy sobie nie dam uciąć czy dobry urlsc
+const refreshAuthLogic = err => axios.post('/refresh/').then((res) => {
+  localStorage.setItem('token', res.data.token);
+  err.response.config.headers.Authentication = `Bearer ${res.data.token}`;
+  return Promise.resolve();
+});
+
+createAuthRefreshInterceptor(instance, refreshAuthLogic);
 
 export async function authorizeUser(username, password) {
   try {
