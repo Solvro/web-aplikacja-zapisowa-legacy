@@ -68,13 +68,7 @@ export async function createEvent(data) {
 
 export async function getEventDetails(eventName) {
   try {
-    // const response = await instance.get(`/organiser/event/${eventName}`);
-    const response = {
-      data: {
-        name: eventName,
-        description: 'Wieloletnia tradycja wydziału mechanicznego, głuchołazy bla bla',
-      },
-    };
+    const response = await instance.get(`/organiser/event/${eventName}`);
     return response.data;
   } catch (error) {
     return null;
