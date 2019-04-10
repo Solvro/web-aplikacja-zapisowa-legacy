@@ -36,12 +36,12 @@ const styles = theme => ({
 });
 
 const TableCard = (props) => {
-  const { classes, topic, header } = props;
+  const { classes, topic, header, columns, rows } = props;
 
   return (
     <Paper className={classes.root}>
       <div className={classes.cardHeader}>
-        topic
+        { topic }
       </div>
       <div className={classes.headerContainer}>
         {
@@ -58,7 +58,7 @@ const TableCard = (props) => {
       }
 
       </div>
-      <DynamicTable />
+      <DynamicTable rows={rows} headers={columns} />
     </Paper>
   );
 };

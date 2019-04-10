@@ -1,8 +1,6 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 
-
-
 const styles = theme => ({
   root: {
     display: 'flex',
@@ -13,11 +11,16 @@ const styles = theme => ({
     color: 'white',
     height: '100%',
     width: '50%',
-    padding: '6%',
+    padding: '10%',
+    paddingLeft: '20%',
+    paddingRight: '20%',
   },
 });
 
-const BadgeCell = ({ children, classes }) => <div style={classes.root}>{ children }</div>;
+function BadgeCell(props) {
+  const { children, classes } = props;
+  return <div className={classes.root}>{ children }</div>;
+}
 
 
 export default withStyles(styles)(BadgeCell);

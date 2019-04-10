@@ -1,4 +1,4 @@
-import createAuthRefreshInterceptor from 'axios-auth-refresh';
+// import createAuthRefreshInterceptor from 'axios-auth-refresh';
 
 const axios = require('axios');
 
@@ -9,13 +9,13 @@ const instance = axios.create({
 });
 
 // głowy sobie nie dam uciąć czy dobry urlsc
-const refreshAuthLogic = err => axios.post('/refresh/').then((res) => {
-  localStorage.setItem('token', res.data.token);
-  err.response.config.headers.Authentication = `Bearer ${res.data.token}`;
-  return Promise.resolve();
-});
+// const refreshAuthLogic = err => axios.post('/refresh/').then((res) => {
+//   localStorage.setItem('token', res.data.token);
+//   err.response.config.headers.Authentication = `Bearer ${res.data.token}`;
+//   return Promise.resolve();
+// });
 
-createAuthRefreshInterceptor(instance, refreshAuthLogic);
+// createAuthRefreshInterceptor(instance, refreshAuthLogic);
 
 export async function authorizeUser(username, password) {
   try {
