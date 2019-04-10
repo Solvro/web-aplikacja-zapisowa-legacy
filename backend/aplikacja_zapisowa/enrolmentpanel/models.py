@@ -19,14 +19,18 @@ class User(AbstractUser):
 
 class OrganiserManager(models.Manager):
 
-    def create(self, username, password, faculty):
+    def create(self, username, password, faculty, name):
         organiser_user = User.objects.create_user(
             username=username,
             password=password
         )
         organiser_user.is_organiser = True
         organiser_user.save()
-        organiser = Organiser(faculty=faculty, user=organiser_user)
+        organiser = Organiser(
+            faculty=faculty,
+            user=organiser_user,
+            name=name
+        )
         organiser.save()
         return organiser
 
@@ -35,6 +39,7 @@ class Organiser(models.Model):
     objects = OrganiserManager()
 
     faculty = models.PositiveSmallIntegerField()
+    name = models.CharField(max_length=30)
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True, related_name='organiser')
 
     def delete(self, *args, **kwargs):
@@ -56,7 +61,6 @@ class Event(models.Model):
     organizer = models.ForeignKey(Organiser, on_delete=models.CASCADE)
 
 
-    
 class Room(models.Model):
     number = models.IntegerField()
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
@@ -110,7 +114,7 @@ class StudentManager(models.Manager):
         saved_users = User.objects.bulk_create(users)
         for student, user in zip(objs, saved_users):
             student.user = user
-        super().bulk_create(objs, batch_size=batch_size)
+        return super().bulk_create(objs, batch_size=batch_size)
 
 
     def create(self, index, event, sex, name, faculty):

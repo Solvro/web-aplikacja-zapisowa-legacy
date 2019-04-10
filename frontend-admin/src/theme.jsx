@@ -1,13 +1,16 @@
 import { createMuiTheme } from '@material-ui/core/styles';
-import {indigo, cyan} from '@material-ui/core/colors'
+import {blue, lightBlue} from '@material-ui/core/colors'
+
+const customPrimaryColor = blue;
+const customSecondaryColor = lightBlue;
 
 const theme = createMuiTheme({
   custom: {
-    padding: "16px",
+    padding: '16px',
   },
   palette: {
-    primary: indigo,
-    secondary: cyan,
+    primary: customPrimaryColor,
+    secondary: customSecondaryColor,
     // error: will use the default color
   },
   typography: {
@@ -16,10 +19,10 @@ const theme = createMuiTheme({
   overrides: {
     MuiCircularProgress: {
       colorSecondary: {
-        color: indigo[200],
-      }
-    }
-  }
+        color: customPrimaryColor[200],
+      },
+    },
+  },
 });
 
 export default theme;
