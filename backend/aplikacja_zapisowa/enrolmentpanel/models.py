@@ -114,6 +114,7 @@ class StudentManager(models.Manager):
         saved_users = User.objects.bulk_create(users)
         for student, user in zip(objs, saved_users):
             student.user = user
+            student.status = 'N'
         return super().bulk_create(objs, batch_size=batch_size)
 
 
@@ -132,7 +133,8 @@ class StudentManager(models.Manager):
             index=index,
             sex=sex,
             name=name,
-            faculty=faculty
+            faculty=faculty,
+            status='N'
         )
 
         new_student.save()
@@ -173,8 +175,11 @@ class Student(models.Model):
     name = models.CharField(max_length=30)
     index = models.CharField(max_length=30)
     faculty = models.PositiveSmallIntegerField()
-    sex = models.CharField(max_length=1,
-                           choices=SEX_CHOICES)
+    sex = models.CharField(
+        default='N',
+        max_length=1,
+        choices=SEX_CHOICES
+    )
     status = models.CharField(
         max_length=1,
         choices=STATUS_CHOICES

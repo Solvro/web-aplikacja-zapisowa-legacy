@@ -73,7 +73,7 @@ class SoloRoomView(APIView):
         self.check_object_permissions(request, event)
 
         if student.status != 'N':
-            raise StudentAlreadyRegisteredException(student.pk)
+            raise StudentAlreadyRegisteredException(student.index)
 
         room = self.get_room_for_solo(event)
         room.add_people([student])
@@ -91,6 +91,7 @@ class GroupRoomView(APIView):
     
     permission_classes = (IsAuthenticated, IsStudentAccount)
 
+    # to jest rakowe fchuj, trz zrefactorować xD
     def get_users_from_request(self, request):
         group_users = []
         group_users.append(request.user.username)
@@ -107,7 +108,7 @@ class GroupRoomView(APIView):
     def validate_students(self, students):
         for student in students:
             if not student.status == 'N':
-                raise StudentAlreadyRegisteredException(student.pk)
+                raise StudentAlreadyRegisteredException(student.index)
 
     def post(self, request, event_name, room_no):
         user_names = self.get_users_from_request(request)
