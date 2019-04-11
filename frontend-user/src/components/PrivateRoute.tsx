@@ -39,8 +39,7 @@ class PrivateRoute extends Route<PrivateRouteProps> {
             const student = JSON.parse((await localStorage.getItem('signedInStudent')!));
             this.props.signIn(student);
             const verifyResult = token && await verifyUser(token);
-            const isLogged = token && verifyResult;
-            return isLogged;
+            return token && verifyResult;
         } catch (e) {
             console.log(e);
             return ;

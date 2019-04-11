@@ -14,8 +14,8 @@ import {
 import {addRoomMatesModalStyles} from "./AddRoomMatesModalStyles";
 import {connect, Dispatch} from "react-redux";
 import {ApplicationState} from "../../store";
-import {ApplicationError, RoomMate} from "../../store/RoomMate/types";
-import {initFetchRoomMate, removeRoomMate} from "../../store/RoomMate/actions";
+import {ApplicationError, RoomMate, StudentErrors} from "../../store/RoomMate/types";
+import {addError, initFetchRoomMate, removeRoomMate} from "../../store/RoomMate/actions";
 import {UserChip} from "../UserChip/UserChip";
 import {GroupAdd} from "@material-ui/icons";
 import {NavLink} from "react-router-dom";
@@ -26,8 +26,9 @@ type AddRoomMatesModalProps = {
     roomMates: RoomMate[];
     errors: ApplicationError[];
     user: RoomMate;
-    addRoomMate(login: string, eventName: string): void;
+    initFetchRoomMate(login: string, eventName: string): void;
     removeRoomMate(login: string): void;
+    sendSignedUserAddedError(name: string): void;
 }
 
 const mapStateToProps = (state: ApplicationState): Partial<AddRoomMatesModalProps> => {
@@ -41,12 +42,9 @@ const mapStateToProps = (state: ApplicationState): Partial<AddRoomMatesModalProp
 };
 const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>): Partial<AddRoomMatesModalProps> => {
     return {
-        addRoomMate(login, eventName) {
-            initFetchRoomMate(login, eventName)(dispatch);
-        },
-        removeRoomMate(login) {
-            dispatch(removeRoomMate(login));
-        },
+        initFetchRoomMate: (login, eventName) => initFetchRoomMate(login, eventName)(dispatch),
+        removeRoomMate: (login) => dispatch(removeRoomMate(login)),
+        sendSignedUserAddedError: (name: string) => dispatch(addError(StudentErrors.addedYet(name))),
     }
 };
 
@@ -72,12 +70,12 @@ class AddRoomMatesModal extends React.Component<WithStyles<typeof addRoomMatesMo
     };
 
     addUserByLogin = () => {
-        this.props.addRoomMate(this.state.inputCode, this.props.user.event);
+        this.addRoomMate(this.state.inputCode, this.props.user.event);
         this.setState({inputCode: ""});
     };
 
     public render(): React.ReactNode {
-        const {removeRoomMate, classes, isFetching, roomMates, user} = this.props;
+        const { removeRoomMate, classes, isFetching, roomMates, user } = this.props;
         return (
             <div className={classes.container}>
                 <Grid
@@ -164,6 +162,16 @@ class AddRoomMatesModal extends React.Component<WithStyles<typeof addRoomMatesMo
                 </Grid>
             </div>
         );
+    }
+
+    private addRoomMate = (inputCode: string, event: string) => {
+        if (inputCode === this.props.user.login) {
+            this.props.sendSignedUserAddedError(this.props.user.name);
+        } else {
+            this.props.initFetchRoomMate(inputCode, event);
+        }
+        console.log(inputCode);
+        console.log(this.props.user.login)
     }
 }
 
