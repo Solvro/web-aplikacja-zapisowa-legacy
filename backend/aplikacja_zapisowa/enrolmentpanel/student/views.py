@@ -89,7 +89,10 @@ class SoloRoomView(APIView):
 
 class GroupRoomView(APIView):
     
-    permission_classes = (IsAuthenticated, IsStudentAccount)
+    permission_classes = (
+        IsAuthenticated,
+        IsStudentAccount,
+        IsStudentParticipatingInEvent)
 
     # to jest rakowe fchuj, trz zrefactorować xD
     def get_users_from_request(self, request):
