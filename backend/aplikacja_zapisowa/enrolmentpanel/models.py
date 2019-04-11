@@ -161,6 +161,11 @@ class Student(models.Model):
         ('M', 'Male'),
         ('F', 'Female'),
     )
+    STATUS_CHOICES = (
+        ('N', 'Not registered'),
+        ('S', 'Solo registered'),
+        ('G', 'Group registered'),
+    )
     objects = StudentManager()
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True, related_name='participant')
@@ -170,6 +175,10 @@ class Student(models.Model):
     faculty = models.PositiveSmallIntegerField()
     sex = models.CharField(max_length=1,
                            choices=SEX_CHOICES)
+    status = models.CharField(
+        max_length=1,
+        choices=STATUS_CHOICES
+    )
     room = models.ForeignKey(Room,
                              default=None,
                              null=True,
