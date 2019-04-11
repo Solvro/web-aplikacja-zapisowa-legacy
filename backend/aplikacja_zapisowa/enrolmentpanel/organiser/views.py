@@ -16,8 +16,12 @@ from rest_framework.exceptions import ValidationError
 from drf_yasg.utils import swagger_auto_schema
 
 from .permissions import (IsOrganiserAccount, IsEventOwner)
-from enrolmentpanel.models import Event
-from enrolmentpanel.serializers import StudentSerializer, EventSerializer
+from enrolmentpanel.models import Event, Student
+from enrolmentpanel.serializers import (
+    PartialStudentSerializer,
+    StudentSerializer,
+    EventSerializer
+)
 from enrolmentpanel.exceptions import UniqueEventNameError
 
 
@@ -90,3 +94,51 @@ class DetailEventView(APIView):
         event = get_object_or_404(Event, organizer__user=request.user, name=event_name)
         event_serializer = EventSerializer(event)
         return Response(event_serializer.data)
+
+class StudentStatusView(APIView):
+    permission_classes = (IsAuthenticated, IsOrganiserAccount, IsEventOwner)
+
+    @swagger_auto_schema(
+        responses={
+            200: """
+{
+    "stats": {
+        "students": 4,
+        "solo_students": 1,
+        "students_in_rooms": 1
+    },
+    "students": [
+        {
+            "name": "Jan Bibrowski",
+            "faculty": 11,
+            "sex": "M",
+            "status": "N"
+        }
+    ]
+}
+            """,
+            404: "{\"detail\": \"Not found\"}"
+        },
+        operation_description="Lists all students with statuses and stats"
+        )
+    def get(self, request, event_name):
+        event = get_object_or_404(Event, organizer__user=request.user, name=event_name)
+        self.check_object_permissions(request, event)
+
+        eventStudents = Student.objects.filter(event=event)
+        soloStudentsCount = eventStudents.filter(status='S').count()
+        groupStudentsCount = eventStudents.filter(status='G').count()
+
+        statistics_data = {
+            "students": eventStudents.count(),
+            "solo_students": soloStudentsCount,
+            "students_in_rooms": groupStudentsCount + soloStudentsCount
+        }
+
+        request.data['event'] = event
+        student_serializer = PartialStudentSerializer(eventStudents, many=True)
+            
+        return Response({
+            "stats": statistics_data,
+            "students": student_serializer.data
+        })

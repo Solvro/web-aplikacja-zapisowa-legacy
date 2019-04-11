@@ -80,6 +80,13 @@ class StudentSerializer(serializers.ModelSerializer):
         fields = ("name", "index", "faculty", "sex", "event")
 
 
+class PartialStudentSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Student
+        fields = ("name", "faculty", "sex", "status")
+
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
