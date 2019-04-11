@@ -34,14 +34,18 @@ import re
 class RoomListSerializer(serializers.ListSerializer):
 
     def create(self, validated_data):
-        rooms = [Room(**item, event=self.context['event']) for item in validated_data]
+        rooms = []
+        for item in validated_data:
+            vacancies = item['max_capacity']
+            rooms.append(Room(**item, event=self.context['event'], vacancies=vacancies))
         return Room.objects.bulk_create(rooms)
 
 
 class RoomSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
-        return Room.objects.create(**validated_data, event=self.context['event'])
+        vacancies = validated_data['max_capacity']
+        return Room.objects.create(**validated_data, event=self.context['event'], vacancies=vacancies)
     
     class Meta:
         list_serializer_class = RoomListSerializer
