@@ -42,27 +42,31 @@ class ChooseRoomModal extends React.Component<WithStyles<typeof chooseRoomModalS
         const wb = new WebSocket('ws://localhost:8000/ws/testowy/rooms/');
 
         wb.onmessage = (message: MessageEvent) => {
-            const data = JSON.parse(message.data);
-            if  (Object.keys(data).includes('rooms')) {
-                const rooms: Room[] = data.rooms
-                    .map((room: WebSocketRoom): Room => ({
-                        capacity: room.max_capacity,
-                        number: room.number,
-                        occupancy: room.max_capacity - room.vacancies
-                    }));
+            try {
+                const data = JSON.parse(message.data);
+                if  (data.rooms) {
+                    const rooms: Room[] = data.rooms
+                        .map((room: WebSocketRoom): Room => ({
+                            capacity: room.max_capacity,
+                            number: room.number,
+                            occupancy: room.max_capacity - room.vacancies
+                        }));
 
-                this.setState({rooms});
-            } else if (Object.keys(data).includes('room')) {
-                const newRoom: Room = {
-                    capacity: data.room.max_capacity,
-                    number: data.room.number,
-                    occupancy: data.room.max_capacity - data.room.vacancies
-                };
+                    this.setState({rooms});
+                } else if (data.room) {
+                    const newRoom: Room = {
+                        capacity: data.room.max_capacity,
+                        number: data.room.number,
+                        occupancy: data.room.max_capacity - data.room.vacancies
+                    };
 
-                this.setState({
-                    rooms: this.state.rooms.map((room: Room) =>
-                        (room.number !== newRoom.number) ? room : newRoom)
-                });
+                    this.setState({
+                        rooms: this.state.rooms.map((room: Room) =>
+                            (room.number !== newRoom.number) ? room : newRoom)
+                    });
+                }
+            } catch (error) {
+                console.error(error);
             }
         };
     }
@@ -144,7 +148,9 @@ class ChooseRoomModal extends React.Component<WithStyles<typeof chooseRoomModalS
                         Wybierz pokój
                     </Typography>
                     <Grid container={true}>
-                        {this.state.rooms.map((room: Room, index: number) => {
+                        {this.state.rooms
+                            .sort((r1: Room, r2: Room) => r1.number - r2.number)
+                            .map((room: Room, index: number) => {
                             return (
                                 <Grid item={true} xs={12} sm={6} md={4} lg={3} style={{padding: '0.5em'}} key={index}>
                                     <RoomCard onClick={() => this.setState({isModalVisible: true, pickedRoom: room})}

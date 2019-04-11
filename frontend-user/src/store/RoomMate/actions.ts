@@ -24,8 +24,7 @@ export const initFetchRoomMate = (username: string, eventName: string) => {
         let roomMate: RoomMate;
 
         try {
-            roomMate = await fetchStudent(username, eventName);
-            const {name, faculty, event, index, sex} = roomMate;
+            const {name, faculty, event, index, sex} = roomMate = await fetchStudent(username, eventName);
             if (roomMate) {
                 dispatch(fetchRoomMate.success({name, faculty, login: username, event, index, sex}))
             } else {
