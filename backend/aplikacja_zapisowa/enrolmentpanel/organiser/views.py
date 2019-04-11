@@ -103,8 +103,29 @@ class DetailRoomListView(APIView):
 
     permission_classes = (IsAuthenticated, IsOrganiserAccount)
 
+    @swagger_auto_schema(
+            responses={
+                200: """
+                {
+                    "room_count": 0,
+                    "free_count": 0,
+                    "vacancies": 0,
+                    "rooms": [
+                        {
+                            "number": 123,
+                            "max_capacity": 12,
+                            "vacancies": 0,
+                            "cur_capacity": 0,
+                            "sex_division": "N/A"
+                        }
+                    ]
+                }
+                """,
+                404: "{\"detail\": \"Not found\"}"
+            },
+            operation_description="Lists all rooms and it stats. Additional it has sex_division which varies from \
+            ['N/A', 'męski', 'zenski', 'koedukacyjny']")
     def get(self, request, event_name):
-
         event = get_object_or_404(Event.objects
                     .prefetch_related(Prefetch('room_set'), Prefetch('room_set__student_set')),
                     name=event_name, organizer__user=request.user)
