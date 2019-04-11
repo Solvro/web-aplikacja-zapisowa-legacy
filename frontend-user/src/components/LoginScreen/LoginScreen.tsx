@@ -51,8 +51,8 @@ class LoginScreen extends React.Component<WithStyles<typeof loginScreenStyles> &
         const token = authorizationResult ? authorizationResult.access : false;
         if (token) {
             const user = {...authorizationResult.student, login: username};
-            await localStorage.setItem('token', token);
-            await localStorage.setItem('signedInStudent', JSON.stringify(user));
+            localStorage.setItem('token', token);
+            localStorage.setItem('signedInStudent', JSON.stringify(user));
             this.props.signIn(user);
             this.props.history.push('/AddingRoomMates')
         } else {
@@ -78,7 +78,7 @@ class LoginScreen extends React.Component<WithStyles<typeof loginScreenStyles> &
     }
 
     validateIsLogged = async () => {
-        const token = await localStorage.getItem('token');
+        const token = localStorage.getItem('token');
         return token && await verifyUser(token);
     };
 
