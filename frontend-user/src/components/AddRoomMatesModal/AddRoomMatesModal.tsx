@@ -165,13 +165,12 @@ class AddRoomMatesModal extends React.Component<WithStyles<typeof addRoomMatesMo
     }
 
     private addRoomMate = (inputCode: string, event: string) => {
-        if (inputCode === this.props.user.login) {
-            this.props.sendSignedUserAddedError(this.props.user.name);
+        const { login, name } = this.props.user;
+        if (inputCode === login) {
+            this.props.sendSignedUserAddedError(name);
         } else {
             this.props.initFetchRoomMate(inputCode, event);
         }
-        console.log(inputCode);
-        console.log(this.props.user.login)
     }
 }
 
