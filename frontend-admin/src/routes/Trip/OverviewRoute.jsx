@@ -27,7 +27,6 @@ class OverviewRoute extends Component {
     const { match } = this.props;
     const { id } = match.params;
     const details = await getEventDetails(id);
-    console.log(details);
     if (details) {
       this.setState(details);
     }
