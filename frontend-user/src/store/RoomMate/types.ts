@@ -2,6 +2,9 @@ export type RoomMate = {
     name: string;
     faculty: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13;
     login: string;
+    index: string;
+    sex: "M" | "F";
+    event: string;
 }
 
 export interface RoomMateState {

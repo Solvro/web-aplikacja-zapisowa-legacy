@@ -5,10 +5,10 @@ const instance = axios.create({
     timeout: 1000,
 });
 
-export async function fetchStudent(username: string) {
+export async function fetchStudent(username: string, event: string) {
     try {
         const token = await localStorage.getItem('token');
-        const student = await instance.get(`/students/${username}`, {headers: {'Authorization': `Bearer ${token}`}});
+        const student = await instance.get(`/students/${event}/${username}/`, {headers: {'Authorization': `Bearer ${token}`}});
         return student.data;
     } catch (error) {
         console.log(`Error: ${error}`);
@@ -19,7 +19,7 @@ export async function fetchStudent(username: string) {
 
 export async function authorizeUser(username: string, password: string) {
     try {
-        const result = await instance.post(`/token`, { username, password });
+        const result = await instance.post(`/token/`, { username, password });
         if (result)
             return result.data;
         else
@@ -31,7 +31,7 @@ export async function authorizeUser(username: string, password: string) {
 
 export async function verifyUser(token: string) {
     try {
-        const verification = await instance.post(`/token/verify`, { token });
+        const verification = await instance.post(`/token/verify/`, { token });
         const isVerify = verification && verification.status === 200;
         return isVerify;
     } catch (error) {

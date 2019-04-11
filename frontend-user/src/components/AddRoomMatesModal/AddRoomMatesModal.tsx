@@ -26,7 +26,7 @@ type AddRoomMatesModalProps = {
     roomMates: RoomMate[];
     errors: ApplicationError[];
     user: RoomMate;
-    addRoomMate(login: string): void;
+    addRoomMate(login: string, eventName: string): void;
     removeRoomMate(login: string): void;
 }
 
@@ -41,8 +41,8 @@ const mapStateToProps = (state: ApplicationState): Partial<AddRoomMatesModalProp
 };
 const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>): Partial<AddRoomMatesModalProps> => {
     return {
-        addRoomMate(login) {
-            initFetchRoomMate(login)(dispatch);
+        addRoomMate(login, eventName) {
+            initFetchRoomMate(login, eventName)(dispatch);
         },
         removeRoomMate(login) {
             dispatch(removeRoomMate(login));
@@ -72,7 +72,7 @@ class AddRoomMatesModal extends React.Component<WithStyles<typeof addRoomMatesMo
     };
 
     addUserByLogin = () => {
-        this.props.addRoomMate(this.state.inputCode);
+        this.props.addRoomMate(this.state.inputCode, this.props.user.event);
         this.setState({inputCode: ""});
     };
 

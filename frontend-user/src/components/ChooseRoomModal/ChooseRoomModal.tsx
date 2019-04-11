@@ -3,7 +3,6 @@ import {Button, Grid, Modal, Paper, Typography, withStyles, WithStyles} from "@m
 import {chooseRoomModalStyles} from "./ChooseRoomModalStyles";
 import {UserChip} from "../UserChip/UserChip";
 import {Room, RoomCard} from "./RoomCard";
-import {roomsToChoose} from "../../fake/RoomsData";
 import {ApplicationState} from "../../store";
 import {RoomMate} from "../../store/RoomMate/types";
 import {connect} from "react-redux";
@@ -14,6 +13,13 @@ type ChooseRoomModalProps = {
     roomMates: RoomMate[];
     user: RoomMate;
 }
+
+type WebSocketRoom = {
+    number: number;
+    vacancies: number;
+    max_capacity: number;
+}
+
 const mapStateToProps = (state: ApplicationState): Partial<ChooseRoomModalProps> => {
     return {
         roomMates: state.roomMateState.roomMates,
@@ -23,7 +29,7 @@ const mapStateToProps = (state: ApplicationState): Partial<ChooseRoomModalProps>
 
 class ChooseRoomModal extends React.Component<WithStyles<typeof chooseRoomModalStyles> & ChooseRoomModalProps> {
     state = {
-        rooms: roomsToChoose,
+        rooms: [],
         isModalVisible: false,
         pickedRoom: {
             number: 0,
@@ -32,8 +38,41 @@ class ChooseRoomModal extends React.Component<WithStyles<typeof chooseRoomModalS
         },
     };
 
+    public componentDidMount() {
+        const wb = new WebSocket('ws://localhost:8000/ws/testowy/rooms/');
+
+        wb.onmessage = (message: MessageEvent) => {
+            try {
+                const data = JSON.parse(message.data);
+                if  (data.rooms) {
+                    const rooms: Room[] = data.rooms
+                        .map((room: WebSocketRoom): Room => ({
+                            capacity: room.max_capacity,
+                            number: room.number,
+                            occupancy: room.max_capacity - room.vacancies
+                        }));
+
+                    this.setState({rooms});
+                } else if (data.room) {
+                    const newRoom: Room = {
+                        capacity: data.room.max_capacity,
+                        number: data.room.number,
+                        occupancy: data.room.max_capacity - data.room.vacancies
+                    };
+
+                    this.setState({
+                        rooms: this.state.rooms.map((room: Room) =>
+                            (room.number !== newRoom.number) ? room : newRoom)
+                    });
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        };
+    }
+
     public render(): React.ReactNode {
-        const {classes, roomMates, user} = this.props;
+        const { classes, roomMates, user } = this.props;
         return (
             <Grid
                 container={true}
@@ -69,7 +108,7 @@ class ChooseRoomModal extends React.Component<WithStyles<typeof chooseRoomModalS
                                 color={"default"}
                                 onClick={() => this.setState({isModalVisible: false})}
                             >
-                                    WRÓĆ
+                                WRÓĆ
                             </Button>
                             <Button variant={"contained"} color={"primary"}>
                                 <NavLink to={'/Summary'} style={{textDecoration: 'none', color: 'inherit'}}>
@@ -98,8 +137,8 @@ class ChooseRoomModal extends React.Component<WithStyles<typeof chooseRoomModalS
                             return (
                                 <Grid item={true} xs={12} sm={6} key={index}>
                                     <UserChip
-                                    faculty={user.faculty}
-                                    name={user.name}
+                                        faculty={user.faculty}
+                                        name={user.name}
                                     />
                                 </Grid>
                             );
@@ -109,10 +148,13 @@ class ChooseRoomModal extends React.Component<WithStyles<typeof chooseRoomModalS
                         Wybierz pokój
                     </Typography>
                     <Grid container={true}>
-                        {this.state.rooms.map((room: Room, index: number) => {
+                        {this.state.rooms
+                            .sort((r1: Room, r2: Room) => r1.number - r2.number)
+                            .map((room: Room, index: number) => {
                             return (
                                 <Grid item={true} xs={12} sm={6} md={4} lg={3} style={{padding: '0.5em'}} key={index}>
-                                    <RoomCard onClick={() => this.setState({isModalVisible: true, pickedRoom: room})} desiredSpace={this.props.roomMates.length} room={room}/>
+                                    <RoomCard onClick={() => this.setState({isModalVisible: true, pickedRoom: room})}
+                                              desiredSpace={roomMates.length} room={room}/>
                                 </Grid>
                             );
                         })}
