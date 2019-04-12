@@ -12,14 +12,19 @@ const instance = axios.create({
 //   err.response.config.headers.Authentication = `Bearer ${res.data.token}`;
 //   return Promise.resolve();
 // });
-
 // createAuthRefreshInterceptor(instance, refreshAuthLogic);
+
 instance.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   const newConfig = config;
   newConfig.headers.Authorization = token ? `Bearer ${token}` : '';
   return newConfig;
-});
+}, err => axios.post('/refresh/').then((res) => {
+  // Tego kawałka kodu też nie jestem pewien czy on dobrze działa
+  localStorage.setItem('token', res.data.token);
+  err.response.config.headers.Authentication = `Bearer ${res.data.token}`;
+  return Promise.resolve();
+}));
 
 export async function authorizeUser(username, password) {
   try {
@@ -79,6 +84,15 @@ export async function createEvent(data) {
 export async function getEventDetails(eventName) {
   try {
     const response = await instance.get(`/organiser/event/${eventName}`);
+    return response.data;
+  } catch (error) {
+    return null;
+  }
+}
+
+export async function getRoomsList(eventName) {
+  try {
+    const response = await instance.get(`/organiser/event/${eventName}/rooms`);
     return response.data;
   } catch (error) {
     return null;

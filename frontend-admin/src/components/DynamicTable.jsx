@@ -46,48 +46,47 @@ const StyledTableRow = withStyles({
   },
 })(TableRow);
 
-const renderCustomTableCellWithComponent = id => (
-  <CustomTableCell component="th" scope="row">
+const renderCustomTableCellWithComponent = (id, idx) => (
+  <CustomTableCell component="th" scope="row" key={idx}>
     <BadgeCell>
-      { id }
+      {id}
     </BadgeCell>
   </CustomTableCell>
 );
 
-const renderCustomTableCell = content => (
-  <CustomTableCell align="center">
-    { content }
+const renderCustomTableCell = (content, idx) => (
+  <CustomTableCell align="center" key={idx}>
+    {content}
   </CustomTableCell>
 );
 
 
-function createData(id, capacity, freeSpots, busySpots, sex) {
-  return {
-    id: renderCustomTableCellWithComponent(id + 1),
-    capacity: renderCustomTableCell(capacity),
-    freeSpots: renderCustomTableCell(freeSpots),
-    busySpots: renderCustomTableCell(busySpots),
-    sex: renderCustomTableCell(sex),
-  };
+function createData(primaryKey, row) {
+  const newRow = {};
+  Object.keys(row).forEach((key, idx) => {
+    newRow[key] = (key === primaryKey ? renderCustomTableCellWithComponent(row[key], idx) : renderCustomTableCell(row[key], idx));
+  });
+  // NOTE: this converts objects to arrays
+  return newRow;
 }
 
 function DynamicTable(props) {
   const { classes, headers, rows } = props;
-  const parsedRows = rows.map((row, idx) => createData(idx, row.capacity, row.freeSpots, row.busySpots, row.sex));
-
+  const primaryKey = headers[0];
+  const parsedRows = rows.map(row => createData(primaryKey, row));
 
   return (
     <Table className={classes.table}>
       <TableHead>
         <TableRow>
           {
-            headers.map(header => <CustomTableCell key={header} align="center">{ header }</CustomTableCell>)
+            headers.map(header => <CustomTableCell key={header} align="center">{header}</CustomTableCell>)
           }
         </TableRow>
       </TableHead>
       <TableBody>
-        {parsedRows.map(row => (
-          <StyledTableRow style={{ marginTop: '20px' }} className={classes.row} key={row.id}>
+        {parsedRows.map((row, idx) => (
+          <StyledTableRow style={{ marginTop: '20px' }} className={classes.row} key={idx}>
             {
               Object.keys(row).map(key => row[key])
             }
