@@ -7,7 +7,6 @@ import TripCard from './TripCard';
 import Typography from '@material-ui/core/Typography';
 import { withRouter } from 'react-router-dom';
 import { getAllEvents } from '../../store/Api'
-// import { tripsMock } from '../mockData/trips';
 
 const addNewEventTileDetails = {
     name: 'AddingCard',
@@ -28,6 +27,7 @@ class ManageTripScreen extends React.Component {
                 addNewEventTileDetails
             ]
         };
+        this.loadEvents = this.loadEvents.bind(this)
     }
 
     createNewTrip = () => {
@@ -47,7 +47,7 @@ class ManageTripScreen extends React.Component {
         events.forEach((evt) => {
             evt.image = "http://" + evt.image_link;
             delete evt.image_link;
-            // TODO: remove 'http://' when backend fixes this issue.
+            evt.onClick = () => {this.props.history.push(`/trips/${evt.name}`)}
         })
         return events;
     }

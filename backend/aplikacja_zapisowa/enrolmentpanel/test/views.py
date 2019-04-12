@@ -33,19 +33,6 @@ class CreateOrganiserUserView(APIView):
     parser_classes = (JSONParser, )
     renderer_classes = (JSONRenderer, )
 
-    def get_elements_from_body(self, body):
-        username = body.get("username")
-        password = body.get("password")
-        faculty = body.get("faculty")
-
-        if username and password and faculty:
-            return (
-                username,
-                password,
-                int(faculty)
-            )
-        raise KeyError
-
     @swagger_auto_schema(request_body=OrganiserSerializer,
                          operation_description="Creates organiser")
     def post(self, request):

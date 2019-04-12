@@ -19,14 +19,18 @@ class User(AbstractUser):
 
 class OrganiserManager(models.Manager):
 
-    def create(self, username, password, faculty):
+    def create(self, username, password, faculty, name):
         organiser_user = User.objects.create_user(
             username=username,
             password=password
         )
         organiser_user.is_organiser = True
         organiser_user.save()
-        organiser = Organiser(faculty=faculty, user=organiser_user)
+        organiser = Organiser(
+            faculty=faculty,
+            user=organiser_user,
+            name=name
+        )
         organiser.save()
         return organiser
 
@@ -35,6 +39,7 @@ class Organiser(models.Model):
     objects = OrganiserManager()
 
     faculty = models.PositiveSmallIntegerField()
+    name = models.CharField(max_length=30)
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True, related_name='organiser')
 
     def delete(self, *args, **kwargs):

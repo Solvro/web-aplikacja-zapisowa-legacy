@@ -28,21 +28,21 @@ function ClippedDrawer(props) {
       <main className={classes.content}>
         <Switch>
           <PrivateRoute
-            path="/trips/:id(\d+)/edit"
+            path="/trips/:id([\w ]+)/edit"
             component={EditRoute}
           />
           <PrivateRoute
-            path="/trips/:id(\d+)/message"
+            path="/trips/:id([\w ]+)/message"
             exact
             component={MessageRoute}
           />
           <PrivateRoute
-            path="/trips/:id(\d+)/participants"
+            path="/trips/:id([\w ]+)/participants"
             exact
             component={ParticipantsRoute}
           />
           <PrivateRoute
-            path="/trips/:id(\d+)/rooms"
+            path="/trips/:id([\w ]+)/rooms"
             exact
             component={RoomsRoute}
           />

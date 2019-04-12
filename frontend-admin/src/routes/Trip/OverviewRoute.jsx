@@ -1,37 +1,68 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-import { GridList, GridListTile } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
+import moment from 'moment';
+import 'moment/locale/pl';
 import DashboardHeader from '../../components/DashboardHeader';
 import InformationTile from '../../components/InformationTile';
 import StatisticsTile from '../../components/StatisticsTile';
+import { getEventDetails } from '../../store/Api';
+
+moment.locale('pl');
+
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
 
 class OverviewRoute extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      name: '',
+      description: '',
+    };
+  }
+
+  async componentDidMount() {
+    const { match } = this.props;
+    const { id } = match.params;
+    const details = await getEventDetails(id);
+    if (details) {
+      this.setState(details);
+    }
   }
 
   render() {
-    // const { match } = this.props;
+    const mmt = moment();
+    const today = capitalizeFirstLetter(mmt.format('dddd'));
+    const fullDate = mmt.format('D MMMM');
+    const {
+      name, description, beginning_date: startDate, ending_date: endDate, place, accommodation,
+    } = this.state;
     return (
       <div>
-        <GridList cellHeight={'auto'} cols={3} spacing={16}>
-          <GridListTile key="Subheader" cols={3} style={{ height: 'auto' }}>
+        <Grid container spacing={16}>
+          <Grid item xs={12}>
             <DashboardHeader
-              title='Jesienny Rajd Mechanika'
-              subtitle='Wieloletnia tradycja wydziału mechanicznego, głuchołazy bla bla'
-              date={{ day: 'Piątek', full: '31 marca' }}
+              title={name}
+              subtitle={description}
+              date={{ day: today, full: fullDate }}
             />
-          </GridListTile>
+          </Grid>
 
-          <GridListTile cols={1}>
-            <InformationTile/>
-          </GridListTile>
+          <Grid item sm={12} md={6} lg={4}>
+            <InformationTile
+              startDate={startDate}
+              endDate={endDate}
+              place={place}
+              accommodation={accommodation}
+            />
+          </Grid>
 
-          <GridListTile cols={1}>
-            <StatisticsTile/>
-          </GridListTile>
-        </GridList>
+          <Grid item sm={12} md={6} lg={4}>
+            <StatisticsTile />
+          </Grid>
+        </Grid>
       </div>
     );
   }

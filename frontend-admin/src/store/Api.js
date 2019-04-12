@@ -2,8 +2,6 @@
 
 const axios = require('axios');
 
-axios.defaults.headers.common.Authorization = `Bearer ${localStorage.getItem('token')}`;
-
 const instance = axios.create({
   baseURL: 'http://localhost:8000/api/',
 });
@@ -16,6 +14,12 @@ const instance = axios.create({
 // });
 
 // createAuthRefreshInterceptor(instance, refreshAuthLogic);
+instance.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  const newConfig = config;
+  newConfig.headers.Authorization = token ? `Bearer ${token}` : '';
+  return newConfig;
+});
 
 export async function authorizeUser(username, password) {
   try {
@@ -38,16 +42,14 @@ export async function verifyUser(token) {
 
 export async function getAllEvents() {
   try {
-    const response = await instance.get(
-      '/organiser/event',
-    );
+    const response = await instance.get('/organiser/event');
     return response.data;
   } catch (error) {
     return null;
   }
 }
 
-async function createEvent(data) {
+export async function createEvent(data) {
   const config = {
     headers: {
       'Content-Type': 'multipart/form-data',
@@ -74,6 +76,11 @@ async function createEvent(data) {
   }
 }
 
-export function handleCreateTrip(formState) {
-  return createEvent(formState);
+export async function getEventDetails(eventName) {
+  try {
+    const response = await instance.get(`/organiser/event/${eventName}`);
+    return response.data;
+  } catch (error) {
+    return null;
+  }
 }
