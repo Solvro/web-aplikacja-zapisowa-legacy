@@ -51,25 +51,25 @@ class LoginScreen extends React.Component<WithStyles <typeof loginScreenStyles> 
             await localStorage.setItem('token', token);
             await localStorage.setItem('signedInStudent', JSON.stringify(authorizationResult.student));
             this.props.signIn(authorizationResult.student);
-            this.props.history.push('/AddingRoomMates')
+            this.props.history.push('/AddingRoomMates');
         } else {
             this.props.addError(StudentErrors.signInFailed);
         }
     };
 
     onInputPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        this.setState({password: e.target.value})
+        this.setState({password: e.target.value});
     };
 
     onInputLoginChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        this.setState({username: e.target.value})
-    }
+        this.setState({username: e.target.value});
+    };
 
     componentWillMount(){
         this.validateIsLogged()
             .then(isLogged => {
                 if (isLogged)
-                    this.props.history.push('/AddingRoomMates')
+                    this.props.history.push('/AddingRoomMates');
             });
 
     }

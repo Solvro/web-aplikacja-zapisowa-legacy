@@ -1,3 +1,5 @@
+import {RoomMate} from "./RoomMate/types";
+
 const axios = require('axios');
 
 const instance = axios.create({
@@ -32,9 +34,25 @@ export async function authorizeUser(username: string, password: string) {
 export async function verifyUser(token: string) {
     try {
         const verification = await instance.post(`/token/verify/`, { token });
-        const isVerify = verification && verification.status === 200;
-        return isVerify;
+        return verification && verification.status === 200;
     } catch (error) {
         return false;
     }
 }
+
+export const enrollStudentsInRoom = async (students: RoomMate[], roomNumber: number, eventName: string) => {
+    try {
+        const logins = students.map(student => student.login);
+        const token = localStorage.getItem('token');
+        fetch(`http://localhost:8000/api/student/${eventName}/register/${roomNumber}/`, {
+            method: 'post',
+            headers: new Headers({
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }),
+            body: JSON.stringify({logins})
+        }).then(resp => resp.json()).then(resp => console.log(resp));
+    } catch (error) {
+        return error;
+    }
+};

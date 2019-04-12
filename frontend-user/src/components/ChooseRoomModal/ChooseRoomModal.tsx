@@ -7,12 +7,13 @@ import {ApplicationState} from "../../store";
 import {RoomMate} from "../../store/RoomMate/types";
 import {connect} from "react-redux";
 import BackButton from "../BackButton";
-import {NavLink} from "react-router-dom";
+import {RouteComponentProps, withRouter} from "react-router-dom";
+import {enrollStudentsInRoom} from "../../store/api";
 
 type ChooseRoomModalProps = {
     roomMates: RoomMate[];
     user: RoomMate;
-}
+} & RouteComponentProps<{}>;
 
 type WebSocketRoom = {
     number: number;
@@ -110,10 +111,12 @@ class ChooseRoomModal extends React.Component<WithStyles<typeof chooseRoomModalS
                             >
                                 WRÓĆ
                             </Button>
-                            <Button variant={"contained"} color={"primary"}>
-                                <NavLink to={'/Summary'} style={{textDecoration: 'none', color: 'inherit'}}>
+                            <Button
+                                variant={"contained"}
+                                color={"primary"}
+                                onClick={this.enrollStudentsInRoom}
+                            >
                                     REZERWUJ
-                                </NavLink>
                             </Button>
                         </div>
                     </Paper>
@@ -163,7 +166,17 @@ class ChooseRoomModal extends React.Component<WithStyles<typeof chooseRoomModalS
             </Grid>
         );
     }
+
+    private enrollStudentsInRoom = async () => {
+        const result = await enrollStudentsInRoom(this.props.roomMates, this.state.pickedRoom.number, this.props.user.event);
+        console.log(result);
+        if (result === '201') {
+            this.props.history.push('/Summary');
+        } else {
+            console.log(result);
+        }
+    }
 }
 
 const ChooseRoomModalWithStyles = withStyles(chooseRoomModalStyles, {withTheme: true})(ChooseRoomModal);
-export default connect(mapStateToProps)(ChooseRoomModalWithStyles)
+export default connect(mapStateToProps)(withRouter<RouteComponentProps<{}>>(ChooseRoomModalWithStyles))
