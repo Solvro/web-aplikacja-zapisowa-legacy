@@ -20,7 +20,9 @@ interface Props {
     history: {
         push(url: string): void;
     };
+
     signIn(user: RoomMate): void;
+
     addError(message: string): void;
 }
 
@@ -35,7 +37,7 @@ const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>): Partial<Props
     }
 };
 
-class LoginScreen extends React.Component<WithStyles <typeof loginScreenStyles> & Props> {
+class LoginScreen extends React.Component<WithStyles<typeof loginScreenStyles> & Props> {
 
     state = {
         username: '',
@@ -48,9 +50,10 @@ class LoginScreen extends React.Component<WithStyles <typeof loginScreenStyles> 
         const authorizationResult = await authorizeUser(username, password);
         const token = authorizationResult ? authorizationResult.access : false;
         if (token) {
-            await localStorage.setItem('token', token);
-            await localStorage.setItem('signedInStudent', JSON.stringify(authorizationResult.student));
-            this.props.signIn(authorizationResult.student);
+            const user = {...authorizationResult.student, login: username};
+            localStorage.setItem('token', token);
+            localStorage.setItem('signedInStudent', JSON.stringify(user));
+            this.props.signIn(user);
             this.props.history.push('/AddingRoomMates');
         } else {
             this.props.addError(StudentErrors.signInFailed);
@@ -65,7 +68,7 @@ class LoginScreen extends React.Component<WithStyles <typeof loginScreenStyles> 
         this.setState({username: e.target.value});
     };
 
-    componentWillMount(){
+    componentWillMount() {
         this.validateIsLogged()
             .then(isLogged => {
                 if (isLogged)
@@ -75,13 +78,13 @@ class LoginScreen extends React.Component<WithStyles <typeof loginScreenStyles> 
     }
 
     validateIsLogged = async () => {
-        const token = await localStorage.getItem('token');
+        const token = localStorage.getItem('token');
         return token && await verifyUser(token);
     };
 
     public render(): React.ReactNode {
 
-        const { classes } = this.props;
+        const {classes} = this.props;
         return (
             <div className={classes.container}>
                 <Grid container={true} justify={"center"} alignItems={"center"}>
@@ -105,7 +108,7 @@ class LoginScreen extends React.Component<WithStyles <typeof loginScreenStyles> 
                                         autoFocus={true}
                                         onChange={this.onInputLoginChange}
                                         required
-                                        />
+                                    />
                                 </FormControl>
                                 <FormControl margin="normal" required fullWidth={false}>
                                     <InputLabel htmlFor="password">Hasło</InputLabel>

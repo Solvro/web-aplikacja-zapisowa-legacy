@@ -9,7 +9,7 @@ const instance = axios.create({
 
 export async function fetchStudent(username: string, event: string) {
     try {
-        const token = await localStorage.getItem('token');
+        const token = localStorage.getItem('token');
         const student = await instance.get(`/students/${event}/${username}/`, {headers: {'Authorization': `Bearer ${token}`}});
         return student.data;
     } catch (error) {

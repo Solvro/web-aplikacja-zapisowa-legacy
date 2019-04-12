@@ -80,9 +80,7 @@ class GroupRoomView(APIView):
     def get_users_from_request(self, request):
         group_users = []
         group_users.append(request.user.username)
-        group_users.append(request.data.get('logins'))
-
-        return group_users
+        return group_users + request.data.get('logins')
 
     def get_students_from_users(self, user_names):
         users_models = [User.objects.get(username=u) for u in user_names]
