@@ -44,14 +44,14 @@ export const enrollStudentsInRoom = async (students: RoomMate[], roomNumber: num
     try {
         const logins = students.map(student => student.login);
         const token = localStorage.getItem('token');
-        fetch(`http://localhost:8000/api/student/${eventName}/register/${roomNumber}/`, {
+        return fetch(`http://localhost:8000/api/student/${eventName}/register/${roomNumber}/`, {
             method: 'post',
             headers: new Headers({
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
             }),
             body: JSON.stringify({logins})
-        }).then(resp => resp.json()).then(resp => console.log(resp));
+        }).then(resp => resp.json());
     } catch (error) {
         return error;
     }

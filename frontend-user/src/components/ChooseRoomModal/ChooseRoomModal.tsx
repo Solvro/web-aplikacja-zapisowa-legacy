@@ -169,9 +169,8 @@ class ChooseRoomModal extends React.Component<WithStyles<typeof chooseRoomModalS
 
     private enrollStudentsInRoom = async () => {
         const result = await enrollStudentsInRoom(this.props.roomMates, this.state.pickedRoom.number, this.props.user.event);
-        console.log(result);
-        if (result === '201') {
-            this.props.history.push('/Summary');
+        if (result.status === 'ok') {
+            this.props.history.push('/Summary', {roomNumber: this.state.pickedRoom.number});
         } else {
             console.log(result);
         }
