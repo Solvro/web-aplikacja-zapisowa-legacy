@@ -1,28 +1,40 @@
-import createAuthRefreshInterceptor from 'axios-auth-refresh';
-
 const axios = require('axios');
 
 const instance = axios.create({
   baseURL: 'http://localhost:8000/api/',
 });
 
-const refreshAuthLogic = err => instance.post('/token/refresh/', { refresh: localStorage.getItem('refresh') })
-  .then((res) => {
-    localStorage.setItem('token', res.data.access);
-    const data = JSON.parse(err.response.config.data);
-    data.token = res.data.access;
-    err.response.config.data = JSON.stringify(data);
-    err.response.config.headers.Authorization = `Bearer ${res.data.access}`;
-    return Promise.resolve();
-  });
-
-createAuthRefreshInterceptor(instance, refreshAuthLogic);
-
 instance.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   const newConfig = config;
   newConfig.headers.Authorization = token ? `Bearer ${token}` : '';
   return newConfig;
+});
+
+function requestTokenRefresh() {
+  return instance.post('/token/refresh/', { refresh: localStorage.getItem('refresh') })
+    .then(res => res.data.access);
+}
+
+instance.interceptors.response.use(undefined, (err) => {
+  const { response } = err;
+  const { config, status } = response;
+  if (status === 401 && config && !config.retryReqGuard) {
+    return requestTokenRefresh().then((token) => {
+      config.retryReqGuard = true;
+      localStorage.setItem('token', token);
+      return instance(config);
+    });
+  }
+  if (status === 500) {
+    // Handle 500 from server when access token is empty
+    const token = localStorage.getItem('token');
+    if (!token) {
+      // eslint-disable-next-line no-undef
+      window.location.reload();
+    }
+  }
+  return err;
 });
 
 export async function authorizeUser(username, password) {
