@@ -31,7 +31,7 @@ class LoginScreen extends React.Component {
         const token = await authorizeUser(username, password);
         if (token) {
             await localStorage.setItem('token', token);
-            this.props.history.push('/')
+            this.props.history.push('/trips')
         } else {
             this.setState({loginError: true})
         }

@@ -5,7 +5,6 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
 import BadgeCell from './BadgeCell';
 
 const CustomTableCell = withStyles(theme => ({
@@ -47,54 +46,54 @@ const StyledTableRow = withStyles({
   },
 })(TableRow);
 
-let id = 0;
-function createData(name, calories, fat, carbs, protein) {
-  id += 1;
-  return {
-    id, name, calories, fat, carbs, protein,
-  };
+const renderCustomTableCellWithComponent = (id, idx) => (
+  <CustomTableCell component="th" scope="row" key={idx}>
+    <BadgeCell>
+      {id}
+    </BadgeCell>
+  </CustomTableCell>
+);
+
+const renderCustomTableCell = (content, idx) => (
+  <CustomTableCell align="center" key={idx}>
+    {content}
+  </CustomTableCell>
+);
+
+
+function createData(primaryKey, row) {
+  const newRow = {};
+  Object.keys(row).forEach((key, idx) => {
+    newRow[key] = (key === primaryKey ? renderCustomTableCellWithComponent(row[key], idx) : renderCustomTableCell(row[key], idx));
+  });
+  // NOTE: this converts objects to arrays
+  return newRow;
 }
 
-const rows = [
-  createData(<BadgeCell>10</BadgeCell>, 159, 6.0, 6, 'Zenski'),
-  createData(<BadgeCell>25</BadgeCell>, 237, 9.0, 3, 'Meski'),
-  createData(<BadgeCell>15</BadgeCell>, 262, 16.0, 6.0, 'Meski'),
-  createData(<BadgeCell>1</BadgeCell>, 305, 3.7, 4.3, 'Meski'),
-  createData(<BadgeCell>14</BadgeCell>, 356, 49, 3.9, 'Meski'),
-];
-
 function DynamicTable(props) {
-  const { classes } = props;
-
+  const { classes, headers, rows } = props;
+  const primaryKey = headers[0];
+  const parsedRows = rows.map(row => createData(primaryKey, row));
 
   return (
-
-    <Paper className={classes.root}>
-      <Table className={classes.table}>
-        <TableHead>
-          <TableRow>
-            <CustomTableCell>Numer</CustomTableCell>
-            <CustomTableCell align="center">Pojemnośc</CustomTableCell>
-            <CustomTableCell align="center">Miejsca wolne</CustomTableCell>
-            <CustomTableCell align="center">Miejsca zajęte</CustomTableCell>
-            <CustomTableCell align="center">Rodzaj</CustomTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map(row => (
-            <StyledTableRow style={{ marginTop: '20px' }} className={classes.row} key={row.id}>
-              <CustomTableCell component="th" scope="row">
-                {row.name}
-              </CustomTableCell>
-              <CustomTableCell align="center">{row.calories}</CustomTableCell>
-              <CustomTableCell align="center">{row.fat}</CustomTableCell>
-              <CustomTableCell align="center">{row.carbs}</CustomTableCell>
-              <CustomTableCell align="center">{row.protein}</CustomTableCell>
-            </StyledTableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </Paper>
+    <Table className={classes.table}>
+      <TableHead>
+        <TableRow>
+          {
+            headers.map(header => <CustomTableCell key={header} align="center">{header}</CustomTableCell>)
+          }
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {parsedRows.map((row, idx) => (
+          <StyledTableRow style={{ marginTop: '20px' }} className={classes.row} key={idx}>
+            {
+              Object.keys(row).map(key => row[key])
+            }
+          </StyledTableRow>
+        ))}
+      </TableBody>
+    </Table>
   );
 }
 
