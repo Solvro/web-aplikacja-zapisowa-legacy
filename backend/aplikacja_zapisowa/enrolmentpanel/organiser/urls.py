@@ -5,7 +5,7 @@ from .views import (
     CreateStudentView,
     TestView,
     DetailEventView,
-    StudentStatusView
+    StudentStatusView,
     DetailRoomListView
 )
 

@@ -21,7 +21,7 @@ from enrolmentpanel.models import Event, Student, Room
 from enrolmentpanel.serializers import (
     PartialStudentSerializer,
     StudentSerializer,
-    EventSerializer
+    EventSerializer,
     RoomSerializer,
     RoomDetailedSerializer,
 )
@@ -105,21 +105,21 @@ class StudentStatusView(APIView):
     @swagger_auto_schema(
         responses={
             200: """
-{
-    "stats": {
-        "students": 4,
-        "solo_students": 1,
-        "students_in_rooms": 1
-    },
-    "students": [
-        {
-            "name": "Jan Bibrowski",
-            "faculty": 11,
-            "sex": "M",
-            "status": "N"
-        }
-    ]
-}
+            {
+                "stats": {
+                    "students": 4,
+                    "solo_students": 1,
+                    "students_in_rooms": 1
+                },
+                "students": [
+                    {
+                        "name": "Jan Bibrowski",
+                        "faculty": 11,
+                        "sex": "M",
+                        "status": "N"
+                    }
+                ]
+            }
             """,
             404: "{\"detail\": \"Not found\"}"
         },
