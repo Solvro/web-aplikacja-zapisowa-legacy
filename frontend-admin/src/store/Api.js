@@ -1,4 +1,4 @@
-// import createAuthRefreshInterceptor from 'axios-auth-refresh';
+import createAuthRefreshInterceptor from 'axios-auth-refresh';
 
 const axios = require('axios');
 
@@ -7,28 +7,35 @@ const instance = axios.create({
 });
 
 // głowy sobie nie dam uciąć czy dobry urlsc
-// const refreshAuthLogic = err => axios.post('/refresh/').then((res) => {
+const refreshAuthLogic = err => instance.post('/token/refresh/', { refresh: localStorage.getItem('refresh') })
+  .then((res) => {
+    console.log('refresh', res);
+    localStorage.setItem('token', res.data.access);
+    err.response.config.headers.Authentication = `Bearer ${res.data.access}`;
+    return Promise.resolve();
+  });
+
+// , err => axios.post('/token/refresh/').then((res) => {
+//   // Tego kawałka kodu też nie jestem pewien czy on dobrze działa
 //   localStorage.setItem('token', res.data.token);
 //   err.response.config.headers.Authentication = `Bearer ${res.data.token}`;
 //   return Promise.resolve();
-// });
-// createAuthRefreshInterceptor(instance, refreshAuthLogic);
+// })
+
+createAuthRefreshInterceptor(instance, refreshAuthLogic);
 
 instance.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   const newConfig = config;
   newConfig.headers.Authorization = token ? `Bearer ${token}` : '';
   return newConfig;
-}, err => axios.post('/refresh/').then((res) => {
-  // Tego kawałka kodu też nie jestem pewien czy on dobrze działa
-  localStorage.setItem('token', res.data.token);
-  err.response.config.headers.Authentication = `Bearer ${res.data.token}`;
-  return Promise.resolve();
-}));
+});
 
 export async function authorizeUser(username, password) {
   try {
     const token = await instance.post('/token/', { username, password });
+    const refreshToken = token.data.refresh;
+    localStorage.setItem('refresh', refreshToken);
     return token.data.access;
   } catch (error) {
     return false;
@@ -41,6 +48,7 @@ export async function verifyUser(token) {
     const isVerify = verification && verification.status === 200;
     return isVerify;
   } catch (error) {
+    console.log('wylogowuje');
     return false;
   }
 }
