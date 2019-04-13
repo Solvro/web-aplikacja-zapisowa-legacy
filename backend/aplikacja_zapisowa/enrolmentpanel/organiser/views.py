@@ -55,7 +55,7 @@ class CreateStudentView(APIView):
         event = Event.objects.get(pk=event_name)
         self.check_object_permissions(request, event)
 
-        request.data['event'] = event
+        request.data['event'] = event_name # event -> event_name (because 'event' is not a pk, but an object)
         student_serializer = StudentSerializer(data=request.data)
         if student_serializer.is_valid(raise_exception=True):
             student_serializer.save()
