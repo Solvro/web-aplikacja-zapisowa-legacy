@@ -98,3 +98,12 @@ export async function getRoomsList(eventName) {
     return null;
   }
 }
+
+export async function getParticipantsList(eventName) {
+  try {
+    const response = await instance.get(`/organiser/${eventName}/students_status/`);
+    return response.data;
+  } catch (error) {
+    return null;
+  }
+}

@@ -11,13 +11,13 @@ const styles = theme => ({
     color: 'white',
     height: '100%',
     width: '50%',
-    padding: '10%',
+    padding: theme.spacing.unit * 1.5,
   },
 });
 
 function BadgeCell(props) {
   const { children, classes } = props;
-  return <div className={classes.root}>{ children }</div>;
+  return <span className={classes.root}>{ children }</span>;
 }
 
 

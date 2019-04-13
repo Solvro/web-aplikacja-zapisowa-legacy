@@ -5,27 +5,24 @@ import { manageTripScreenStyles } from './ManageTripScreenStyle';
 import Paper from '@material-ui/core/Paper/Paper';
 import TripCard from './TripCard';
 import Typography from '@material-ui/core/Typography';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import { getAllEvents } from '../../store/Api'
 
 const addNewEventTileDetails = {
     name: 'AddingCard',
     description: 'Kliknij aby dodać nową wycieczkę',
     overlayText: '',
-    image: 'https://www.thoughtco.com/thmb/zQfnmMB7JGh55biV3b_ok_w79yE=/768x0/filters:no_upscale():max_bytes(150000):strip_icc()/simpsons1920-58b5a0013df78cdcd87a03bc.jpg',
-    onClick: () => {}
+    image: '',
 }
 
 class ManageTripScreen extends React.Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
 
         this.createNewTrip = this.createNewTrip.bind(this);
         this.state = {
-            trips: [
-                addNewEventTileDetails
-            ]
+            trips: []
         };
         this.loadEvents = this.loadEvents.bind(this)
     }
@@ -37,7 +34,7 @@ class ManageTripScreen extends React.Component {
             description: 'Another Awesome Trip',
             overlayText: 'Overlay',
             image: 'https://upload.wikimedia.org/wikipedia/commons/e/e9/Ar%C4%81k_to_R%C4%81zeq%C4%81n_roud.jpg',
-            onClick: () => {}
+            onClick: () => { }
         }, ...trips];
         this.setState({ trips: updatedTrips });
     };
@@ -47,15 +44,14 @@ class ManageTripScreen extends React.Component {
         events.forEach((evt) => {
             evt.image = "http://" + evt.image_link;
             delete evt.image_link;
-            evt.onClick = () => {this.props.history.push(`/trips/${evt.name}`)}
         })
         return events;
     }
 
     async componentDidMount() {
-        const events = await this.loadEvents()
+        const trips = await this.loadEvents()
         this.setState({
-            trips: [...events, addNewEventTileDetails]
+            trips
         })
     }
 
@@ -63,16 +59,16 @@ class ManageTripScreen extends React.Component {
         const { classes } = this.props;
         const { trips } = this.state;
         return (
-            <div className={ classes.container }>
+            <div className={classes.container}>
                 <Grid container >
-                    <Grid style={{margin: 'auto'}} item xs={ 12 } sm={10} md={ 9 } >
-                        <Paper square={true} className={ classes.paperContainer }>
-                            <Typography className={ classes.mainHeader } variant='h1'>
+                    <Grid style={{ margin: 'auto' }} item xs={12} sm={10} md={9} >
+                        <Paper square={true} className={classes.paperContainer}>
+                            <Typography className={classes.mainHeader} variant='h1'>
                                 Wycieczki
                             </Typography>
-                            <Grid wrap='wrap' xs-justify='center' container spacing={ 40}>
+                            <Grid wrap='wrap' xs-justify='center' container spacing={40}>
                                 {
-                                trips.map((trip, idx) =>
+                                    trips.map((trip, idx) =>
                                         <Grid
                                             key={idx}
                                             item
@@ -80,16 +76,33 @@ class ManageTripScreen extends React.Component {
                                             md={6}
                                             xs={12}
                                         >
-                                            <TripCard
-                                                overlayText={trip.overlayText}
-                                                description={trip.description}
-                                                name={trip.name}
-                                                onClick={trip.onClick}
-                                                image={trip.image}
+                                            <Link to={`/trips/${trip.name}`} style={{ textDecoration: 'none' }}>
+                                                <TripCard
+                                                    overlayText={trip.name}
+                                                    description={trip.description}
+                                                    name={trip.name}
+                                                    image={trip.image}
                                                 />
+                                            </Link>
                                         </Grid>
                                     )
                                 }
+                                <Grid
+                                    key={'createNewEventTile'}
+                                    item
+                                    lg={4}
+                                    md={6}
+                                    xs={12}
+                                >
+                                    <Link to={`/trips/create`} style={{ textDecoration: 'none' }}>
+                                        <TripCard
+                                            overlayText="Dodaj nową wycieczkę"
+                                            description="Zaplanuj nową wycieczkę jest ich zdecydowanie za mało na twoim wydziale"
+                                            name="Dodaj nową wycieczkę"
+                                            image="https://www.thoughtco.com/thmb/zQfnmMB7JGh55biV3b_ok_w79yE=/768x0/filters:no_upscale():max_bytes(150000):strip_icc()/simpsons1920-58b5a0013df78cdcd87a03bc.jpg"
+                                        />
+                                    </Link>
+                                </Grid>
                             </Grid>
                         </Paper>
                     </Grid>
