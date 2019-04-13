@@ -50,6 +50,27 @@ class RoomSerializer(serializers.ModelSerializer):
         read_only_fields = ("pk", "cur_capacity")
 
 
+class RoomDetailedSerializer(serializers.ModelSerializer):
+    sex_division = serializers.SerializerMethodField()
+
+    def get_sex_division(self, obj):
+        students = obj.student_set.all()
+        if len(students) == 0:
+            return "N/A"
+        sex_division = students[0].sex
+        for student in students[1:]:
+            if sex_division != student.sex:
+                return "koedukacyjny"
+
+        return ("męski" if sex_division == "M" else "zenski")
+
+    class Meta:
+        list_serializer_class = RoomListSerializer
+        model = Room
+        fields = ("number", "max_capacity", "vacancies", "cur_capacity", "sex_division")
+        read_only_fields = ("number", "max_capacity", "vacancies", "cur_capacity", "sex_division")
+
+
 class PartialRoomSerializer(serializers.ModelSerializer):
 
     class Meta:

@@ -1,4 +1,5 @@
 from django.db import transaction
+from django.db.models import Prefetch
 from django.shortcuts import (
     render,
     get_object_or_404
@@ -16,11 +17,13 @@ from rest_framework.exceptions import ValidationError
 from drf_yasg.utils import swagger_auto_schema
 
 from .permissions import (IsOrganiserAccount, IsEventOwner)
-from enrolmentpanel.models import Event, Student
+from enrolmentpanel.models import Event, Student, Room
 from enrolmentpanel.serializers import (
     PartialStudentSerializer,
     StudentSerializer,
     EventSerializer
+    RoomSerializer,
+    RoomDetailedSerializer,
 )
 from enrolmentpanel.exceptions import UniqueEventNameError
 
@@ -40,6 +43,7 @@ class TestView(APIView):
             'sub': 'marine'
         }
         return Response(data)
+
 
 class CreateStudentView(APIView):
 
@@ -141,4 +145,44 @@ class StudentStatusView(APIView):
         return Response({
             "stats": statistics_data,
             "students": student_serializer.data
+        })
+
+class DetailRoomListView(APIView):
+
+    permission_classes = (IsAuthenticated, IsOrganiserAccount)
+
+    @swagger_auto_schema(
+            responses={
+                200: """
+                {
+                    "room_count": 0,
+                    "free_count": 0,
+                    "vacancies": 0,
+                    "rooms": [
+                        {
+                            "number": 123,
+                            "max_capacity": 12,
+                            "vacancies": 0,
+                            "cur_capacity": 0,
+                            "sex_division": "N/A"
+                        }
+                    ]
+                }
+                """,
+                404: "{\"detail\": \"Not found\"}"
+            },
+            operation_description="Lists all rooms and it stats. Additional it has sex_division which varies from \
+            ['N/A', 'męski', 'zenski', 'koedukacyjny']")
+    def get(self, request, event_name):
+        event = get_object_or_404(Event.objects
+                    .prefetch_related(Prefetch('room_set'), Prefetch('room_set__student_set')),
+                    name=event_name, organizer__user=request.user)
+        rooms_serializer = RoomDetailedSerializer(event.room_set.all(), many=True)
+        rooms = rooms_serializer.data
+
+        return Response({
+            'room_count': len(rooms),
+            'free_rooms': len([room for room in rooms if room['cur_capacity'] == 0]),
+            'vacancies': sum([room['max_capacity'] - room['cur_capacity'] for room in rooms]),
+            'rooms': rooms
         })
