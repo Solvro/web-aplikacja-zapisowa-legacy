@@ -28,6 +28,7 @@ from enrolmentpanel.models import (
 import base64
 import codecs
 import csv
+import os
 import re
 
 
@@ -162,22 +163,58 @@ class EventSerializer(serializers.ModelSerializer):
     def validate_participants(self, participants):
         return self.validate_csv_file(participants)
 
+    def create_participants(self, participants, event):
+        try:
+            for participant in participants:
+                participant['event'] = event.name
+            students_serializer = StudentSerializer(data=participants, many=True)
+            if students_serializer.is_valid(raise_exception=True):
+                students_serializer.save()
+        except IntegrityError as e:
+            raise CSVUniqueColumnError(wrong_data=e.__str__())
+
+        except ValidationError as e:
+            index, code, column = CSVErrorManager.unpack_details(e.detail)
+            raise CSVErrorManager.create_error(index, code, column)
+
+    def update_or_create_participants(self, participants, event):
+        for line_no, participant in enumerate(participants):
+            try:
+                obj = Student.objects.get(index=participant['index'], event=event)
+                serializer = StudentSerializer(obj, participant, partial=True)
+            except Student.DoesNotExist:
+                serializer = StudentSerializer(event=event, **participant)
+
+            try:
+                if serializer.is_valid(raise_exception=True):
+                    serializer.save()
+            except IntegrityError as e:
+                raise CSVUniqueColumnError(wrong_data=e.__str__())
+
+            except ValidationError as e:
+                code, column = CSVErrorManager.unpack_detail(e.detail)
+                raise CSVErrorManager.create_error(line_no + 2, code, column)
+
+    def create_rooms(self, rooms_data, event):
+        try:
+            rooms_serializer = RoomSerializer(data=rooms_data, many=True, context={'event': event})
+            if rooms_serializer.is_valid(raise_exception=True):
+                rooms_serializer.save()
+        except IntegrityError as e:
+            raise CSVUniqueColumnError(wrong_data=e.__str__())
+
+        except ValidationError as e:
+            index, code, column = CSVErrorManager.unpack_details(e.detail)
+            raise CSVErrorManager.create_error(index, code, column)
+
     def create(self, validated_data):
         organizer = Organiser.objects.get(user=self.context.get('user'))
         participants_data = validated_data.pop('participants')
         rooms_data = validated_data.pop('rooms')
         event = Event.objects.create(organizer=organizer, **validated_data)
         try:
-            for participant in participants_data:
-                participant['event'] = event.name
-            students_serializer = StudentSerializer(data=participants_data, many=True)
-            if students_serializer.is_valid(raise_exception=True):
-                students_serializer.save()
-
-            rooms_serializer = RoomSerializer(data=rooms_data, many=True, context={'event': event})
-            if rooms_serializer.is_valid(raise_exception=True):
-                rooms_serializer.save()
-
+            self.create_participants(participants_data, event)
+            self.create_rooms(rooms_data, event)
         except IntegrityError as e:
             raise CSVUniqueColumnError(wrong_data=e.__str__())
 
@@ -186,6 +223,17 @@ class EventSerializer(serializers.ModelSerializer):
             raise CSVErrorManager.create_error(index, code, column)
 
         return event
+
+    def update(self, instance, validated_data):
+        validated_data.pop('name', None)
+        if validated_data.get('image') is not None:
+            os.remove(os.path.join(os.getcwd(), 'enrolmentpanel/static/images/', str(instance.image)))
+        if validated_data.get('participants') is not None:
+            self.update_or_create_participants(validated_data.pop('participants'), instance)
+        if validated_data.get('rooms') is not None:
+            Room.objects.filter(event=instance).delete()
+            self.create_rooms(validated_data.pop('rooms'), instance)
+        return super().update(instance, validated_data)
 
     class Meta:
         model = Event

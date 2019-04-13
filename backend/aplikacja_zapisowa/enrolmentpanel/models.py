@@ -2,6 +2,8 @@ from django.contrib.auth.models import AbstractUser
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from django.db import models
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 
 from enrolmentpanel.exceptions import NotPositiveNumberOfPeople
 from enrolmentpanel.utils.email_utils import StudentRegisterMail
@@ -41,10 +43,6 @@ class Organiser(models.Model):
     faculty = models.PositiveSmallIntegerField()
     name = models.CharField(max_length=30)
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True, related_name='organiser')
-
-    def delete(self, *args, **kwargs):
-        self.user.delete()
-        return super().delete(*args, **kwargs)
 
     def __str__(self):
         return self.user.__str__()
@@ -192,6 +190,11 @@ class Student(models.Model):
     class Meta:
         unique_together = (('index', 'event'),)
 
-    def delete(self, *args, **kwargs):
-        self.user.delete()
-        return super().delete(*args, **kwargs)
+
+@receiver(post_delete, sender=Student)
+def auto_delete_user_with_Student(sender, instance, **kwargs):
+    instance.user.delete()
+
+@receiver(post_delete, sender=Organiser)
+def auto_delete_user_with_Organiser(sender, instance, **kwargs):
+    instance.user.delete()
