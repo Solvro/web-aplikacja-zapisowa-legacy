@@ -153,17 +153,48 @@ class EventSerializer(serializers.ModelSerializer):
         return self.validate_csv_file(participants)
 
     def create_participants(self, participants, event):
-        for participant in participants:
+        try:
+            for participant in participants:
                 participant['event'] = event.name
-        students_serializer = StudentSerializer(data=participants, many=True)
-        if students_serializer.is_valid(raise_exception=True):
-            students_serializer.save()
+            students_serializer = StudentSerializer(data=participants, many=True)
+            if students_serializer.is_valid(raise_exception=True):
+                students_serializer.save()
+        except IntegrityError as e:
+            raise CSVUniqueColumnError(wrong_data=e.__str__())
+
+        except ValidationError as e:
+            index, code, column = CSVErrorManager.unpack_details(e.detail)
+            raise CSVErrorManager.create_error(index, code, column)
+
+    def update_or_create_participants(self, participants, event):
+        for line_no, participant in enumerate(participants):
+            try:
+                obj = Student.objects.get(index=participant['index'], event=event)
+                serializer = StudentSerializer(obj, participant, partial=True)
+            except Student.DoesNotExist:
+                serializer = StudentSerializer(event=event, **participant)
+
+            try:
+                if serializer.is_valid(raise_exception=True):
+                    serializer.save()
+            except IntegrityError as e:
+                raise CSVUniqueColumnError(wrong_data=e.__str__())
+
+            except ValidationError as e:
+                code, column = CSVErrorManager.unpack_detail(e.detail)
+                raise CSVErrorManager.create_error(line_no + 2, code, column)
 
     def create_rooms(self, rooms_data, event):
-        rooms_serializer = RoomSerializer(data=rooms_data, many=True, context={'event': event})
-        if rooms_serializer.is_valid(raise_exception=True):
-            rooms_serializer.save()
+        try:
+            rooms_serializer = RoomSerializer(data=rooms_data, many=True, context={'event': event})
+            if rooms_serializer.is_valid(raise_exception=True):
+                rooms_serializer.save()
+        except IntegrityError as e:
+            raise CSVUniqueColumnError(wrong_data=e.__str__())
 
+        except ValidationError as e:
+            index, code, column = CSVErrorManager.unpack_details(e.detail)
+            raise CSVErrorManager.create_error(index, code, column)
 
     def create(self, validated_data):
         organizer = Organiser.objects.get(user=self.context.get('user'))
@@ -187,8 +218,7 @@ class EventSerializer(serializers.ModelSerializer):
         if validated_data.get('image') is not None:
             os.remove(os.path.join(os.getcwd(), 'enrolmentpanel/static/images/', str(instance.image)))
         if validated_data.get('participants') is not None:
-            Student.objects.filter(event=instance).delete()
-            self.create_participants(validated_data.pop('participants'), instance)
+            self.update_or_create_participants(validated_data.pop('participants'), instance)
         if validated_data.get('rooms') is not None:
             Room.objects.filter(event=instance).delete()
             self.create_rooms(validated_data.pop('rooms'), instance)
