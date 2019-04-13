@@ -37,7 +37,6 @@ class RoomsRoute extends Component {
   }
 
   render() {
-    const { match } = this.props;
     const {
       rooms, room_count: roomCount, free_rooms: freeRoomsCount, vacancies: roomsLeftCount,
     } = this.state;
