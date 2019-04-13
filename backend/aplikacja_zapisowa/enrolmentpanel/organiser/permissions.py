@@ -13,4 +13,4 @@ class IsOrganiserAccount(permissions.BasePermission):
 class IsEventOwner(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
-        return obj.organiser == request.user.organiser
+        return obj.organizer == request.user.organiser

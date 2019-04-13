@@ -24,6 +24,15 @@ from enrolmentpanel.utils.notify_utils import notify_consumers_on_room_change
 import json
 
 
+class StudentAlreadyRegisteredException(APIException):
+    status_code = 400
+    default_detail = 'Student already registered'
+
+    def __init__(self, student_id):
+        self.detail = f"{student_id} is already registered!"
+        super().__init__(self)
+    
+
 class TestView(APIView):
 
     permission_classes = (IsAuthenticated, IsStudentAccount)
@@ -63,8 +72,13 @@ class SoloRoomView(APIView):
 
         self.check_object_permissions(request, event)
 
+        if student.status != 'N':
+            raise StudentAlreadyRegisteredException(student.index)
+
         room = self.get_room_for_solo(event)
         room.add_people([student])
+        student.status = 'S'
+        student.save()
         notify_consumers_on_room_change(event_name, room)
 
         return Response({
@@ -75,8 +89,12 @@ class SoloRoomView(APIView):
 
 class GroupRoomView(APIView):
     
-    permission_classes = (IsAuthenticated, IsStudentAccount)
+    permission_classes = (
+        IsAuthenticated,
+        IsStudentAccount,
+        IsStudentParticipatingInEvent)
 
+    # to jest rakowe fchuj, trz zrefactorować xD
     def get_users_from_request(self, request):
         group_users = []
         group_users.append(request.user.username)
@@ -90,8 +108,8 @@ class GroupRoomView(APIView):
 
     def validate_students(self, students):
         for student in students:
-            if not student.room is None:
-                raise Exception
+            if not student.status == 'N':
+                raise StudentAlreadyRegisteredException(student.index)
 
     def post(self, request, event_name, room_no):
         user_names = self.get_users_from_request(request)
@@ -105,6 +123,13 @@ class GroupRoomView(APIView):
         room = Room.objects.get(number=room_no)
 
         room.add_people(students)
+
+        for student in students:
+            student.status = 'G'
+            student.save()
         notify_consumers_on_room_change(event_name, room)
 
-        return Response({'status': 'ok'})
+        return Response({
+            "room_number": room.number,
+            "capacity": room.max_capacity
+        })
