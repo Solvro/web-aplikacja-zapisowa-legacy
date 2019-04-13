@@ -47,7 +47,7 @@ const StyledTableRow = withStyles({
 })(TableRow);
 
 const renderCustomTableCellWithComponent = (id, idx) => (
-  <CustomTableCell component="th" scope="row" key={idx}>
+  <CustomTableCell align="center" style={{display: 'flex', justifyContent: 'center'}} component="th" scope="row" key={idx}>
     <BadgeCell>
       {id}
     </BadgeCell>
