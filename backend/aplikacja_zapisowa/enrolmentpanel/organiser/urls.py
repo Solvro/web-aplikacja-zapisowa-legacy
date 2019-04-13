@@ -5,6 +5,7 @@ from .views import (
     CreateStudentView,
     TestView,
     DetailEventView,
+    StudentStatusView,
     DetailRoomListView
 )
 
@@ -13,5 +14,6 @@ urlpatterns = [
     path('event/<event_name>', DetailEventView.as_view()),
     path('event/<event_name>/rooms', DetailRoomListView.as_view()),
     path('<event_name>/test/', TestView.as_view()),
-    path('<event_name>/student/', CreateStudentView.as_view())
+    path('<event_name>/student/', CreateStudentView.as_view()),
+    path('<event_name>/students_status/', StudentStatusView.as_view()),
 ]
