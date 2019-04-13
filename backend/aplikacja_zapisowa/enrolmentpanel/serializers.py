@@ -183,7 +183,8 @@ class EventSerializer(serializers.ModelSerializer):
                 obj = Student.objects.get(index=participant['index'], event=event)
                 serializer = StudentSerializer(obj, participant, partial=True)
             except Student.DoesNotExist:
-                serializer = StudentSerializer(event=event, **participant)
+                participant['event'] = event.name
+                serializer = StudentSerializer(data=participant)
 
             try:
                 if serializer.is_valid(raise_exception=True):
