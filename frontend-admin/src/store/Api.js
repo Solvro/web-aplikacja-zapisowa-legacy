@@ -6,22 +6,15 @@ const instance = axios.create({
   baseURL: 'http://localhost:8000/api/',
 });
 
-// głowy sobie nie dam uciąć czy dobry urlsc
 const refreshAuthLogic = err => instance.post('/token/refresh/', { refresh: localStorage.getItem('refresh') })
   .then((res) => {
-    console.log('refresh', res);
     localStorage.setItem('token', res.data.access);
+    const data = JSON.parse(err.response.config.data);
+    data.token = res.data.access;
+    err.response.config.data = JSON.stringify(data);
     err.response.config.headers.Authorization = `Bearer ${res.data.access}`;
-    console.log(err, 'err')
     return Promise.resolve();
   });
-
-// , err => axios.post('/token/refresh/').then((res) => {
-//   // Tego kawałka kodu też nie jestem pewien czy on dobrze działa
-//   localStorage.setItem('token', res.data.token);
-//   err.response.config.headers.Authentication = `Bearer ${res.data.token}`;
-//   return Promise.resolve();
-// })
 
 createAuthRefreshInterceptor(instance, refreshAuthLogic);
 
