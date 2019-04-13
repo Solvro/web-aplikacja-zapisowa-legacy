@@ -75,7 +75,7 @@ class CreateEventView(APIView):
         try:
             if event_serializer.is_valid(raise_exception=True):
                 event_serializer.save()
-        except ValidationError:
+        except ValidationError as e:
             raise UniqueEventNameError
         return Response(status=status.HTTP_201_CREATED)
 
@@ -89,6 +89,7 @@ class CreateEventView(APIView):
 
 class DetailEventView(APIView):
     permission_classes = (IsAuthenticated, IsOrganiserAccount)
+    parser_classes = (MultiPartParser,)
 
     @swagger_auto_schema(responses={200: EventSerializer(),
                                     404: "{\"detail\": \"Not found\"}"},
@@ -97,6 +98,17 @@ class DetailEventView(APIView):
         event = get_object_or_404(Event, organizer__user=request.user, name=event_name)
         event_serializer = EventSerializer(event)
         return Response(event_serializer.data)
+ 
+    @transaction.atomic
+    def patch(self, request, event_name):
+        event = get_object_or_404(Event, organizer__user=request.user, name=event_name)
+        event_serializer = EventSerializer(event, request.data, partial=True)
+        try:
+            if event_serializer.is_valid(raise_exception=True):
+                event_serializer.save()
+        except ValidationError:
+            raise UniqueEventNameError
+        return Response(status=status.HTTP_200_OK)
 
 
 class DetailRoomListView(APIView):
