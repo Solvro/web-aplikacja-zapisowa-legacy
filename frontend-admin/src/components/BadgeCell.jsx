@@ -1,18 +1,24 @@
 import React from 'react';
+import { withStyles } from '@material-ui/core/styles';
 
-const style = {
-  display: 'flex',
-  justifyContent: 'center',
-  alignContent: 'center',
-  backgroundColor: 'rgb(0, 0, 85)',
-  borderRadius: '100px',
-  color: 'white',
-  height: '100%',
-  width: '50%',
-  padding: '6%',
-};
+const styles = theme => ({
+  root: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignContent: 'center',
+    backgroundColor: theme.palette.primary.main,
+    borderRadius: '100px',
+    color: 'white',
+    height: '100%',
+    width: '50%',
+    padding: '10%',
+  },
+});
 
-const BadgeCell = ({ children }) => <div style={style}>{ children }</div>;
+function BadgeCell(props) {
+  const { children, classes } = props;
+  return <div className={classes.root}>{ children }</div>;
+}
 
 
-export default BadgeCell;
+export default withStyles(styles)(BadgeCell);
