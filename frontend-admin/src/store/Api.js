@@ -11,7 +11,8 @@ const refreshAuthLogic = err => instance.post('/token/refresh/', { refresh: loca
   .then((res) => {
     console.log('refresh', res);
     localStorage.setItem('token', res.data.access);
-    err.response.config.headers.Authentication = `Bearer ${res.data.access}`;
+    err.response.config.headers.Authorization = `Bearer ${res.data.access}`;
+    console.log(err, 'err')
     return Promise.resolve();
   });
 
