@@ -70,7 +70,10 @@ class CSVErrorManager:
         for index, error in enumerate(traceback):
             for column, details in error.items():
                 return index + 2, details[0].code, column
-
+    @staticmethod
+    def unpack_detail(error):
+        for column, details in error.items():
+            return details[0].code, column
 
 class UniqueEventNameError(APIException):
     default_code = 400
