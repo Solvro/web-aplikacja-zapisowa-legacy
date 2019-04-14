@@ -27,10 +27,7 @@ from enrolmentpanel.serializers import (
 )
 from enrolmentpanel.exceptions import UniqueEventNameError
 
-import logging
 
-
-logger = logging.getLogger(__name__)
 
 class TestView(APIView):
 
