@@ -27,6 +27,10 @@ from enrolmentpanel.serializers import (
 )
 from enrolmentpanel.exceptions import UniqueEventNameError
 
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 class TestView(APIView):
 
@@ -76,7 +80,7 @@ class CreateEventView(APIView):
         try:
             if event_serializer.is_valid(raise_exception=True):
                 event_serializer.save()
-        except ValidationError as e:
+        except ValidationError:
             raise UniqueEventNameError
         return Response(status=status.HTTP_201_CREATED)
 
@@ -110,6 +114,7 @@ class DetailEventView(APIView):
         except ValidationError:
             raise UniqueEventNameError
         return Response(status=status.HTTP_200_OK)
+
 
 class StudentStatusView(APIView):
     permission_classes = (IsAuthenticated, IsOrganiserAccount, IsEventOwner)
@@ -159,6 +164,7 @@ class StudentStatusView(APIView):
             "students": student_serializer.data
         })
 
+
 class DetailRoomListView(APIView):
 
     permission_classes = (IsAuthenticated, IsOrganiserAccount)
@@ -198,3 +204,19 @@ class DetailRoomListView(APIView):
             'vacancies': sum([room['max_capacity'] - room['cur_capacity'] for room in rooms]),
             'rooms': rooms
         })
+
+
+class StudentEditView(APIView):
+    permission_classes = (IsAuthenticated, IsOrganiserAccount)
+
+    def delete(self, request, event_name, student_index):
+        event = get_object_or_404(Event.objects.prefetch_related(
+            Prefetch(
+                'student_set',
+                queryset=Student.objects.filter(event=event_name, index=student_index)
+            )),
+            name=event_name, organizer__user=request.user
+        )
+        student = event.student_set.get()
+        student.delete()
+        return Response(status=status.HTTP_200_OK)
