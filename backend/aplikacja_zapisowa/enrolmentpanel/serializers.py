@@ -109,6 +109,7 @@ class StudentSerializer(serializers.ModelSerializer):
             validated_data['user'] = user
             mail = StudentRegisterMail(instance.event, new_index, username, password)
             mail.send_email()
+        validated_data.pop('event', None)
         return super().update(instance, validated_data)
 
     def validate_index(self, value):
