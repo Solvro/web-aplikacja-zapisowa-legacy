@@ -218,6 +218,7 @@ class StudentEditView(APIView):
         student.delete()
         return Response(status=status.HTTP_202_ACCEPTED)
 
+    @transaction.atomic
     def patch(self, request, event_name, student_index):
         student = get_object_or_404(Student.objects.filter(
             event=event_name,
