@@ -210,13 +210,22 @@ class StudentEditView(APIView):
     permission_classes = (IsAuthenticated, IsOrganiserAccount)
 
     def delete(self, request, event_name, student_index):
-        event = get_object_or_404(Event.objects.prefetch_related(
-            Prefetch(
-                'student_set',
-                queryset=Student.objects.filter(event=event_name, index=student_index)
-            )),
-            name=event_name, organizer__user=request.user
-        )
-        student = event.student_set.get()
+        student = get_object_or_404(Student.objects.filter(
+            event=event_name,
+            index=student_index,
+            event__organizer__user=request.user
+        ))
         student.delete()
-        return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_202_ACCEPTED)
+
+    def patch(self, request, event_name, student_index):
+        student = get_object_or_404(Student.objects.filter(
+            event=event_name,
+            index=student_index,
+            event__organizer__user=request.user
+        ))
+        student_serializer = StudentSerializer(student, request.data, partial=True)
+        if student_serializer.is_valid():
+            student_serializer.save()
+        return Response(status=status.HTTP_202_ACCEPTED)
+

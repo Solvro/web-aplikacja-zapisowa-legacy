@@ -95,6 +95,12 @@ class StudentSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         return Student.objects.create(**validated_data)
 
+    def update(self, instance, validated_data):
+        if validated_data.get("index", None) is not None:
+            # create new user
+            pass
+        return super().update(instance, validated_data)
+
     def validate_index(self, value):
         if re.fullmatch(r"^\d+$", value):
             return value
