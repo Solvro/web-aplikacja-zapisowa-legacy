@@ -206,6 +206,7 @@ class DetailRoomListView(APIView):
 class StudentEditView(APIView):
     permission_classes = (IsAuthenticated, IsOrganiserAccount)
 
+    @swagger_auto_schema(operation_description="Deletes student")
     def delete(self, request, event_name, student_index):
         student = get_object_or_404(Student.objects.filter(
             event=event_name,
@@ -215,6 +216,8 @@ class StudentEditView(APIView):
         student.delete()
         return Response(status=status.HTTP_202_ACCEPTED)
 
+    @swagger_auto_schema(request_body=StudentSerializer(partial=True),
+                         operation_description="Patches student's info. Event acctually can not be changed")
     @transaction.atomic
     def patch(self, request, event_name, student_index):
         student = get_object_or_404(Student.objects.filter(
