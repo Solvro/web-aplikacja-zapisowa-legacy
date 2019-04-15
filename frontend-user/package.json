@@ -25,7 +25,7 @@
     "redux-thunk": "^2.3.0",
     "resolve": "1.6.0",
     "tslint": "^5.13.1",
-    "typesafe-actions": "^2.0.4",
+    "typesafe-actions": "^4.0.0",
     "whatwg-fetch": "2.0.3"
   },
   "devDependencies": {

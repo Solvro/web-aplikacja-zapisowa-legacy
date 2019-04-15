@@ -106,7 +106,7 @@ class StudentManager(models.Manager):
     def bulk_create(self, objs, batch_size=None):
         users = []
         for student in objs:
-            username, password = self.__generate_student_credentials(student.index)
+            username, password = StudentManager.generate_student_credentials(student.index)
             user = User(username=username, password=password, is_participant=True)
             users.append(user)
         saved_users = User.objects.bulk_create(users)
@@ -116,8 +116,9 @@ class StudentManager(models.Manager):
         return super().bulk_create(objs, batch_size=batch_size)
 
 
+
     def create(self, index, event, sex, name, faculty):
-        username, password = self.__generate_student_credentials(index)
+        username, password = StudentManager.generate_student_credentials(index)
         student_user = User.objects.create_user(
             username=username,
             password=password
@@ -145,7 +146,8 @@ class StudentManager(models.Manager):
 
         return new_student
 
-    def __generate_student_credentials(self, index):
+    @staticmethod
+    def generate_student_credentials(index):
         """
         Generates login from index and random 5 sign
         from [2-9a-hjk-n-p-zA-HJ-Z]
