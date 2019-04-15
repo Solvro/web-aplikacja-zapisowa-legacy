@@ -131,3 +131,33 @@ export async function getParticipantsList(eventName) {
     return null;
   }
 }
+
+export async function updateEvent(eventName, data) {
+  const config = {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  };
+
+  // eslint-disable-next-line no-undef
+  const formData = new FormData();
+
+  Object.entries(data).forEach((arr) => {
+    if(arr[1]) {
+      formData.append(arr[0], arr[1]);
+    }
+  });
+
+  try {
+    const response = await instance.patch(
+      `/organiser/event/${eventName}`,
+      formData,
+      config,
+    );
+    const statusOK = response && response.status === 200;
+    return statusOK;
+  } catch (error) {
+    console.error(error)
+    return false;
+  }
+}
