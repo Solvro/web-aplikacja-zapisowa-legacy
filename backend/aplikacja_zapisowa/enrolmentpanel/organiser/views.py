@@ -155,7 +155,7 @@ class StudentStatusView(APIView):
         }
 
         request.data['event'] = event
-        student_serializer = StudentSerializer(eventStudents, many=True)
+        student_serializer = PartialStudentSerializer(eventStudents, many=True)
             
         return Response({
             "stats": statistics_data,

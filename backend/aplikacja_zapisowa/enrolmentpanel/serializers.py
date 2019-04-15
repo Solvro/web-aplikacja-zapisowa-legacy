@@ -127,7 +127,7 @@ class PartialStudentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Student
-        fields = ("name", "faculty", "sex", "status")
+        fields = ("name", "faculty", "sex", "status", "index")
 
 
 class UserSerializer(serializers.ModelSerializer):
