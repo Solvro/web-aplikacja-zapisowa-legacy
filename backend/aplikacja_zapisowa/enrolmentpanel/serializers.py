@@ -25,6 +25,8 @@ from enrolmentpanel.models import (
     Event
 )
 
+from enrolmentpanel.utils.email_utils import EventMail
+
 import base64
 import codecs
 import csv
@@ -252,3 +254,46 @@ class EventSerializer(serializers.ModelSerializer):
         extra_kwargs = {'image': {'write_only': True},
                         'participants': {'write_only': True},
                         'rooms': {'write_only': True}}
+
+
+class CustomEmailViewSerializer(serializers.Serializer):
+
+    all_students = serializers.BooleanField(write_only=True, default=False)
+    not_registered = serializers.BooleanField(write_only=True, default=False)
+    registered = serializers.BooleanField(write_only=True, default=False)
+    indexes = serializers.ListField(child=serializers.CharField())
+    subject = serializers.CharField()
+    body = serializers.CharField()
+
+    def get_indexes(self, query):
+        index_fields = query.values('index')
+        return [index_field['index'] for index_field in index_fields]
+
+    def create(self, validated_data):
+        if validated_data['registered']:
+            validated_data['indexes'] = self.get_indexes(
+                Student.objects.filter(
+                    event=self.context['event'],
+                    event__organizer__user=self.context['user'],
+                    room__isnull=False))
+        elif validated_data['not_registered']:
+            validated_data['indexes'] = self.get_indexes(
+                Student.objects.filter(
+                    event=self.context['event'],
+                    event__organizer__user=self.context['user'],
+                    room__isnull=True))
+        elif validated_data['all_students']:
+            validated_data['indexes'] = self.get_indexes(
+                Student.objects.filter(
+                    event=self.context['event'],
+                    event__organizer__user=self.context['user']))
+
+        emails = []
+        for index in validated_data['indexes']:
+            emails.append(
+                EventMail(
+                    subject=validated_data['subject'],
+                    body=validated_data['body'],
+                    index=index
+            ))
+        return emails
