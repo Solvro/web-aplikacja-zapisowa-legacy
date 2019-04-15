@@ -1,9 +1,11 @@
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
+from django.contrib.auth.hashers import make_password
 from django.core.files.storage import FileSystemStorage
 from django.db import models
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
+
 
 from enrolmentpanel.exceptions import NotPositiveNumberOfPeople
 from enrolmentpanel.utils.email_utils import StudentRegisterMail
@@ -105,15 +107,22 @@ class StudentManager(models.Manager):
 
     def bulk_create(self, objs, batch_size=None):
         users = []
+        passwords = []
         for student in objs:
             username, password = self.__generate_student_credentials(student.index)
-            user = User(username=username, password=password, is_participant=True)
+            passwords.append(password)
+            user = User(username=username, password=make_password(password), is_participant=True)
             users.append(user)
         saved_users = User.objects.bulk_create(users)
         for student, user in zip(objs, saved_users):
             student.user = user
             student.status = 'N'
-        return super().bulk_create(objs, batch_size=batch_size)
+
+        saved_students = super().bulk_create(objs, batch_size=batch_size)
+        for student, password in zip(objs, passwords):
+            mail = StudentRegisterMail(student.event, student.index, student.user.username, password)
+            mail.send_email()
+        return saved_students
 
 
     def create(self, index, event, sex, name, faculty):
