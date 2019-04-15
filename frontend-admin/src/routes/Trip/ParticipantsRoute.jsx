@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import TableCard from '../../components/TableCard';
 import { Button } from '@material-ui/core';
 import EditParticipantDialog from '../../components/EditParticipantDialog';
-import { getParticipantsList, removeParticipant } from '../../store/Api';
+import { getParticipantsList, removeParticipant, editParticipant } from '../../store/Api';
 
 const columns = ['Imię i nazwisko', 'Wydział', 'Płeć', 'Status', 'Index', 'Akcja'];
 
@@ -20,13 +20,31 @@ class ParticipantsRoute extends Component {
   }
 
   toggleDialog = () => {
-    this.setState({
+    this.setState(prevState => ({
       isDialogOpen: !this.state.isDialogOpen,
-    })
+    }));
   }
 
-  handleCloseDialog = (data) => {
+  openDialog = (studentInfo) => {
+    const student = this.state.students.filter(std => studentInfo.Index.props.children === std.index);
+    this.setState({isDialogOpen: true, dialogStudent: student[0] || {}});
+  }
+
+
+   handleCloseDialog = async (data) => {
     this.toggleDialog();
+    console.log(data, 'dataSent')
+    if(data !== null){
+      editParticipant(this.state.eventName, data);
+      const response = await getParticipantsList(this.state.eventName);
+      const { stats, students } = response;
+
+      this.setState({
+        stats,
+        students,
+        dialogStudent: students[0],
+      });
+    }
   }
 
   prepareDataForDynamicTable(preStudents) {
@@ -75,10 +93,18 @@ class ParticipantsRoute extends Component {
     });
   }
 
-  deleteParticipants = (participantInfo, eventName) => {
+  deleteParticipants = async (participantInfo, eventName) => {
     const decision = prompt(`Czy jesteś pewien, że chcesz usunąć ${participantInfo['Imię i nazwisko'].props.children.props.children}? Wpisz tak, aby potwierdzić.`);
     if(decision === 'tak'){
       removeParticipant(eventName, participantInfo);
+      const response = await getParticipantsList(eventName);
+      const { stats, students } = response;
+
+      this.setState({
+        stats,
+        students,
+        dialogStudent: students[0],
+      });
     }
   };
 
@@ -87,14 +113,12 @@ class ParticipantsRoute extends Component {
     const { students: studentCount, solo_students: soloCount, students_in_rooms: inRoomsCount } = stats;
     return (
       <>
-        <Button variant="outlined" color="primary" onClick={this.toggleDialog}>
-          Open form dialog
-        </Button>
         {isDialogOpen && <EditParticipantDialog
-          fullName={dialogStudent.name}
+          name={dialogStudent.name}
           faculty={dialogStudent.faculty}
           sex={dialogStudent.sex}
           status={dialogStudent.status}
+          index={dialogStudent.index}
           isOpen={isDialogOpen}
           onClose={this.handleCloseDialog}
         />}
@@ -108,6 +132,7 @@ class ParticipantsRoute extends Component {
           ]}
           rows={this.prepareDataForDynamicTable(students)}
           onRemove={participantInfo => this.deleteParticipants(participantInfo, eventName)}
+          onEdit={this.openDialog}
         />
       </>
     );

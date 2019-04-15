@@ -30,10 +30,11 @@ function* arrayRangeGenerator(start, end) {
 
 class EditParticipantDialog extends React.Component {
   state = {
-    fullName: '',
+    name: '',
     faculty: '',
     sex: '',
     status: '',
+    index: '',
   }
 
   handleChange = event => {
@@ -41,12 +42,13 @@ class EditParticipantDialog extends React.Component {
   };
 
   componentDidMount = () => {
-    const { fullName, faculty, sex, status } = this.props;
+    const { name, faculty, sex, status, index } = this.props;
     this.setState({
-      fullName,
+      name,
       faculty,
       sex,
-      status
+      status,
+      index
     });
   }
 
@@ -73,7 +75,7 @@ class EditParticipantDialog extends React.Component {
                   label="Imię i Nazwisko"
                   type="text"
                   fullWidth
-                  value={this.state.fullName}
+                  value={this.state.name}
                   onChange={this.handleChange}
                 />
               </Grid>

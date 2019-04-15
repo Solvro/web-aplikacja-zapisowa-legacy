@@ -6,6 +6,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
+import EditOutline from '@material-ui/icons/Edit';
 import BadgeCell from './BadgeCell';
 
 const CustomTableCell = withStyles(theme => ({
@@ -27,6 +28,9 @@ const styles = theme => ({
   },
   table: {
     minWidth: 700,
+  },
+  actions: {
+    padding: theme.spacing.unit * 2,
   },
   row: {
     '&:nth-of-type(even)': {
@@ -78,7 +82,7 @@ const createData = (primaryKey, row) => {
 
 function DynamicTable(props) {
   const {
-    classes, headers, rows, onRemove,
+    classes, headers, rows, onRemove, onEdit,
   } = props;
   const primaryKey = headers[0];
   const parsedRows = rows.map(row => createData(primaryKey, row));
@@ -111,7 +115,10 @@ function DynamicTable(props) {
                 component="th"
                 scope="row"
               >
-                <DeleteOutlinedIcon onClick={() => onRemove(row, idx)} />
+                <div className={classes.actions}>
+                  <DeleteOutlinedIcon onClick={() => onRemove(row, idx)} />
+                  <EditOutline onClick={() => onEdit(row, idx)} />
+                </div>
               </CustomTableCell>
             )}
           </StyledTableRow>
