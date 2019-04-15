@@ -22,7 +22,7 @@ const NAMES = [
 
 const styles = theme => ({
   root: {
-    width: '50%',
+    width: '60%',
     marginLeft: 'auto',
     marginRight: 'auto',
     padding: theme.spacing.unit * 2,
@@ -32,7 +32,7 @@ const styles = theme => ({
     textAlign: 'center',
 
     '& Button': {
-      width: '50%',
+      width: '30%',
     },
   },
 });

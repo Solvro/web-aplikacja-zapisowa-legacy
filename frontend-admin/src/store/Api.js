@@ -105,6 +105,17 @@ export async function removeParticipant(eventName, participantInfo) {
   }
 }
 
+export async function editParticipant(eventName, participantInfo) {
+
+  try {
+    const response = await instance.patch(`/organiser/${eventName}/student/${participantInfo.index}`, participantInfo);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+}
+
 export async function getEventDetails(eventName) {
   try {
     const response = await instance.get(`/organiser/event/${eventName}`);
