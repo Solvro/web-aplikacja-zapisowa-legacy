@@ -130,7 +130,8 @@ class StudentStatusView(APIView):
                         "name": "Jan Bibrowski",
                         "faculty": 11,
                         "sex": "M",
-                        "status": "N"
+                        "status": "N",
+                        "index": "236412"
                     }
                 ]
             }
@@ -154,7 +155,7 @@ class StudentStatusView(APIView):
         }
 
         request.data['event'] = event
-        student_serializer = PartialStudentSerializer(eventStudents, many=True)
+        student_serializer = StudentSerializer(eventStudents, many=True)
             
         return Response({
             "stats": statistics_data,
