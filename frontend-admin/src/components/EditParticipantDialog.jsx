@@ -4,7 +4,6 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { Grid, Dialog, RadioGroup, FormControlLabel, Radio, FormControl, FormLabel, InputLabel, Select, MenuItem } from '@material-ui/core';
 
@@ -31,31 +30,33 @@ function* arrayRangeGenerator(start, end) {
 
 class EditParticipantDialog extends React.Component {
   state = {
-    open: false,
-  };
-
-  handleClickOpen = () => {
-    this.setState({ open: true });
-  };
-
-  handleClose = () => {
-    this.setState({ open: false });
-  };
+    fullName: '',
+    faculty: '',
+    sex: '',
+    status: '',
+  }
 
   handleChange = event => {
     this.setState({ [event.target.name]: event.target.value });
   };
 
+  componentDidMount = () => {
+    const { fullName, faculty, sex, status } = this.props;
+    this.setState({
+      fullName,
+      faculty,
+      sex,
+      status
+    });
+  }
+
   render() {
-    const { classes } = this.props;
+    const { classes, isOpen, onClose } = this.props;
     return (
       <div>
-        <Button variant="outlined" color="primary" onClick={this.handleClickOpen}>
-          Open form dialog
-        </Button>
         <Dialog
-          open={this.state.open}
-          onClose={this.handleClose}
+          open={ isOpen }
+          onClose={ onClose }
           aria-labelledby="form-dialog-title"
         >
           <DialogTitle id="form-dialog-title">Edycja uczestnika</DialogTitle>
@@ -65,10 +66,15 @@ class EditParticipantDialog extends React.Component {
                 <TextField
                   autoFocus
                   margin="dense"
-                  id="name"
+                  inputProps={{
+                    name: 'name',
+                    id: 'name-simple'
+                  }}
                   label="Imię i Nazwisko"
                   type="text"
                   fullWidth
+                  value={this.state.fullName}
+                  onChange={this.handleChange}
                 />
               </Grid>
               <Grid item sm={4}>
@@ -83,7 +89,7 @@ class EditParticipantDialog extends React.Component {
                     }}
                   >
                     {
-                      [...arrayRangeGenerator(1, 13)].map((num => <MenuItem value={num}>W{num}</MenuItem>))
+                      [...arrayRangeGenerator(1, 13)].map((num => <MenuItem key={num} value={num}>W{num}</MenuItem>))
                     }
                   </Select>
                 </FormControl>
@@ -108,24 +114,24 @@ class EditParticipantDialog extends React.Component {
                 <FormControl component="fieldset" className={classes.formControl}>
                   <FormLabel component="legend">Płeć</FormLabel>
                   <RadioGroup
-                    aria-label="Gender"
-                    name="gender1"
+                    aria-label="Płeć"
+                    name="sex"
                     className={classes.group}
-                    value={this.state.value}
+                    value={this.state.sex}
                     onChange={this.handleChange}
                   >
-                    <FormControlLabel value="female" control={<Radio />} label="Female" />
-                    <FormControlLabel value="male" control={<Radio />} label="Male" />
+                    <FormControlLabel value="F" control={<Radio />} label="Kobieta" />
+                    <FormControlLabel value="M" control={<Radio />} label="Mężczyzna" />
                   </RadioGroup>
                 </FormControl>
               </Grid>
             </Grid>
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handleClose} color="primary">
+            <Button onClick={() => onClose(null)} color="primary">
               Anuluj
             </Button>
-            <Button onClick={this.handleClose} color="primary">
+            <Button onClick={() => onClose(this.state)} color="primary">
               Zapisz
             </Button>
           </DialogActions>
