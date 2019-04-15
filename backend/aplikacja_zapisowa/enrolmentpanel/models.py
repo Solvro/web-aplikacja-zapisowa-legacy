@@ -125,8 +125,9 @@ class StudentManager(models.Manager):
         return saved_students
 
 
+
     def create(self, index, event, sex, name, faculty):
-        username, password = self.__generate_student_credentials(index)
+        username, password = StudentManager.generate_student_credentials(index)
         student_user = User.objects.create_user(
             username=username,
             password=password
@@ -154,7 +155,8 @@ class StudentManager(models.Manager):
 
         return new_student
 
-    def __generate_student_credentials(self, index):
+    @staticmethod
+    def generate_student_credentials(index):
         """
         Generates login from index and random 5 sign
         from [2-9a-hjk-n-p-zA-HJ-Z]

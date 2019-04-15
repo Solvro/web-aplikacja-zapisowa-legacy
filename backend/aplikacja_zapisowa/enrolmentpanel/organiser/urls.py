@@ -8,6 +8,7 @@ from .views import (
     StudentStatusView,
     DetailRoomListView,
     CustomEmailView
+    StudentEditView
 )
 
 urlpatterns = [
@@ -18,4 +19,5 @@ urlpatterns = [
     path('<event_name>/student/', CreateStudentView.as_view()),
     path('<event_name>/students_status/', StudentStatusView.as_view()),
     path('<event_name>/email/', CustomEmailView.as_view())
+    path('<event_name>/student/<student_index>', StudentEditView.as_view())
 ]

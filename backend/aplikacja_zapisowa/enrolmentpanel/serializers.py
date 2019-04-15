@@ -22,8 +22,10 @@ from enrolmentpanel.models import (
     Student,
     Organiser,
     User,
-    Event
+    Event,
+    StudentManager
 )
+from enrolmentpanel.utils.email_utils import StudentRegisterMail
 
 from enrolmentpanel.utils.email_utils import EventMail
 
@@ -97,6 +99,21 @@ class StudentSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         return Student.objects.create(**validated_data)
 
+    def update(self, instance, validated_data):
+        new_index = validated_data.get("index", None)
+        if new_index is not None:
+            username, password = StudentManager.generate_student_credentials(new_index)
+            user = User(username=username, password=password, is_participant=True)
+            user_to_delete = instance.user
+            instance.user = user
+            user_to_delete.delete()
+            user.save()
+            validated_data['user'] = user
+            mail = StudentRegisterMail(instance.event, new_index, username, password)
+            mail.send_email()
+        validated_data.pop('event', None)
+        return super().update(instance, validated_data)
+
     def validate_index(self, value):
         if re.fullmatch(r"^\d+$", value):
             return value
@@ -112,7 +129,7 @@ class PartialStudentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Student
-        fields = ("name", "faculty", "sex", "status")
+        fields = ("name", "faculty", "sex", "status", "index")
 
 
 class UserSerializer(serializers.ModelSerializer):

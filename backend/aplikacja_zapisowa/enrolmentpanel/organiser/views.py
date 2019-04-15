@@ -29,6 +29,7 @@ from enrolmentpanel.serializers import (
 from enrolmentpanel.exceptions import UniqueEventNameError
 
 
+
 class TestView(APIView):
 
     permission_classes = (IsAuthenticated, IsOrganiserAccount, IsEventOwner)
@@ -77,7 +78,7 @@ class CreateEventView(APIView):
         try:
             if event_serializer.is_valid(raise_exception=True):
                 event_serializer.save()
-        except ValidationError as e:
+        except ValidationError:
             raise UniqueEventNameError
         return Response(status=status.HTTP_201_CREATED)
 
@@ -130,7 +131,8 @@ class StudentStatusView(APIView):
                         "name": "Jan Bibrowski",
                         "faculty": 11,
                         "sex": "M",
-                        "status": "N"
+                        "status": "N",
+                        "index": "236412"
                     }
                 ]
             }
@@ -216,3 +218,31 @@ class CustomEmailView(APIView):
             emails = emails_serializer.save()
             [email.send_email() for email in emails]
         return Response(status=status.HTTP_200_OK)
+
+
+class StudentEditView(APIView):
+    permission_classes = (IsAuthenticated, IsOrganiserAccount)
+
+    @swagger_auto_schema(operation_description="Deletes student")
+    def delete(self, request, event_name, student_index):
+        student = get_object_or_404(Student.objects.filter(
+            event=event_name,
+            index=student_index,
+            event__organizer__user=request.user
+        ))
+        student.delete()
+        return Response(status=status.HTTP_202_ACCEPTED)
+
+    @swagger_auto_schema(request_body=StudentSerializer(partial=True),
+                         operation_description="Patches student's info. Event acctually can not be changed")
+    @transaction.atomic
+    def patch(self, request, event_name, student_index):
+        student = get_object_or_404(Student.objects.filter(
+            event=event_name,
+            index=student_index,
+            event__organizer__user=request.user
+        ))
+        student_serializer = StudentSerializer(student, request.data, partial=True)
+        if student_serializer.is_valid():
+            student_serializer.save()
+        return Response(status=status.HTTP_202_ACCEPTED)
