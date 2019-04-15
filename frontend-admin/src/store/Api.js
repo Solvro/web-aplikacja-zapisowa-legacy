@@ -94,10 +94,11 @@ export async function createEvent(data) {
   }
 }
 
-export async function removeParticipant(participantInfo, eventName) {
+export async function removeParticipant(eventName, participantInfo) {
   try {
-    console.log([participantInfo, eventName], 'removePArticipant');
-    const response = await instance.delete(`/something/${eventName}`);
+    const { Index } = participantInfo;
+    const { children: index } = Index.props;
+    const response = await instance.delete(`/organiser/${eventName}/student/${index}`);
     return response.data;
   } catch (error) {
     return null;

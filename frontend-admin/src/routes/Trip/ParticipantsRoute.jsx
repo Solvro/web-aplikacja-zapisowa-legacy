@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import TableCard from '../../components/TableCard';
 import { getParticipantsList, removeParticipant } from '../../store/Api';
 
-const columns = ['Imię i nazwisko', 'Wydział', 'Płeć', 'Status', 'Akcja'];
+const columns = ['Imię i nazwisko', 'Wydział', 'Płeć', 'Status', 'Index', 'Akcja'];
 
 class ParticipantsRoute extends Component {
   constructor(props) {
@@ -15,11 +15,7 @@ class ParticipantsRoute extends Component {
     };
   }
 
-  async componentDidMount() {
-    const { match } = this.props;
-    const { id: eventName } = match.params;
-    const response = await getParticipantsList(eventName);
-
+  parseUsers = (response) => {
     const sexMap = {
       M: 'Mężczyzna',
       F: 'Kobieta',
@@ -31,7 +27,6 @@ class ParticipantsRoute extends Component {
 
     if (response) {
       const { stats, students: preStudents } = response;
-
       const students = preStudents.map((stud) => {
         const newStudent = {};
         const keys = Object.keys(stud);
@@ -50,17 +45,24 @@ class ParticipantsRoute extends Component {
         });
         return newStudent;
       });
+      return {stats, students};
+  };
 
-      this.setState({
-        stats,
-        students,
-        eventName,
-      });
+  async componentDidMount() {
+    const { match } = this.props;
+    const { id: eventName } = match.params;
+    const response = await getParticipantsList(eventName);
+
+    const { stats, students } = this.parseUsers(response);
+    this.setState({
+      stats,
+      students,
+      eventName,
+    });
     }
   }
 
-  deleteParticipants(participantInfo, eventName) {
-    console.log(participantInfo, 'part')
+  deleteParticipants = (participantInfo, eventName) => {
     const decision = prompt(`Czy jesteś pewien, że chcesz usunąć ${participantInfo['Imię i nazwisko'].props.children.props.children}? Wpisz tak, aby potwierdzić.`);
     if(decision === 'tak'){
       removeParticipant(eventName, participantInfo);

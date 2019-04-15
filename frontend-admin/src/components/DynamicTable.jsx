@@ -87,7 +87,7 @@ function DynamicTable(props) {
     <Table className={classes.table}>
       <TableHead>
         <TableRow>
-          {headers.map(header => (
+          {headers.filter(rowKey => rowKey !== 'Index').map(header => (
             <CustomTableCell key={header} align="center">
               {header}
             </CustomTableCell>
@@ -101,7 +101,9 @@ function DynamicTable(props) {
             className={classes.row}
             key={idx}
           >
-            {Object.keys(row).map(key => row[key])}
+            {Object.keys(row)
+              .filter(rowKey => rowKey !== 'Index')
+              .map(key => row[key])}
             {onRemove && (
               <CustomTableCell
                 align="center"
