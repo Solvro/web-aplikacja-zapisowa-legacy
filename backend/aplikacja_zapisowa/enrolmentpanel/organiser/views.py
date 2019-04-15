@@ -24,6 +24,7 @@ from enrolmentpanel.serializers import (
     EventSerializer,
     RoomSerializer,
     RoomDetailedSerializer,
+    CustomEmailViewSerializer
 )
 from enrolmentpanel.exceptions import UniqueEventNameError
 
@@ -111,6 +112,7 @@ class DetailEventView(APIView):
             raise UniqueEventNameError
         return Response(status=status.HTTP_200_OK)
 
+
 class StudentStatusView(APIView):
     permission_classes = (IsAuthenticated, IsOrganiserAccount, IsEventOwner)
 
@@ -159,6 +161,7 @@ class StudentStatusView(APIView):
             "students": student_serializer.data
         })
 
+
 class DetailRoomListView(APIView):
 
     permission_classes = (IsAuthenticated, IsOrganiserAccount)
@@ -198,3 +201,18 @@ class DetailRoomListView(APIView):
             'vacancies': sum([room['max_capacity'] - room['cur_capacity'] for room in rooms]),
             'rooms': rooms
         })
+
+
+class CustomEmailView(APIView):
+
+    permission_classes = (IsAuthenticated, IsOrganiserAccount)
+
+    @swagger_auto_schema(request_body=CustomEmailViewSerializer(),
+                        operation_description="Sends custom email based on flags and indexes")
+    def post(self, request, event_name):
+        emails_serializer = CustomEmailViewSerializer(data=request.data, context={'event': event_name,
+                                                                                  'user': request.user})
+        if emails_serializer.is_valid():
+            emails = emails_serializer.save()
+            [email.send_email() for email in emails]
+        return Response(status=status.HTTP_200_OK)
