@@ -130,7 +130,8 @@ class StudentStatusView(APIView):
                         "name": "Jan Bibrowski",
                         "faculty": 11,
                         "sex": "M",
-                        "status": "N"
+                        "status": "N",
+                        "index": "236412"
                     }
                 ]
             }
