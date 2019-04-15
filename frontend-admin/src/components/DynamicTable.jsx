@@ -5,6 +5,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import BadgeCell from './BadgeCell';
 
 const CustomTableCell = withStyles(theme => ({
@@ -47,10 +48,14 @@ const StyledTableRow = withStyles({
 })(TableRow);
 
 const renderCustomTableCellWithComponent = (id, idx) => (
-  <CustomTableCell align="center" style={{display: 'flex', justifyContent: 'center'}} component="th" scope="row" key={idx}>
-    <BadgeCell>
-      {id}
-    </BadgeCell>
+  <CustomTableCell
+    align="center"
+    style={{ display: 'flex', justifyContent: 'center' }}
+    component="th"
+    scope="row"
+    key={idx}
+  >
+    <BadgeCell>{id}</BadgeCell>
   </CustomTableCell>
 );
 
@@ -60,18 +65,21 @@ const renderCustomTableCell = (content, idx) => (
   </CustomTableCell>
 );
 
-
-function createData(primaryKey, row) {
+const createData = (primaryKey, row) => {
   const newRow = {};
   Object.keys(row).forEach((key, idx) => {
-    newRow[key] = (key === primaryKey ? renderCustomTableCellWithComponent(row[key], idx) : renderCustomTableCell(row[key], idx));
+    newRow[key] = key === primaryKey
+      ? renderCustomTableCellWithComponent(row[key], idx)
+      : renderCustomTableCell(row[key], idx);
   });
   // NOTE: this converts objects to arrays
   return newRow;
-}
+};
 
 function DynamicTable(props) {
-  const { classes, headers, rows } = props;
+  const {
+    classes, headers, rows, onRemove,
+  } = props;
   const primaryKey = headers[0];
   const parsedRows = rows.map(row => createData(primaryKey, row));
 
@@ -79,17 +87,33 @@ function DynamicTable(props) {
     <Table className={classes.table}>
       <TableHead>
         <TableRow>
-          {
-            headers.map(header => <CustomTableCell key={header} align="center">{header}</CustomTableCell>)
-          }
+          {headers.filter(rowKey => rowKey !== 'Index').map(header => (
+            <CustomTableCell key={header} align="center">
+              {header}
+            </CustomTableCell>
+          ))}
         </TableRow>
       </TableHead>
       <TableBody>
         {parsedRows.map((row, idx) => (
-          <StyledTableRow style={{ marginTop: '20px' }} className={classes.row} key={idx}>
-            {
-              Object.keys(row).map(key => row[key])
-            }
+          <StyledTableRow
+            style={{ marginTop: '20px' }}
+            className={classes.row}
+            key={idx}
+          >
+            {Object.keys(row)
+              .filter(rowKey => rowKey !== 'Index')
+              .map(key => row[key])}
+            {onRemove && (
+              <CustomTableCell
+                align="center"
+                style={classes.trashIcon}
+                component="th"
+                scope="row"
+              >
+                <DeleteOutlinedIcon onClick={() => onRemove(row, idx)} />
+              </CustomTableCell>
+            )}
           </StyledTableRow>
         ))}
       </TableBody>

@@ -36,7 +36,7 @@ const styles = theme => ({
 });
 
 const TableCard = (props) => {
-  const { classes, topic, header, columns, rows } = props;
+  const { classes, topic, header, columns, rows, onRemove } = props;
 
   return (
     <Paper className={classes.root}>
@@ -58,7 +58,7 @@ const TableCard = (props) => {
       }
 
       </div>
-      <DynamicTable rows={rows} headers={columns} />
+      <DynamicTable onRemove={onRemove} rows={rows} headers={columns} />
     </Paper>
   );
 };

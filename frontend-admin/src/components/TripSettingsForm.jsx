@@ -16,9 +16,8 @@ import LabelWithIcon from './LabelWithIcon';
 
 const styles = theme => ({
   root: {
-    width: '50%',
-    marginLeft: 'auto',
-    marginRight: 'auto',
+    width: '100%',
+    marginTop: theme.spacing.unit * 4,
     padding: theme.spacing.unit * 2,
   },
 

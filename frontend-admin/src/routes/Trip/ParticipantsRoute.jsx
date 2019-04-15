@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import TableCard from '../../components/TableCard';
-import { getParticipantsList } from '../../store/Api';
 import { Button } from '@material-ui/core';
 import EditParticipantDialog from '../../components/EditParticipantDialog';
+import { getParticipantsList, removeParticipant } from '../../store/Api';
 
-const columns = ['Imię i nazwisko', 'Wydział', 'Płeć', 'Status'];
+const columns = ['Imię i nazwisko', 'Wydział', 'Płeć', 'Status', 'Index', 'Akcja'];
 
 class ParticipantsRoute extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      eventName: null,
       isDialogOpen: false,
       stats: {},
       students: [],
@@ -70,11 +71,19 @@ class ParticipantsRoute extends Component {
       stats,
       students,
       dialogStudent: students[0],
+      eventName
     });
   }
 
+  deleteParticipants = (participantInfo, eventName) => {
+    const decision = prompt(`Czy jesteś pewien, że chcesz usunąć ${participantInfo['Imię i nazwisko'].props.children.props.children}? Wpisz tak, aby potwierdzić.`);
+    if(decision === 'tak'){
+      removeParticipant(eventName, participantInfo);
+    }
+  };
+
   render() {
-    const { students, stats, isDialogOpen, dialogStudent } = this.state;
+    const { students, stats, isDialogOpen, dialogStudent, eventName } = this.state;
     const { students: studentCount, solo_students: soloCount, students_in_rooms: inRoomsCount } = stats;
     return (
       <>
@@ -98,6 +107,7 @@ class ParticipantsRoute extends Component {
             { key: 'Samotnicy', value: soloCount },
           ]}
           rows={this.prepareDataForDynamicTable(students)}
+          onRemove={participantInfo => this.deleteParticipants(participantInfo, eventName)}
         />
       </>
     );

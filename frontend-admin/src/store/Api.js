@@ -54,7 +54,6 @@ export async function verifyUser(token) {
     const isVerify = verification && verification.status === 200;
     return isVerify;
   } catch (error) {
-    console.log('wylogowuje');
     return false;
   }
 }
@@ -92,6 +91,17 @@ export async function createEvent(data) {
     return statusOK;
   } catch (error) {
     return false;
+  }
+}
+
+export async function removeParticipant(eventName, participantInfo) {
+  try {
+    const { Index } = participantInfo;
+    const { children: index } = Index.props;
+    const response = await instance.delete(`/organiser/${eventName}/student/${index}`);
+    return response.data;
+  } catch (error) {
+    return null;
   }
 }
 
