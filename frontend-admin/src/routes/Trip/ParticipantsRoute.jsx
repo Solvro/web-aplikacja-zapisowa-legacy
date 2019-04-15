@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import TableCard from '../../components/TableCard';
-import { getParticipantsList } from '../../store/Api';
+import { getParticipantsList, removeParticipant } from '../../store/Api';
 
-const columns = ['Imię i nazwisko', 'Wydział', 'Płeć', 'Status'];
+const columns = ['Imię i nazwisko', 'Wydział', 'Płeć', 'Status', 'Akcja'];
 
 class ParticipantsRoute extends Component {
   constructor(props) {
@@ -11,6 +11,7 @@ class ParticipantsRoute extends Component {
     this.state = {
       stats: {},
       students: [],
+      eventName: {},
     };
   }
 
@@ -53,12 +54,21 @@ class ParticipantsRoute extends Component {
       this.setState({
         stats,
         students,
+        eventName,
       });
     }
   }
 
+  deleteParticipants(participantInfo, eventName) {
+    console.log(participantInfo, 'part')
+    const decision = prompt(`Czy jesteś pewien, że chcesz usunąć ${participantInfo['Imię i nazwisko'].props.children.props.children}? Wpisz tak, aby potwierdzić.`);
+    if(decision === 'tak'){
+      removeParticipant(eventName, participantInfo);
+    }
+  };
+
   render() {
-    const { students, stats } = this.state;
+    const { students, stats, eventName } = this.state;
     const { students: studentCount, solo_students: soloCount, students_in_rooms: inRoomsCount } = stats;
     return (
       <TableCard
@@ -70,6 +80,7 @@ class ParticipantsRoute extends Component {
           { key: 'Samotnicy', value: soloCount },
         ]}
         rows={students}
+        onRemove={participantInfo => this.deleteParticipants(participantInfo, eventName)}
       />
     );
   }
