@@ -172,3 +172,14 @@ export async function updateEvent(eventName, data) {
     return false;
   }
 }
+
+export async function sendMail(eventName, data) {
+  try {
+    const response = await instance.post(`/organiser/${eventName}/email/`, data);
+    console.log(data)
+    return response.data;
+  } catch (error) {
+    console.error(error)
+    return null;
+  }
+}
