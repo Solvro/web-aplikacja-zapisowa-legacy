@@ -153,10 +153,13 @@ REST_FRAMEWORK = {
 EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'apikey'
-EMAIL_HOST_PASSWORD = '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'
+EMAIL_HOST_PASSWORD = ''
 EMAIL_USE_TLS = True
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 
 #CORS settings
