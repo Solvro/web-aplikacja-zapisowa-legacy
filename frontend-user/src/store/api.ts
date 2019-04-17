@@ -51,7 +51,7 @@ export const enrollStudentsInRoom = async (students: RoomMate[], roomNumber: num
                 'Content-Type': 'application/json'
             }),
             body: JSON.stringify({logins})
-        }).then(resp => resp.json());
+        });
     } catch (error) {
         return error;
     }

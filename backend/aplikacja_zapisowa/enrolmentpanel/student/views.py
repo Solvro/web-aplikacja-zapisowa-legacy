@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework import status
 
 from drf_yasg.utils import swagger_auto_schema
 
@@ -120,7 +121,7 @@ class GroupRoomView(APIView):
 
         self.validate_students(students)
 
-        room = Room.objects.get(number=room_no)
+        room = Room.objects.get(number=room_no, event=event_name)
 
         room.add_people(students)
 
@@ -132,4 +133,4 @@ class GroupRoomView(APIView):
         return Response({
             "room_number": room.number,
             "capacity": room.max_capacity
-        })
+        }, status=status.HTTP_200_OK)
