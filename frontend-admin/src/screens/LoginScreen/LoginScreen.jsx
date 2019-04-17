@@ -26,7 +26,6 @@ class LoginScreen extends React.Component {
 
     tryAuthorize = async e => {
         e.preventDefault();
-        console.log(this.props)
         const {username, password} = this.state;
         const token = await authorizeUser(username, password);
         if (token) {
@@ -45,17 +44,24 @@ class LoginScreen extends React.Component {
         this.setState({username: e.target.value})
     }
 
+    keySubmit = e => {
+        if (e.key === 'Enter') {
+            this.tryAuthorize(e);
+        }
+    }
+
     validateIsLogged = async () => {
         const token = await localStorage.getItem('token');
         const isLogged = token && await verifyUser(token);
         return isLogged;
     }
 
-    render() {
 
+
+    render() {
         const { classes } = this.props;
         return (
-            <div className={classes.container}>
+            <div onKeyPress={this.keySubmit}  className={classes.container}>
                 {this.state.loginError &&
                 <ErrorDisplay
                     removeError={id => {this.setState({loginError: false})}}

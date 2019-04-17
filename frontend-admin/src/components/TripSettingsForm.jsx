@@ -16,9 +16,8 @@ import LabelWithIcon from './LabelWithIcon';
 
 const styles = theme => ({
   root: {
-    width: '50%',
-    marginLeft: 'auto',
-    marginRight: 'auto',
+    width: '100%',
+    marginTop: theme.spacing.unit * 4,
     padding: theme.spacing.unit * 2,
   },
 
@@ -69,11 +68,19 @@ class TripSettingsForm extends React.Component {
     };
   }
 
+  async componentDidMount() {
+    const { defaultState } = this.props;
+    if(defaultState) {
+      console.log(defaultState)
+      this.setState(defaultState)
+    }
+  }
+
   render() {
     const {
       name, description, place, accommodation, participants, image, beginning_date, ending_date, rooms,
     } = this.state;
-    const { classes, onSubmit } = this.props;
+    const { classes, onSubmit, eventNameChangingDisabled } = this.props;
     return (
       <form>
         <MuiPickersUtilsProvider utils={MomentUtils}>
@@ -94,6 +101,7 @@ class TripSettingsForm extends React.Component {
                   fullWidth
                   icon={DateIcon}
                   label="Nazwa wycieczki"
+                  disabled={eventNameChangingDisabled}
                 />
               </Grid>
               <Grid item xs={12}>

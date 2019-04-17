@@ -54,7 +54,6 @@ export async function verifyUser(token) {
     const isVerify = verification && verification.status === 200;
     return isVerify;
   } catch (error) {
-    console.log('wylogowuje');
     return false;
   }
 }
@@ -95,6 +94,28 @@ export async function createEvent(data) {
   }
 }
 
+export async function removeParticipant(eventName, participantInfo) {
+  try {
+    const { Index } = participantInfo;
+    const { children: index } = Index.props;
+    const response = await instance.delete(`/organiser/${eventName}/student/${index}`);
+    return response.data;
+  } catch (error) {
+    return null;
+  }
+}
+
+export async function editParticipant(eventName, participantInfo) {
+
+  try {
+    const response = await instance.patch(`/organiser/${eventName}/student/${participantInfo.index}`, participantInfo);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+}
+
 export async function getEventDetails(eventName) {
   try {
     const response = await instance.get(`/organiser/event/${eventName}`);
@@ -118,6 +139,47 @@ export async function getParticipantsList(eventName) {
     const response = await instance.get(`/organiser/${eventName}/students_status/`);
     return response.data;
   } catch (error) {
+    return null;
+  }
+}
+
+export async function updateEvent(eventName, data) {
+  const config = {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  };
+
+  // eslint-disable-next-line no-undef
+  const formData = new FormData();
+
+  Object.entries(data).forEach((arr) => {
+    if(arr[1]) {
+      formData.append(arr[0], arr[1]);
+    }
+  });
+
+  try {
+    const response = await instance.patch(
+      `/organiser/event/${eventName}`,
+      formData,
+      config,
+    );
+    const statusOK = response && response.status === 200;
+    return statusOK;
+  } catch (error) {
+    console.error(error)
+    return false;
+  }
+}
+
+export async function sendMail(eventName, data) {
+  try {
+    const response = await instance.post(`/organiser/${eventName}/email/`, data);
+    console.log(data)
+    return response.data;
+  } catch (error) {
+    console.error(error)
     return null;
   }
 }

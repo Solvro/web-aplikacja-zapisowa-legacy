@@ -1,19 +1,15 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { withRouter } from 'react-router-dom';
 import TripSettingsForm from '../components/TripSettingsForm';
 import { createEvent } from '../store/Api';
 
-class CreateTripRoute extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
+const CreateTripRoute = (props) => {
+  const { history } = props;
 
-  render() {
-    const { history } = this.props;
-    return (
+  return (
+    <div style={{ width: '50%', margin: '0 auto' }}>
       <TripSettingsForm
-        {...this.props}
+        {...props}
         onSubmit={(data) => {
           createEvent(data).then((statusOk) => {
             if (statusOk) {
@@ -25,8 +21,9 @@ class CreateTripRoute extends Component {
         }
       }
       />
-    );
-  }
-}
+    </div>
+  );
+};
+
 
 export default withRouter(CreateTripRoute);
