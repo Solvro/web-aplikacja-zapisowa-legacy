@@ -6,23 +6,11 @@ import {
 } from '@material-ui/core';
 import SelectChips from './SelectChips';
 import FormTextInput from './FormTextInput';
-
-const NAMES = [
-  'Oliver Hansen',
-  'Van Henry',
-  'April Tucker',
-  'Ralph Hubbard',
-  'Omar Alexander',
-  'Carlos Abbott',
-  'Miriam Wagner',
-  'Bradley Wilkerson',
-  'Virginia Andrews',
-  'Kelly Snyder',
-];
+import { getParticipantsList } from '../store/Api';
 
 const styles = theme => ({
   root: {
-    width: '50%',
+    width: '60%',
     marginLeft: 'auto',
     marginRight: 'auto',
     padding: theme.spacing.unit * 2,
@@ -32,7 +20,7 @@ const styles = theme => ({
     textAlign: 'center',
 
     '& Button': {
-      width: '50%',
+      width: '30%',
     },
   },
 });
@@ -43,9 +31,13 @@ class SendMessagePanel extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      recipients: [],
-      message: '',
-      sendToAll: false,
+      all_students: false,
+      not_registered: false,
+      registered: false,
+      indexes: [],
+      students: [],
+      subject: '',
+      body: ''
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleCheckbox = this.handleCheckbox.bind(this);
@@ -61,13 +53,30 @@ class SendMessagePanel extends React.Component {
 
   handleCheckbox(event) {
     this.setState({
-      sendToAll: event.target.checked,
+      all_students: event.target.checked,
     });
+  }
+
+  async componentDidMount() {
+    const { eventName } = this.props;
+    const { students } = await getParticipantsList(eventName);
+    this.setState({
+      students
+    })
+  }
+
+  sendButton = () => {
+    const { handleSend } = this.props;
+    const { students } = this.state;
+    const newStateStudents = this.state.indexes.map(name => students.find((stud) => stud.name == name).index);
+    const newState = this.state;
+    newState.indexes = newStateStudents;
+    handleSend(newState)
   }
 
   render() {
     const { classes } = this.props;
-    const { recipients, sendToAll, message } = this.state;
+    const { indexes, students, all_students, body, subject } = this.state;
     return (
       <Paper className={classes.root}>
         <Grid
@@ -81,16 +90,16 @@ class SendMessagePanel extends React.Component {
               icon={PeopleIcon}
               fullWidth
               label="Odbiorcy"
-              items={NAMES}
+              items={students.map(student => student.name)}
               multiple
-              value={recipients}
-              disabled={sendToAll}
-              onChange={this.handleChange('recipients')}
+              value={indexes}
+              disabled={all_students}
+              onChange={this.handleChange('indexes')}
             />
             <FormControlLabel
               control={(
                 <Checkbox
-                  checked={sendToAll}
+                  checked={all_students}
                   onChange={this.handleCheckbox}
                   value="DO WSZYSTKICH"
                 />
@@ -101,10 +110,23 @@ class SendMessagePanel extends React.Component {
           </Grid>
           <Grid item xs={12}>
             <FormTextInput
-              id="tripDesc"
-              name="tripDesc"
-              value={message}
-              onChange={this.handleChange('message')}
+              id="subject"
+              name="subject"
+              value={subject}
+              onChange={this.handleChange('subject')}
+              fullWidth
+              rows="4"
+              icon={DescriptionIcon}
+              label="Temat"
+              autoFocus
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <FormTextInput
+              id="msgbody"
+              name="msgbody"
+              value={body}
+              onChange={this.handleChange('body')}
               fullWidth
               multiline
               rows="4"
@@ -116,7 +138,7 @@ class SendMessagePanel extends React.Component {
           </Grid>
           <Grid item className={classes.button} xs={12}>
             <Button
-              onClick={this.handleSend}
+              onClick={this.sendButton}
               variant="contained"
               color="secondary"
             >

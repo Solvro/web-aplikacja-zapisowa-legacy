@@ -109,7 +109,7 @@ class StudentManager(models.Manager):
         users = []
         passwords = []
         for student in objs:
-            username, password = self.__generate_student_credentials(student.index)
+            username, password = self.generate_student_credentials(student.index)
             passwords.append(password)
             user = User(username=username, password=make_password(password), is_participant=True)
             users.append(user)
