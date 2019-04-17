@@ -6,11 +6,12 @@ import {RoomMate} from "../../store/RoomMate/types";
 import {Planet} from "react-kawaii";
 import {ApplicationState} from "../../store";
 import {connect} from "react-redux";
+import {RouteComponentProps, withRouter} from "react-router";
 
-interface SummaryRouteProps {
+type SummaryRouteProps = {
     roomMates: RoomMate[],
     user: RoomMate,
-}
+} & RouteComponentProps<{}>;
 
 const mapStateToProps = (state: ApplicationState): Partial<SummaryRouteProps> => {
     return {
@@ -20,6 +21,10 @@ const mapStateToProps = (state: ApplicationState): Partial<SummaryRouteProps> =>
 };
 
 class SummaryRoute extends React.Component<WithStyles<typeof SummaryRouteStyles> & SummaryRouteProps> {
+
+    public componentDidMount(): void {
+        localStorage.removeItem('token');
+    }
 
     public render(): React.ReactNode {
         const {classes} = this.props;
@@ -44,11 +49,12 @@ class SummaryRoute extends React.Component<WithStyles<typeof SummaryRouteStyles>
                         </div>
                         <div>
                             {
-                                this.props.roomMates
+                                this.props.roomMates && this.props.roomMates.length > 0
                                     ?
                                     <span>
-                                        <Typography
-                                            variant={"body1"}>Numer pokoju: {"this.props.room.number"}</Typography>
+                                        <Typography variant={"body1"}>
+                                            Numer pokoju: {this.props.location.state.roomNumber}
+                                        </Typography>
                                         <Typography variant={"body1"}>Znajomi z twojej grupy pokojowej:</Typography>
                                         {this.props.roomMates.map((rm, idx)  =>
                                             (<Typography
@@ -77,4 +83,4 @@ class SummaryRoute extends React.Component<WithStyles<typeof SummaryRouteStyles>
     }
 }
 
-export default connect(mapStateToProps)(withStyles(SummaryRouteStyles, {withTheme: true})(SummaryRoute));
+export default connect(mapStateToProps)(withRouter<RouteComponentProps<{}>>((withStyles(SummaryRouteStyles, {withTheme: true})(SummaryRoute))));
