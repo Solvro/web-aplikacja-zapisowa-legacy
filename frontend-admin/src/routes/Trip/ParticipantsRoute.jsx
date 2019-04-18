@@ -35,7 +35,7 @@ class ParticipantsRoute extends Component {
     this.toggleDialog();
     console.log(data, 'dataSent')
     if(data !== null){
-      editParticipant(this.state.eventName, data);
+      await editParticipant(this.state.eventName, data);
       const response = await getParticipantsList(this.state.eventName);
       const { stats, students } = response;
 
