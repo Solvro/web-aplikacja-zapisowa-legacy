@@ -168,7 +168,7 @@ export async function updateEvent(eventName, data) {
     const statusOK = response && response.status === 200;
     return statusOK;
   } catch (error) {
-    console.error(error)
+    console.error(error);
     return false;
   }
 }
@@ -176,10 +176,9 @@ export async function updateEvent(eventName, data) {
 export async function sendMail(eventName, data) {
   try {
     const response = await instance.post(`/organiser/${eventName}/email/`, data);
-    console.log(data)
     return response.data;
   } catch (error) {
-    console.error(error)
-    return null;
+    console.error(error);
+    return error;
   }
 }

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import TableCard from '../../components/TableCard';
-import { Button } from '@material-ui/core';
 import EditParticipantDialog from '../../components/EditParticipantDialog';
 import { getParticipantsList, removeParticipant, editParticipant } from '../../store/Api';
 

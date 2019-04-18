@@ -5,7 +5,7 @@ import TextField from '@material-ui/core/TextField';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { Grid, Dialog, RadioGroup, FormControlLabel, Radio, FormControl, FormLabel, InputLabel, Select, MenuItem } from '@material-ui/core';
+import { Grid, Dialog, RadioGroup, FormControlLabel, Radio, FormControl, FormLabel, Select, MenuItem } from '@material-ui/core';
 
 const styles = theme => ({
   root: {
