@@ -234,7 +234,8 @@ class StudentEditView(APIView):
         return Response(status=status.HTTP_202_ACCEPTED)
 
     @swagger_auto_schema(request_body=StudentSerializer(partial=True),
-                         operation_description="Patches student's info. Event acctually can not be changed",
+                         operation_description="""Patches student's info. Event acctually can not be changed.
+                         Student's statuses means Not registered, Solo registered and Grouped registered respectively.""",
                          responses={
                                 202: "Accepted",
                                 400: "Bad Request"
