@@ -234,7 +234,11 @@ class StudentEditView(APIView):
         return Response(status=status.HTTP_202_ACCEPTED)
 
     @swagger_auto_schema(request_body=StudentSerializer(partial=True),
-                         operation_description="Patches student's info. Event acctually can not be changed")
+                         operation_description="Patches student's info. Event acctually can not be changed",
+                         responses={
+                                202: "Accepted",
+                                400: "Bad Request"
+                            })
     @transaction.atomic
     def patch(self, request, event_name, student_index):
         student = get_object_or_404(Student.objects.filter(
@@ -245,4 +249,5 @@ class StudentEditView(APIView):
         student_serializer = StudentSerializer(student, request.data, partial=True)
         if student_serializer.is_valid():
             student_serializer.save()
-        return Response(status=status.HTTP_202_ACCEPTED)
+            return Response(status=status.HTTP_202_ACCEPTED)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
