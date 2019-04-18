@@ -93,7 +93,7 @@ class SendMessagePanel extends React.Component {
               icon={PeopleIcon}
               fullWidth
               label="Odbiorcy"
-              items={students.map(student => student.name)}
+              items={students.map(student => `${student.name} ${student.index}`)}
               multiple
               value={selectedStudents}
               disabled={radioGroup !== 'custom'}
