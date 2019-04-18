@@ -101,7 +101,7 @@ class StudentSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         new_index = validated_data.get("index", None)
-        if new_index is not None:
+        if new_index is not None and instance.index != new_index:
             username, password = StudentManager.generate_student_credentials(new_index)
             user = User(username=username, password=password, is_participant=True)
             user_to_delete = instance.user
@@ -122,7 +122,7 @@ class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         list_serializer_class = StudentListSerializer
         model = Student
-        fields = ("name", "index", "faculty", "sex", "event")
+        fields = ("name", "index", "faculty", "sex", "event", "status")
 
 
 class PartialStudentSerializer(serializers.ModelSerializer):
