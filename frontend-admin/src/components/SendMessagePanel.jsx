@@ -32,8 +32,8 @@ class SendMessagePanel extends React.Component {
     super(props);
     this.state = {
       radioGroup: 'custom',
+      selectableStudents: [],
       selectedStudents: [],
-      students: [],
       subject: '',
       body: '',
     };
@@ -45,8 +45,9 @@ class SendMessagePanel extends React.Component {
   async componentDidMount() {
     const { eventName } = this.props;
     const { students } = await getParticipantsList(eventName);
+    const selectableStudents = students.map(student => `${student.name} ${student.index}`);
     this.setState({
-      students,
+      selectableStudents,
     });
   }
 
@@ -61,24 +62,25 @@ class SendMessagePanel extends React.Component {
   sendButton() {
     const { handleSend } = this.props;
     const {
-      students, selectedStudents, radioGroup, subject, body,
+      selectedStudents, radioGroup, subject, body,
     } = this.state;
-    const indexes = selectedStudents.map(name => students.find(stud => stud.name === name).index);
-    const newState = {
+    // selected students are in form of: <name surname index> so we take last part of string as their index
+    const indexes = selectedStudents.map(studRepresentation => studRepresentation.split(' ').slice(-1)[0]);
+    const request = {
       indexes,
       subject,
       body,
     };
     if (radioGroup !== 'custom') {
-      newState[radioGroup] = true;
+      request[radioGroup] = true;
     }
-    handleSend(newState);
+    handleSend(request);
   }
 
   render() {
     const { classes } = this.props;
     const {
-      students, selectedStudents, radioGroup, body, subject,
+      selectedStudents, selectableStudents, radioGroup, body, subject,
     } = this.state;
     return (
       <Paper className={classes.root}>
@@ -93,7 +95,7 @@ class SendMessagePanel extends React.Component {
               icon={PeopleIcon}
               fullWidth
               label="Odbiorcy"
-              items={students.map(student => `${student.name} ${student.index}`)}
+              items={selectableStudents}
               multiple
               value={selectedStudents}
               disabled={radioGroup !== 'custom'}
