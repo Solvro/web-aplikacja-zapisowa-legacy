@@ -54,7 +54,8 @@ class ParticipantsRoute extends Component {
     };
     const statusMap = {
       N: 'Niezapisany',
-      Z: 'Zapisany',
+      S: 'Zapisany Samodzielnie',
+      G: 'Zapisany Grupowo',
     };
 
     const students = preStudents.map((stud) => {
