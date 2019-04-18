@@ -108,7 +108,8 @@ class EditParticipantDialog extends React.Component {
                     }}
                   >
                     <MenuItem value='N'>Niezapisany</MenuItem>
-                    <MenuItem value='Z'>Zapisany</MenuItem>
+                    <MenuItem value='S'>Zapisany Solowo</MenuItem>
+                    <MenuItem value='G'>Zapisany Grupowo</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
