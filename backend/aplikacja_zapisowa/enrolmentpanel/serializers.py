@@ -122,7 +122,7 @@ class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         list_serializer_class = StudentListSerializer
         model = Student
-        fields = ("name", "index", "faculty", "sex", "event")
+        fields = ("name", "index", "faculty", "sex", "event", "status")
 
 
 class PartialStudentSerializer(serializers.ModelSerializer):
