@@ -47,14 +47,15 @@ class OverviewRoute extends Component {
   }
 
   async onDeleteTrip(confirm) {
-    if (confirm) {
-      this.setState({ isLoading: true });
-      const eventName = this.props.match.params.id;
-      const response = await deleteEvent(eventName);
-      this.setState({ isLoading: false });
-      alert(response);
-    }
     this.toggleDialog();
+    if (confirm) {
+      const { history } = this.props;
+      const eventName = this.props.match.params.id;
+      this.setState({ isLoading: true });
+      await deleteEvent(eventName);
+      this.setState({ isLoading: false });
+      history.replace('/trips');
+    }
   }
 
   toggleDialog() {
