@@ -33,6 +33,7 @@ export interface ApplicationError {
 }
 
 export const enum RoomMateType {
+    SIGN_OUT = 'SIGN_OUT',
     ADD_ROOM_MATE_REQUEST = 'ADD_ROOM_MATE',
     ADD_ROOM_MATE_SUCCESS = 'ADD_ROOM_MATE_SUCCESS',
     ADD_ROOM_MATE_FAILURE = 'ADD_ROOM_MATE_FAILURE',
