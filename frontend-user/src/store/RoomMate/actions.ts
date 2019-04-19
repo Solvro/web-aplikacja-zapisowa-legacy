@@ -1,4 +1,4 @@
-import {createAsyncAction, createStandardAction} from "typesafe-actions";
+import {action, createAsyncAction, createStandardAction} from "typesafe-actions";
 import {RoomMate, RoomMateState, RoomMateType, StudentErrors} from "./types";
 import {fetchStudent} from "../api";
 import {Dispatch} from "react-redux";
@@ -14,6 +14,8 @@ export const removeRoomMate = createStandardAction(RoomMateType.REMOVE_ROOM_MATE
 export const removeError = createStandardAction(RoomMateType.REMOVE_ERROR)<number>();
 
 export const signIn = createStandardAction(RoomMateType.SIGN_IN)<RoomMate>();
+
+export const signOut = action(RoomMateType.SIGN_OUT);
 
 export const addError = createStandardAction(RoomMateType.ADD_ERROR)<string>();
 
