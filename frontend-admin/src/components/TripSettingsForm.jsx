@@ -2,6 +2,7 @@ import React from 'react';
 import {
   withStyles, Grid, Button, Paper,
 } from '@material-ui/core';
+import { withRouter, Link } from 'react-router-dom';
 import DateIcon from '@material-ui/icons/DateRange';
 import HotelIcon from '@material-ui/icons/LocalHotel';
 import LocationIcon from '@material-ui/icons/LocationOn';
@@ -23,10 +24,7 @@ const styles = theme => ({
 
   button: {
     textAlign: 'center',
-
-    '& Button': {
-      width: '50%',
-    },
+    width: '100%',
   },
 });
 
@@ -71,7 +69,6 @@ class TripSettingsForm extends React.Component {
   async componentDidMount() {
     const { defaultState } = this.props;
     if(defaultState) {
-      console.log(defaultState)
       this.setState(defaultState)
     }
   }
@@ -193,14 +190,26 @@ class TripSettingsForm extends React.Component {
                 />
               </Grid>
 
-              <Grid item className={classes.button} xs={12}>
-                <Button
-                  onClick={(() => onSubmit(this.state))}
-                  variant="contained"
-                  color="secondary"
-                >
-                  Stwórz
-                </Button>
+              <Grid container alignItems="center" alignContent="centera" justify="center">
+                <Grid className={classes.button} item xs={2}>
+                  <Link to="/trips">
+                    <Button
+                      variant="contained"
+                      color="default"
+                    >
+                      Powrót
+                    </Button>
+                  </Link>
+                </Grid>
+                <Grid className={classes.button} item xs={2}>
+                  <Button
+                      onClick={(() => onSubmit(this.state))}
+                      variant="contained"
+                      color="primary"
+                    >
+                      Stwórz
+                    </Button>
+                </Grid>
               </Grid>
             </Grid>
           </Paper>
@@ -210,4 +219,4 @@ class TripSettingsForm extends React.Component {
   }
 }
 
-export default withStyles(styles)(TripSettingsForm);
+export default withRouter(withStyles(styles)(TripSettingsForm));
