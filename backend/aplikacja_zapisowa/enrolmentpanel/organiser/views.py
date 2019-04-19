@@ -24,7 +24,8 @@ from enrolmentpanel.serializers import (
     EventSerializer,
     RoomSerializer,
     RoomDetailedSerializer,
-    CustomEmailViewSerializer
+    CustomEmailViewSerializer,
+    EventStatisticsSerializer,
 )
 from enrolmentpanel.exceptions import UniqueEventNameError
 
@@ -252,3 +253,40 @@ class StudentEditView(APIView):
             student_serializer.save()
             return Response(status=status.HTTP_202_ACCEPTED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class EventStatisticsView(APIView):
+
+    permission_classes = (IsAuthenticated, IsOrganiserAccount)
+
+    @swagger_auto_schema(responses={
+                            200:"""
+                            {
+                                "students": {
+                                    "no": 3
+                                },
+                                "students_registered": {
+                                    "no": 2,
+                                    "percentage": 66.67
+                                },
+                                "students_solo": {
+                                    "no": 1
+                                },
+                                "rooms_not_full": {
+                                    "no": 3,
+                                    "percentage": 100.00
+                                }
+                            }
+                            """,
+                            404: "{\"detail\": \"Not found.\"}"
+                        },
+                        operation_description="Gets basic statistics about event's paricipant and rooms.")
+    def get(self, request, event_name):
+        event = get_object_or_404(
+                    Event.objects.prefetch_related(
+                        Prefetch('room_set'),
+                        Prefetch('student_set')),
+                    name=event_name, organizer__user=request.user)
+        statistics_serializer = EventStatisticsSerializer(event)
+
+        return Response(statistics_serializer.data, status=status.HTTP_200_OK)
