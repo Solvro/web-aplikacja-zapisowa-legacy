@@ -200,7 +200,7 @@ class Student(models.Model):
                              default=None,
                              null=True,
                              on_delete=models.SET_NULL)
-    email = models.EmailField()
+    email = models.EmailField(default=None)
 
     class Meta:
         unique_together = (('index', 'event'),)
