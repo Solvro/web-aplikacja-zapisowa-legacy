@@ -125,6 +125,15 @@ export async function getEventDetails(eventName) {
   }
 }
 
+export async function getStatistics(eventName) {
+  try {
+    const response = await instance.get(`/organiser/${eventName}/statistics`);
+    return response.data;
+  } catch (error) {
+    return null;
+  }
+}
+
 export async function getRoomsList(eventName) {
   try {
     const response = await instance.get(`/organiser/event/${eventName}/rooms`);

@@ -28,6 +28,7 @@ class ContentGridItem extends React.Component {
           direction='column'
           justify='center'
           alignItems='center'
+          spacing={16}
         >
           <Grid item>{icon}</Grid>
           <Grid item>{title}</Grid>
