@@ -111,7 +111,10 @@ class StudentManager(models.Manager):
         for student in objs:
             username, password = self.generate_student_credentials(student.index)
             passwords.append(password)
-            user = User(username=username, password=make_password(password), is_participant=True)
+            user = User(username=username,
+                        password=make_password(password),
+                        is_participant=True,
+                        is_active=False)
             users.append(user)
         saved_users = User.objects.bulk_create(users)
         for student, user in zip(objs, saved_users):
@@ -132,9 +135,9 @@ class StudentManager(models.Manager):
         username, password = StudentManager.generate_student_credentials(index)
         student_user = User.objects.create_user(
             username=username,
-            password=password
-        )
-        student_user.is_participant = True
+            password=make_password(password),
+            is_participant = True,
+            is_active=False)
         student_user.save()
 
         new_student = Student(

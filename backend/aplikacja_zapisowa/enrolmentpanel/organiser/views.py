@@ -1,4 +1,5 @@
-from django.db import transaction
+from django.core import exceptions
+from django.db import transaction, IntegrityError
 from django.db.models import Prefetch
 from django.shortcuts import (
     render,
@@ -15,9 +16,16 @@ from rest_framework.views import APIView
 from rest_framework.exceptions import ValidationError
 
 from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+
 
 from .permissions import (IsOrganiserAccount, IsEventOwner)
-from enrolmentpanel.models import Event, Student, Room
+from enrolmentpanel.models import (
+    Event,
+    Student,
+    Room,
+    User
+)
 from enrolmentpanel.serializers import (
     PartialStudentSerializer,
     StudentSerializer,
@@ -113,6 +121,16 @@ class DetailEventView(APIView):
         except ValidationError:
             raise UniqueEventNameError
         return Response(status=status.HTTP_200_OK)
+
+    def delete(self, request, event_name):
+        event = get_object_or_404(
+            Event.objects.filter(
+                name=event_name,
+                organizer__user=request.user
+            )
+        )
+        event.delete()
+        return Response(status=status.HTTP_202_ACCEPTED)
 
 
 class StudentStatusView(APIView):
@@ -290,3 +308,29 @@ class EventStatisticsView(APIView):
         statistics_serializer = EventStatisticsSerializer(event)
 
         return Response(statistics_serializer.data, status=status.HTTP_200_OK)
+
+
+class ActivationEventView(APIView):
+
+    permission_classes = (IsAuthenticated, IsOrganiserAccount)
+
+    @swagger_auto_schema(manual_parameters=[
+                            openapi.Parameter(
+                                'activate',
+                                openapi.IN_QUERY,
+                                description="True if event has to be activated, False otherwise.",
+                                type=openapi.TYPE_BOOLEAN)],
+                         operation_description="Gets basic statistics about event's paricipant and rooms.")
+    def get(self, request, event_name):
+        try:
+            User.objects.filter(
+                participant__event=event_name,
+                participant__event__organizer__user=request.user
+            ).update(is_active=request.query_params.get('activate'))
+        except exceptions.ValidationError as e:
+            return Response({'detail': e.message % e.params}, status=status.HTTP_400_BAD_REQUEST)
+        except IntegrityError as e:
+            return Response(
+                {'detail': 'activate parameter was not provided'},
+                status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_200_OK)
