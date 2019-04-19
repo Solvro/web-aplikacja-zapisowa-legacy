@@ -191,3 +191,31 @@ export async function sendMail(eventName, data) {
     return error;
   }
 }
+
+export async function changeEventRegistrationStatus(data) {
+  try {
+    // TODO: Implement real endpoint
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(data);
+      }, 500);
+    });
+  } catch (error) {
+    console.error(error)
+    return null;
+  }
+}
+
+export async function deleteEvent(eventName) {
+  try {
+    // TODO: Implement real endpoint
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(`Pomyślnie usunięto ${eventName}`);
+      }, 500);
+    });
+  } catch (error) {
+    console.error(error)
+    return null;
+  }
+}
