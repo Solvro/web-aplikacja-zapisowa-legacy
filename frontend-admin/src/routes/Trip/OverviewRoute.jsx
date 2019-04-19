@@ -6,8 +6,10 @@ import 'moment/locale/pl';
 import DashboardHeader from '../../components/DashboardHeader';
 import InformationTile from '../../components/InformationTile';
 import StatisticsTile from '../../components/StatisticsTile';
-import { getEventDetails } from '../../store/Api';
+import { getEventDetails, deleteEvent, changeEventRegistrationStatus } from '../../store/Api';
 import ButtonsControlTile from '../../components/ButtonsControlTile';
+import ConfirmDialog from '../../components/ConfirmDialog';
+import LoadingModal from '../../components/LoadingModal';
 
 moment.locale('pl');
 
@@ -22,8 +24,12 @@ class OverviewRoute extends Component {
       name: '',
       description: '',
       isRegistrationOpen: false,
+      isAlertOpen: false,
+      isLoading: false,
     };
     this.handleSwitchChange = this.handleSwitchChange.bind(this);
+    this.toggleDialog = this.toggleDialog.bind(this);
+    this.onDeleteTrip = this.onDeleteTrip.bind(this);
   }
 
   async componentDidMount() {
@@ -35,10 +41,31 @@ class OverviewRoute extends Component {
     }
   }
 
+  async onDeleteTrip(confirm) {
+    if (confirm) {
+      this.setState({ isLoading: true });
+      const eventName = this.props.match.params.id;
+      const response = await deleteEvent(eventName);
+      this.setState({ isLoading: false });
+      alert(response);
+    }
+    this.toggleDialog();
+  }
+
+  toggleDialog() {
+    const { isAlertOpen } = this.state;
+    this.setState({
+      isAlertOpen: !isAlertOpen,
+    });
+  }
+
   handleSwitchChange(name) {
-    return (_, checked) => {
+    return async (_, checked) => {
+      this.setState({ isLoading: true });
+      const response = await changeEventRegistrationStatus(checked);
       this.setState({
-        [name]: checked,
+        [name]: response,
+        isLoading: false,
       });
     };
   }
@@ -48,7 +75,7 @@ class OverviewRoute extends Component {
     const today = capitalizeFirstLetter(mmt.format('dddd'));
     const fullDate = mmt.format('D MMMM');
     const {
-      name, description, beginning_date: startDate, ending_date: endDate, place, accommodation, isRegistrationOpen,
+      name, description, beginning_date: startDate, ending_date: endDate, place, accommodation, isRegistrationOpen, isAlertOpen, isLoading,
     } = this.state;
     return (
       <div>
@@ -78,10 +105,17 @@ class OverviewRoute extends Component {
             <ButtonsControlTile
               isRegistrationOpen={isRegistrationOpen}
               onRegistrationStatusChange={this.handleSwitchChange('isRegistrationOpen')}
-              onDeleteTrip={() => prompt("Czy na pewno chcesz usunąć wycieczkę?", 'nie')}
+              onDeleteTrip={this.toggleDialog}
             />
           </Grid>
         </Grid>
+        <ConfirmDialog
+          title="Usuwanie wycieczki"
+          message="Czy na pewno chcesz usunąć wycieczkę?"
+          isOpen={isAlertOpen}
+          onClose={this.onDeleteTrip}
+        />
+        <LoadingModal isOpen={isLoading} />
       </div>
     );
   }
