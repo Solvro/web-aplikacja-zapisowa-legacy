@@ -111,7 +111,10 @@ class StudentManager(models.Manager):
         for student in objs:
             username, password = self.generate_student_credentials(student.index)
             passwords.append(password)
-            user = User(username=username, password=make_password(password), is_participant=True)
+            user = User(username=username,
+                        password=make_password(password),
+                        is_participant=True,
+                        is_active=False)
             users.append(user)
         saved_users = User.objects.bulk_create(users)
         for student, user in zip(objs, saved_users):
@@ -120,19 +123,21 @@ class StudentManager(models.Manager):
 
         saved_students = super().bulk_create(objs, batch_size=batch_size)
         for student, password in zip(objs, passwords):
-            mail = StudentRegisterMail(student.event, student.index, student.user.username, password)
+            mail = StudentRegisterMail(student.event, student, password)
             mail.send_email()
         return saved_students
 
 
 
-    def create(self, index, event, sex, name, faculty):
+    def create(self, index, event, sex, name, faculty, email=None):
+        if email is None:
+            email = f"{index}@student.pwr.edu.pl"
         username, password = StudentManager.generate_student_credentials(index)
         student_user = User.objects.create_user(
             username=username,
-            password=password
-        )
-        student_user.is_participant = True
+            password=make_password(password),
+            is_participant = True,
+            is_active=False)
         student_user.save()
 
         new_student = Student(
@@ -142,11 +147,12 @@ class StudentManager(models.Manager):
             sex=sex,
             name=name,
             faculty=faculty,
-            status='N'
+            status='N',
+            email=email
         )
 
         new_student.save()
-        mail = StudentRegisterMail(event, index, username, password)
+        mail = StudentRegisterMail(event, new_student, password)
         mail.send_email()
 
         # for development purposes
@@ -185,11 +191,11 @@ class Student(models.Model):
     index = models.CharField(max_length=30)
     faculty = models.PositiveSmallIntegerField()
     sex = models.CharField(
-        default='N',
         max_length=1,
         choices=SEX_CHOICES
     )
     status = models.CharField(
+        default='N',
         max_length=1,
         choices=STATUS_CHOICES
     )
@@ -197,6 +203,7 @@ class Student(models.Model):
                              default=None,
                              null=True,
                              on_delete=models.SET_NULL)
+    email = models.EmailField(default=None)
 
     class Meta:
         unique_together = (('index', 'event'),)

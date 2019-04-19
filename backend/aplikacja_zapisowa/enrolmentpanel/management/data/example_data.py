@@ -27,7 +27,8 @@ USERS = [
         "index": "1",
         "sex": "M",
         "name": "Jan Bibrowski",
-        "faculty": 11
+        "faculty": 11,
+        "email": "ruchy@kluchy.com"
     },
     {
         "index": "2",

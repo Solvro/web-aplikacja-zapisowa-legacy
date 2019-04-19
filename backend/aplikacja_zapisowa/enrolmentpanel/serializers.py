@@ -97,11 +97,13 @@ class StudentListSerializer(serializers.ListSerializer):
 class StudentSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
+        if validated_data.get("email") is None:
+            validated_data["email"] = f"{validated_data['index']}@student.pwr.edu.pl"
         return Student.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
         new_index = validated_data.get("index", None)
-        if new_index is not None:
+        if new_index is not None and instance.index != new_index:
             username, password = StudentManager.generate_student_credentials(new_index)
             user = User(username=username, password=password, is_participant=True)
             user_to_delete = instance.user
@@ -109,7 +111,7 @@ class StudentSerializer(serializers.ModelSerializer):
             user_to_delete.delete()
             user.save()
             validated_data['user'] = user
-            mail = StudentRegisterMail(instance.event, new_index, username, password)
+            mail = StudentRegisterMail(instance.event, instance, password)
             mail.send_email()
         validated_data.pop('event', None)
         return super().update(instance, validated_data)
@@ -122,7 +124,7 @@ class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         list_serializer_class = StudentListSerializer
         model = Student
-        fields = ("name", "index", "faculty", "sex", "event")
+        fields = ("name", "index", "faculty", "sex", "event", "status", "email")
 
 
 class PartialStudentSerializer(serializers.ModelSerializer):
@@ -314,3 +316,39 @@ class CustomEmailViewSerializer(serializers.Serializer):
                     index=index
             ))
         return emails
+
+
+class EventStatisticsSerializer(serializers.Serializer):
+    students = serializers.SerializerMethodField()
+    students_registered = serializers.SerializerMethodField()
+    students_solo = serializers.SerializerMethodField()
+    rooms_not_full = serializers.SerializerMethodField()
+
+    def to_percentage(self, part, all):
+        percentage = part / all * 100
+        return round(percentage, 1)
+
+    def get_students(self, obj):
+        return {
+            'no': obj.room_set.count(),
+        }
+
+    def get_students_registered(self, obj):
+        registered_no = obj.student_set.exclude(status='N').count()
+        students_no = obj.room_set.count()
+        return {
+            'no': registered_no,
+            'percentage': self.to_percentage(registered_no, students_no),
+        }
+
+    def get_students_solo(self, obj):
+        return {
+            'no': obj.student_set.filter(status='S').count()
+        }
+
+    def get_rooms_not_full(self, obj):
+        free_rooms_no = obj.room_set.filter(vacancies__gt=0).count()
+        return {
+            'no': free_rooms_no,
+            'percentage': self.to_percentage(free_rooms_no, obj.room_set.count()),
+        }
