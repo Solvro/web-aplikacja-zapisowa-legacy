@@ -14,7 +14,7 @@ const CreateTripRoute = (props) => {
         render={data => (
           <Grid container alignItems="center" alignContent="center" justify="center" spacing={16}>
             <Grid item xs={6} style={{ textAlign: 'right' }}>
-              <Link to="/trips">
+              <Link to="/trips" style={{ textDecoration: 'none' }}>
                 <Button
                   variant="contained"
                   color="default"
@@ -23,7 +23,7 @@ const CreateTripRoute = (props) => {
                 </Button>
               </Link>
             </Grid>
-            <Grid item xs={6} style={{textAlign: 'left'}}>
+            <Grid item xs={6} style={{ textAlign: 'left' }}>
               <Button
                 onClick={() => {
                   createEvent(data).then((statusOk) => {
