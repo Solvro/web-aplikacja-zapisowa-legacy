@@ -314,3 +314,39 @@ class CustomEmailViewSerializer(serializers.Serializer):
                     index=index
             ))
         return emails
+
+
+class EventStatisticsSerializer(serializers.Serializer):
+    students = serializers.SerializerMethodField()
+    students_registered = serializers.SerializerMethodField()
+    students_solo = serializers.SerializerMethodField()
+    rooms_not_full = serializers.SerializerMethodField()
+
+    def to_percentage(self, part, all):
+        percentage = part / all * 100
+        return round(percentage, 1)
+
+    def get_students(self, obj):
+        return {
+            'no': obj.room_set.count(),
+        }
+
+    def get_students_registered(self, obj):
+        registered_no = obj.student_set.exclude(status='N').count()
+        students_no = obj.room_set.count()
+        return {
+            'no': registered_no,
+            'percentage': self.to_percentage(registered_no, students_no),
+        }
+
+    def get_students_solo(self, obj):
+        return {
+            'no': obj.student_set.filter(status='S').count()
+        }
+
+    def get_rooms_not_full(self, obj):
+        free_rooms_no = obj.room_set.filter(vacancies__gt=0).count()
+        return {
+            'no': free_rooms_no,
+            'percentage': self.to_percentage(free_rooms_no, obj.room_set.count()),
+        }

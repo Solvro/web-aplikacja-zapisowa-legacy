@@ -185,11 +185,11 @@ class Student(models.Model):
     index = models.CharField(max_length=30)
     faculty = models.PositiveSmallIntegerField()
     sex = models.CharField(
-        default='N',
         max_length=1,
         choices=SEX_CHOICES
     )
     status = models.CharField(
+        default='N',
         max_length=1,
         choices=STATUS_CHOICES
     )
