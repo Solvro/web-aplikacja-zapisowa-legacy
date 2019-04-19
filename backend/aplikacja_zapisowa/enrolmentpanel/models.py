@@ -120,13 +120,15 @@ class StudentManager(models.Manager):
 
         saved_students = super().bulk_create(objs, batch_size=batch_size)
         for student, password in zip(objs, passwords):
-            mail = StudentRegisterMail(student.event, student.index, student.user.username, password)
+            mail = StudentRegisterMail(student.event, student, password)
             mail.send_email()
         return saved_students
 
 
 
-    def create(self, index, event, sex, name, faculty):
+    def create(self, index, event, sex, name, faculty, email=None):
+        if email is None:
+            email = f"{index}@student.pwr.edu.pl"
         username, password = StudentManager.generate_student_credentials(index)
         student_user = User.objects.create_user(
             username=username,
@@ -142,11 +144,12 @@ class StudentManager(models.Manager):
             sex=sex,
             name=name,
             faculty=faculty,
-            status='N'
+            status='N',
+            email=email
         )
 
         new_student.save()
-        mail = StudentRegisterMail(event, index, username, password)
+        mail = StudentRegisterMail(event, new_student, password)
         mail.send_email()
 
         # for development purposes
@@ -197,6 +200,7 @@ class Student(models.Model):
                              default=None,
                              null=True,
                              on_delete=models.SET_NULL)
+    email = models.EmailField()
 
     class Meta:
         unique_together = (('index', 'event'),)

@@ -97,6 +97,8 @@ class StudentListSerializer(serializers.ListSerializer):
 class StudentSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
+        if validated_data.get("email") is None:
+            validated_data["email"] = f"{validated_data['index']}@student.pwr.edu.pl"
         return Student.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
@@ -109,7 +111,7 @@ class StudentSerializer(serializers.ModelSerializer):
             user_to_delete.delete()
             user.save()
             validated_data['user'] = user
-            mail = StudentRegisterMail(instance.event, new_index, username, password)
+            mail = StudentRegisterMail(instance.event, instance, password)
             mail.send_email()
         validated_data.pop('event', None)
         return super().update(instance, validated_data)
@@ -122,7 +124,7 @@ class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         list_serializer_class = StudentListSerializer
         model = Student
-        fields = ("name", "index", "faculty", "sex", "event", "status")
+        fields = ("name", "index", "faculty", "sex", "event", "status", "email")
 
 
 class PartialStudentSerializer(serializers.ModelSerializer):
