@@ -183,3 +183,16 @@ export async function sendMail(eventName, data) {
     return null;
   }
 }
+
+export async function changeEventRegistrationStatus(data) {
+  try {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve('HEJHO');
+      }, 500);
+    });
+  } catch (error) {
+    console.error(error)
+    return null;
+  }
+}

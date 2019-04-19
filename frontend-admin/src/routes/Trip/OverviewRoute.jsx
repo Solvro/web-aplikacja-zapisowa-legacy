@@ -7,6 +7,7 @@ import DashboardHeader from '../../components/DashboardHeader';
 import InformationTile from '../../components/InformationTile';
 import StatisticsTile from '../../components/StatisticsTile';
 import { getEventDetails } from '../../store/Api';
+import ButtonsControlTile from '../../components/ButtonsControlTile';
 
 moment.locale('pl');
 
@@ -20,7 +21,9 @@ class OverviewRoute extends Component {
     this.state = {
       name: '',
       description: '',
+      isRegistrationOpen: false,
     };
+    this.handleSwitchChange = this.handleSwitchChange.bind(this);
   }
 
   async componentDidMount() {
@@ -32,12 +35,20 @@ class OverviewRoute extends Component {
     }
   }
 
+  handleSwitchChange(name) {
+    return (_, checked) => {
+      this.setState({
+        [name]: checked,
+      });
+    };
+  }
+
   render() {
     const mmt = moment();
     const today = capitalizeFirstLetter(mmt.format('dddd'));
     const fullDate = mmt.format('D MMMM');
     const {
-      name, description, beginning_date: startDate, ending_date: endDate, place, accommodation,
+      name, description, beginning_date: startDate, ending_date: endDate, place, accommodation, isRegistrationOpen,
     } = this.state;
     return (
       <div>
@@ -61,6 +72,14 @@ class OverviewRoute extends Component {
 
           <Grid item sm={12} md={6} lg={4}>
             <StatisticsTile />
+          </Grid>
+
+          <Grid item sm={12} md={12} lg={8}>
+            <ButtonsControlTile
+              isRegistrationOpen={isRegistrationOpen}
+              onRegistrationStatusChange={this.handleSwitchChange('isRegistrationOpen')}
+              onDeleteTrip={() => prompt("Czy na pewno chcesz usunąć wycieczkę?", 'nie')}
+            />
           </Grid>
         </Grid>
       </div>
