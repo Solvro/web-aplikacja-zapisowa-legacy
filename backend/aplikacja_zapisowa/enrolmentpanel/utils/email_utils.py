@@ -1,6 +1,5 @@
 from django.core.mail import send_mail
 
-
 STUDENT_MAIL_SUBJECT = "Zapisy na rajd {trip}"
 
 STUDENT_MAIL_TEMPLATE = """
@@ -29,7 +28,8 @@ class BasicMail(object):
             self.subject,
             self.body,
             self.sender,
-            [self.receiver]
+            [self.receiver],
+            fail_silently=False
         )
 
 
@@ -41,14 +41,13 @@ class EventMail(BasicMail):
 
 class StudentRegisterMail(BasicMail):
 
-    def __init__(self, event, index, username, password):
+    def __init__(self, event, student, password):
         subject = STUDENT_MAIL_SUBJECT.format(trip=event.name)
         body = STUDENT_MAIL_TEMPLATE.format(
-            index=index,
+            index=student.index,
             trip=event.name,
-            login=username,
+            login=student.user.username,
             password=password
         )
-        student_mail = '{}@student.pwr.edu.pl'.format(index)
 
-        super().__init__(subject, body, "rajdy@pwr.edu.pl", student_mail)
+        super().__init__(subject, body, "rajdy@pwr.edu.pl", student.email)

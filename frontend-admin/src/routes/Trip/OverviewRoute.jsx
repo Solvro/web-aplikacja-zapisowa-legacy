@@ -3,10 +3,13 @@ import { withRouter } from 'react-router-dom';
 import { Grid } from '@material-ui/core';
 import moment from 'moment';
 import 'moment/locale/pl';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import DashboardHeader from '../../components/DashboardHeader';
 import InformationTile from '../../components/InformationTile';
 import StatisticsTile from '../../components/StatisticsTile';
-import { getEventDetails, deleteEvent, changeEventRegistrationStatus } from '../../store/Api';
+import {
+  getEventDetails, deleteEvent, changeEventRegistrationStatus, getStatistics,
+} from '../../store/Api';
 import ButtonsControlTile from '../../components/ButtonsControlTile';
 import ConfirmDialog from '../../components/ConfirmDialog';
 import LoadingModal from '../../components/LoadingModal';
@@ -25,7 +28,7 @@ class OverviewRoute extends Component {
       description: '',
       isRegistrationOpen: false,
       isAlertOpen: false,
-      isLoading: false,
+      isLoading: true,
     };
     this.handleSwitchChange = this.handleSwitchChange.bind(this);
     this.toggleDialog = this.toggleDialog.bind(this);
@@ -35,9 +38,11 @@ class OverviewRoute extends Component {
   async componentDidMount() {
     const { match } = this.props;
     const { id } = match.params;
+    this.setState({ isLoading: true });
     const details = await getEventDetails(id);
+    const statistics = await getStatistics(id);
     if (details) {
-      this.setState(details);
+      this.setState({ ...details, statistics, isLoading: false });
     }
   }
 
@@ -75,7 +80,17 @@ class OverviewRoute extends Component {
     const today = capitalizeFirstLetter(mmt.format('dddd'));
     const fullDate = mmt.format('D MMMM');
     const {
-      name, description, beginning_date: startDate, ending_date: endDate, place, accommodation, isRegistrationOpen, isAlertOpen, isLoading,
+      name,
+      description,
+      beginning_date: startDate,
+      ending_date: endDate,
+      place,
+      accommodation,
+      statistics,
+      statisticsLoaded,
+      isLoading,
+      isRegistrationOpen,
+      isAlertOpen,
     } = this.state;
     return (
       <div>
@@ -97,8 +112,16 @@ class OverviewRoute extends Component {
             />
           </Grid>
 
-          <Grid item sm={12} md={6} lg={4}>
-            <StatisticsTile />
+          <Grid item sm={12} md={6} lg={8}>
+            {
+              statistics && (
+                <StatisticsTile
+                  studentsNumber={statistics.students.no}
+                  registeredStudents={statistics.students_registered}
+                  soloRegistrededStudents={statistics.students_solo}
+                  numbersNotFullRooms={statistics.rooms_not_full}
+                />
+              )}
           </Grid>
 
           <Grid item sm={12} md={12} lg={8}>
