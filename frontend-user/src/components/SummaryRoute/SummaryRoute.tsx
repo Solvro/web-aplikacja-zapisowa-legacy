@@ -48,7 +48,7 @@ class SummaryRoute extends React.Component<WithStyles<typeof SummaryRouteStyles>
                         </div>
                         <div>
                             {
-                                roomMates && roomMates.length > 0
+                                roomMates && roomMates.length
                                     ?
                                     <span>
                                         <Typography variant={"body1"}>
