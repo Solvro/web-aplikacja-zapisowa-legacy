@@ -1,7 +1,8 @@
 import React from 'react';
 import {
-  withStyles, Grid, Button, Paper,
+  withStyles, Grid, Paper,
 } from '@material-ui/core';
+import { withRouter } from 'react-router-dom';
 import DateIcon from '@material-ui/icons/DateRange';
 import HotelIcon from '@material-ui/icons/LocalHotel';
 import LocationIcon from '@material-ui/icons/LocationOn';
@@ -23,10 +24,7 @@ const styles = theme => ({
 
   button: {
     textAlign: 'center',
-
-    '& Button': {
-      width: '50%',
-    },
+    width: '100%',
   },
 });
 
@@ -51,13 +49,11 @@ class TripSettingsForm extends React.Component {
     this.handleChange = this.handleChange.bind(this);
   }
 
-  handleDateChange(name) {
-    return (date) => {
-      const isoDate = date.format('YYYY-MM-DD');
-      this.setState({
-        [name]: isoDate.toString(),
-      });
-    };
+  async componentDidMount() {
+    const { defaultState } = this.props;
+    if(defaultState) {
+      this.setState(defaultState)
+    }
   }
 
   handleChange(name) {
@@ -68,19 +64,20 @@ class TripSettingsForm extends React.Component {
     };
   }
 
-  async componentDidMount() {
-    const { defaultState } = this.props;
-    if(defaultState) {
-      console.log(defaultState)
-      this.setState(defaultState)
-    }
+  handleDateChange(name) {
+    return (date) => {
+      const isoDate = date.format('YYYY-MM-DD');
+      this.setState({
+        [name]: isoDate.toString(),
+      });
+    };
   }
 
   render() {
     const {
       name, description, place, accommodation, participants, image, beginning_date, ending_date, rooms,
     } = this.state;
-    const { classes, onSubmit, eventNameChangingDisabled } = this.props;
+    const { classes, eventNameChangingDisabled, render } = this.props;
     return (
       <form>
         <MuiPickersUtilsProvider utils={MomentUtils}>
@@ -193,15 +190,7 @@ class TripSettingsForm extends React.Component {
                 />
               </Grid>
 
-              <Grid item className={classes.button} xs={12}>
-                <Button
-                  onClick={(() => onSubmit(this.state))}
-                  variant="contained"
-                  color="secondary"
-                >
-                  Stwórz
-                </Button>
-              </Grid>
+              {render(this.state)}
             </Grid>
           </Paper>
         </MuiPickersUtilsProvider>
@@ -210,4 +199,4 @@ class TripSettingsForm extends React.Component {
   }
 }
 
-export default withStyles(styles)(TripSettingsForm);
+export default withRouter(withStyles(styles)(TripSettingsForm));

@@ -19,7 +19,7 @@ class ParticipantsRoute extends Component {
   }
 
   toggleDialog = () => {
-    this.setState(prevState => ({
+    this.setState(() => ({
       isDialogOpen: !this.state.isDialogOpen,
     }));
   }

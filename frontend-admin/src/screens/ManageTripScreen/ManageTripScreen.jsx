@@ -6,7 +6,7 @@ import Paper from '@material-ui/core/Paper/Paper';
 import TripCard from './TripCard';
 import Typography from '@material-ui/core/Typography';
 import { withRouter, Link } from 'react-router-dom';
-import { getAllEvents } from '../../store/Api'
+import { getAllEvents } from '../../store/Api';
 
 class ManageTripScreen extends React.Component {
 
