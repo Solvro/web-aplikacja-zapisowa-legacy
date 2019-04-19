@@ -3,14 +3,12 @@ from django.shortcuts import get_object_or_404
 
 from drf_yasg.utils import swagger_auto_schema
 
-from rest_framework.exceptions import APIException
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
+from rest_framework.response import Response 
 
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
-
 from enrolmentpanel.models import Student, User, Event
 from enrolmentpanel.serializers import (
     StudentSerializer,
@@ -83,11 +81,7 @@ class StudentView(APIView):
         e = Event.objects.get(pk=event_name)
         u = User.objects.get(username=username)
 
-        try:
-            self.check_object_permissions(request, e)
-        except APIException:
-            # TODO
-            raise Exception
+        self.check_object_permissions(request, e)
 
         queryset = Student.objects.all()
         student = get_object_or_404(queryset, user=u)

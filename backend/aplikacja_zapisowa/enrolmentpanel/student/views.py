@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.exceptions import APIException
 from rest_framework.permissions import IsAuthenticated
@@ -13,6 +13,10 @@ from .permissions import (
     IsStudentAccount,
     IsStudentParticipatingInEvent
 )
+from enrolmentpanel.exceptions import (
+    StudentAlreadyRegisteredException,
+    StudentNotFoundException,
+)
 from enrolmentpanel.models import (
     Event,
     Room,
@@ -23,15 +27,6 @@ from enrolmentpanel.serializers import RoomSerializer
 from enrolmentpanel.utils.notify_utils import notify_consumers_on_room_change
 
 import json
-
-
-class SoloStudentAlreadyRegisteredException(APIException):
-    status_code = 400
-    default_detail = 'Student already registered'
-
-    def __init__(self, student_id):
-        self.detail = f"{student_id} is already registered in room!"
-        super().__init__(self)
     
 
 class TestView(APIView):
@@ -74,7 +69,7 @@ class SoloRoomView(APIView):
         self.check_object_permissions(request, event)
 
         if student.status != 'N':
-            raise SoloStudentAlreadyRegisteredException(student.index)
+            raise StudentAlreadyRegisteredException(student)
 
         room = self.get_room_for_solo(event)
         room.add_people([student])
@@ -82,10 +77,10 @@ class SoloRoomView(APIView):
         student.save()
         notify_consumers_on_room_change(event_name, room)
 
-        return Response({
-            "room_number": room.number,
-            "capacity": room.max_capacity
-        })
+        return Response(
+            RoomSerializer(room).data,
+            status=status.HTTP_200_OK
+        )
 
 
 class GroupRoomView(APIView):
@@ -95,29 +90,32 @@ class GroupRoomView(APIView):
         IsStudentAccount,
         IsStudentParticipatingInEvent)
 
-    # to jest rakowe fchuj, trz zrefactorować xD
-    def get_users_from_request(self, request):
-        group_users = []
-        group_users.append(request.user.username)
-        return group_users + request.data.get('logins')
-
     def get_students_from_users(self, user_names):
-        users_models = [User.objects.get(username=u) for u in user_names]
-        students = [um.participant for um in users_models]
+        participants = []
+        for name in user_names:
+            try:
+                participants.append(Student.objects.get(user__username=name))
+            except Student.DoesNotExist:
+                raise StudentNotFoundException(name)
 
-        return students
+        return participants
 
     def validate_students(self, students):
         for student in students:
             if not student.status == 'N':
-                raise SoloStudentAlreadyRegisteredException(student.index)
+                raise StudentAlreadyRegisteredException(student)
 
     def post(self, request, event_name, room_no):
-        user_names = self.get_users_from_request(request)
-        students = self.get_students_from_users(user_names)
         event = Event.objects.get(pk=event_name)
-
         self.check_object_permissions(request, event)
+        try:
+            students_list = request.data.get('logins')
+            students_list.remove(request.user.username)
+        except ValueError:
+            pass
+
+        students = self.get_students_from_users(students_list)
+        students.append(request.user.participant)
 
         self.validate_students(students)
 
@@ -130,7 +128,8 @@ class GroupRoomView(APIView):
             student.save()
         notify_consumers_on_room_change(event_name, room)
 
-        return Response({
-            "room_number": room.number,
-            "capacity": room.max_capacity
-        }, status=status.HTTP_200_OK)
+
+        return Response(
+            RoomSerializer(room).data,
+            status=status.HTTP_200_OK
+        )

@@ -7,7 +7,10 @@ from django.db.models.signals import post_delete
 from django.dispatch import receiver
 
 
-from enrolmentpanel.exceptions import NotPositiveNumberOfPeople
+from enrolmentpanel.exceptions import (
+    NotPositiveNumberOfPeople,
+    RoomAlreadyFullException,
+)
 from enrolmentpanel.utils.email_utils import StudentRegisterMail
 
 import os
@@ -86,15 +89,16 @@ class Room(models.Model):
         :param people: list-like object with models
         """
         # probably will be modified
-        needed_people = self.max_capacity - Student.objects.filter(room=self).count()
-        if len(people) <= needed_people:
-            self.cur_capacity += len(people)
+        if len(people) > self.vacancies:
+            raise RoomAlreadyFullException(self)
+        
+        self.cur_capacity += len(people)
 
-            for person in people:
-                person.room = self
-                person.save()
+        for person in people:
+            person.room = self
+            person.save()
 
-            self.save()
+        self.save()
 
     def remove_person(self, student):
         student.room = None

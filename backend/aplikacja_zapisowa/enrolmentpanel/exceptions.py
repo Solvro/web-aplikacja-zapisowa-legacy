@@ -75,6 +75,32 @@ class CSVErrorManager:
         for column, details in error.items():
             return details[0].code, column
 
+
+class StudentAlreadyRegisteredException(APIException):
+    status_code = 400
+    default_detail = 'Student already registered'
+
+    def __init__(self, student):
+        students_in_room = ", ".join([s.name for s in student.room.student_set.all() if s != student])
+        if students_in_room == "":
+            students_in_room = "none"
+        self.detail = f"{student.name} is already registered in room: {student.room.number} with: {students_in_room}!"
+        super().__init__(self)
+
+class StudentNotFoundException(APIException):
+    status_code = 404
+    
+    def __init__(self, nick):
+        self.detail = f"Student with nick: {nick} not found"
+        super().__init__(self)
+
+class RoomAlreadyFullException(APIException):
+    status_code = 400
+
+    def __init__(self, room):
+        self.detail = f"Room: {room.number} has not enough space for your team with {room.vacancies} places left!"
+        super().__init__(self)
+
 class UniqueEventNameError(APIException):
     default_code = 400
     default_detail = "Już istnieje event o tej nazwie"
