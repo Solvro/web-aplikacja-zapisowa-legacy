@@ -113,6 +113,16 @@ class DetailEventView(APIView):
             raise UniqueEventNameError
         return Response(status=status.HTTP_200_OK)
 
+    def delete(self, request, event_name):
+        event = get_object_or_404(
+            Event.objects.filter(
+                name=event_name,
+                organizer__user=request.user
+            )
+        )
+        event.delete()
+        return Response(status=status.HTTP_202_ACCEPTED)
+
 
 class StudentStatusView(APIView):
     permission_classes = (IsAuthenticated, IsOrganiserAccount, IsEventOwner)
