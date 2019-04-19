@@ -1,13 +1,15 @@
 import {Reducer} from 'redux'
 import {RoomMate, RoomMateState, RoomMateType, StudentErrors} from './types'
 
-const reducer: Reducer<RoomMateState> = (state = {
+const initialState: RoomMateState = {
     user: undefined,
     fetching: false,
     roomMates: [],
     status: '',
     errors: []
-}, action) => {
+};
+
+const reducer: Reducer<RoomMateState> = (state = initialState, action) => {
     switch (action.type) {
         case RoomMateType.ADD_ROOM_MATE_REQUEST: {
             return {...state, fetching: true, status: ''}
@@ -51,6 +53,9 @@ const reducer: Reducer<RoomMateState> = (state = {
         }
         case RoomMateType.SIGN_IN: {
             return {...state, user: action.payload}
+        }
+        case RoomMateType.SIGN_OUT: {
+            return initialState
         }
         case RoomMateType.ADD_ERROR: {
             return {

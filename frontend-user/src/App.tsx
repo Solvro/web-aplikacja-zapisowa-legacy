@@ -12,6 +12,7 @@ import AddRoomMatesModal from "./components/AddRoomMatesModal/AddRoomMatesModal"
 import SummaryRoute from "./components/SummaryRoute/SummaryRoute";
 import PrivateRoute from './components/PrivateRoute';
 import ErrorDisplay from "./components/ErrorDisplay";
+import LogoutButton from "./components/LogoutButton";
 
 
 const styles = createStyles({
@@ -35,6 +36,7 @@ class App extends React.Component<WithStyles<typeof styles> & RouteComponentProp
                           <Typography variant="h6" color={"inherit"}>
                               Aplikacja zapisowa
                           </Typography>
+                          <LogoutButton/>
                       </Toolbar>
                   </AppBar>
                   <Switch>

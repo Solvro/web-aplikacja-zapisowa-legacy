@@ -1,33 +1,32 @@
 import * as React from "react";
 import SummaryRouteStyles from "./SummaryRouteStyles";
 import {Grid, Paper, Typography, withStyles, WithStyles} from "@material-ui/core";
-import {RoomMate} from "../../store/RoomMate/types";
 //@ts-ignore
 import {Planet} from "react-kawaii";
 import {ApplicationState} from "../../store";
-import {connect} from "react-redux";
+import {connect, Dispatch} from "react-redux";
 import {RouteComponentProps, withRouter} from "react-router";
+import {signOut} from "../../store/RoomMate/actions";
+import {RoomMate} from "../../store/RoomMate/types";
 
 type SummaryRouteProps = {
-    roomMates: RoomMate[],
-    user: RoomMate,
+    signOut: () => void
 } & RouteComponentProps<{}>;
 
-const mapStateToProps = (state: ApplicationState): Partial<SummaryRouteProps> => {
-    return {
-        roomMates: state.roomMateState.roomMates,
-        user: state.roomMateState.user,
-    }
-};
+const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>) => ({
+    signOut: () => { dispatch(signOut) }
+});
 
 class SummaryRoute extends React.Component<WithStyles<typeof SummaryRouteStyles> & SummaryRouteProps> {
 
     public componentDidMount(): void {
-        localStorage.removeItem('token');
+        localStorage.clear();
+        this.props.signOut();
     }
 
     public render(): React.ReactNode {
         const {classes} = this.props;
+        const {roomNumber, roomMates, user} = this.props.location.state;
         return (
             <div className={classes.container}>
                 <Grid
@@ -49,14 +48,14 @@ class SummaryRoute extends React.Component<WithStyles<typeof SummaryRouteStyles>
                         </div>
                         <div>
                             {
-                                this.props.roomMates && this.props.roomMates.length > 0
+                                roomMates && roomMates.length
                                     ?
                                     <span>
                                         <Typography variant={"body1"}>
-                                            Numer pokoju: {this.props.location.state.roomNumber}
+                                            Numer pokoju: {roomNumber}
                                         </Typography>
                                         <Typography variant={"body1"}>Znajomi z twojej grupy pokojowej:</Typography>
-                                        {this.props.roomMates.map((rm, idx)  =>
+                                        {roomMates.map((rm: RoomMate, idx: number)  =>
                                             (<Typography
                                                 variant={"body2"}
                                                 key={idx}
@@ -68,7 +67,7 @@ class SummaryRoute extends React.Component<WithStyles<typeof SummaryRouteStyles>
                                     :
                                     (<span>
                                         <Typography variant={"h5"}>
-                                            Świetnie, że jedziesz z nami {this.props.user.name}!
+                                            Świetnie, że jedziesz z nami {user.name}!
                                         </Typography>
                                         <Typography variant={"subheading"}>
                                             Kiedy krasnoludki przydzielą Cię do pokoju, od razu damy Ci znać
@@ -83,4 +82,8 @@ class SummaryRoute extends React.Component<WithStyles<typeof SummaryRouteStyles>
     }
 }
 
-export default connect(mapStateToProps)(withRouter<RouteComponentProps<{}>>((withStyles(SummaryRouteStyles, {withTheme: true})(SummaryRoute))));
+export default connect(null, mapDispatchToProps)(
+    withRouter(
+        withStyles(SummaryRouteStyles)(SummaryRoute)
+    )
+);
