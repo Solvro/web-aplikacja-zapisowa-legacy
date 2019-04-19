@@ -56,7 +56,7 @@ function ButtonsControlTile(props) {
         <ContentGridItem
           xs={6}
           title={(
-            <Button onClick={onDeleteTrip} variant="contained" color="secondary" className={classes.button}>
+            <Button onClick={onDeleteTrip} variant="contained" color="primary" className={classes.button}>
               Usuń wycieczkę
               <DeleteIcon className={classes.rightIcon} />
             </Button>
