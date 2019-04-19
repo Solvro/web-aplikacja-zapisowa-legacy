@@ -8,13 +8,6 @@ import Typography from '@material-ui/core/Typography';
 import { withRouter, Link } from 'react-router-dom';
 import { getAllEvents } from '../../store/Api'
 
-const addNewEventTileDetails = {
-    name: 'AddingCard',
-    description: 'Kliknij aby dodać nową wycieczkę',
-    overlayText: '',
-    image: '',
-}
-
 class ManageTripScreen extends React.Component {
 
     constructor(props) {
