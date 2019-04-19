@@ -29,21 +29,6 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
             token['student'] = serializer.data
             token['room'] = (not logged_student.room is None)
-            serialized_room_mates = []
-
-            if token['room']:
-                room_mates = Student.objects.filter(room=logged_student.room)
-                
-                try:
-                    for room_mate in room_mates:
-                        if room_mate != logged_student:
-                            serialized_room_mates.append(
-                                StudentSerializer(room_mate).data
-                            )
-                except Exception:
-                    pass
-
-            token['roomMates'] = serialized_room_mates
         elif user.is_organiser:
             organiser_data = OrganiserSerializer(user.organiser).data
             organiser_data.pop("user")
@@ -59,7 +44,6 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         if self.user.is_participant:
             data['student'] = token['student']
             data['room'] = token['room']
-            data['roomMates'] = token['roomMates']
         elif self.user.is_organiser:
             data['organiser'] = token['organiserInfo']
 

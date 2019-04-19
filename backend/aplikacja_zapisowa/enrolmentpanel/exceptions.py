@@ -81,10 +81,7 @@ class StudentAlreadyRegisteredException(APIException):
     default_detail = 'Student already registered'
 
     def __init__(self, student):
-        students_in_room = ", ".join([s.name for s in student.room.student_set.all() if s != student])
-        if students_in_room == "":
-            students_in_room = "none"
-        self.detail = f"{student.name} is already registered in room: {student.room.number} with: {students_in_room}!"
+        self.detail = f"{student.name} is already registered in room: {student.room.number}!"
         super().__init__(self)
 
 class StudentNotFoundException(APIException):
