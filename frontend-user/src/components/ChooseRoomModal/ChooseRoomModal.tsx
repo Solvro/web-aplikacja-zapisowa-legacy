@@ -5,14 +5,16 @@ import {UserChip} from "../UserChip/UserChip";
 import {Room, RoomCard} from "./RoomCard";
 import {ApplicationState} from "../../store";
 import {RoomMate} from "../../store/RoomMate/types";
-import {connect} from "react-redux";
+import {connect, Dispatch} from "react-redux";
 import BackButton from "../BackButton";
 import {RouteComponentProps, withRouter} from "react-router-dom";
-import {enrollStudentsInRoom} from "../../store/api";
+import {APIError, ApiErrorMap, enrollStudentsInRoom} from "../../store/api";
+import {addError} from "../../store/RoomMate/actions";
 
 type ChooseRoomModalProps = {
     roomMates: RoomMate[];
     user: RoomMate;
+    addError: (message: string) => void;
 } & RouteComponentProps<{}>;
 
 type WebSocketRoom = {
@@ -25,6 +27,12 @@ const mapStateToProps = (state: ApplicationState): Partial<ChooseRoomModalProps>
     return {
         roomMates: state.roomMateState.roomMates,
         user: state.roomMateState.user,
+    }
+};
+
+const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>): Partial<ChooseRoomModalProps> => {
+    return {
+        addError: (message: string) => dispatch(addError(message))
     }
 };
 
@@ -169,23 +177,22 @@ class ChooseRoomModal extends React.Component<WithStyles<typeof chooseRoomModalS
 
     private enrollStudentsInRoom = async () => {
         try {
-            const { roomMates, user, history } = this.props;
+            const { roomMates, user, addError } = this.props;
             const { pickedRoom } = this.state;
             const result = await enrollStudentsInRoom(roomMates, pickedRoom.number, user.event);
             const resultBody = await result.json();
-            console.log(result, 'result');
             if (result.status === 200) {
-                history.push('/Summary', {roomNumber: pickedRoom.number});
+                this.props.history.push('/Summary', {roomNumber: pickedRoom.number});
             } else {
-                console.log(resultBody);
+                if (Object.keys(APIError).includes(resultBody.details)) {
+                    addError(ApiErrorMap[resultBody.details]);
+                }
             }
         } catch(e){
             throw e;
         }
-
-       
     }
 }
 
-const ChooseRoomModalWithStyles = withStyles(chooseRoomModalStyles, {withTheme: true})(ChooseRoomModal);
-export default connect(mapStateToProps)(withRouter<RouteComponentProps<{}>>(ChooseRoomModalWithStyles))
+const ChooseRoomModalWithStyles = withStyles(chooseRoomModalStyles)(ChooseRoomModal);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter<RouteComponentProps<{}>>(ChooseRoomModalWithStyles))

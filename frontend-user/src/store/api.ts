@@ -56,3 +56,11 @@ export const enrollStudentsInRoom = async (students: RoomMate[], roomNumber: num
         return error;
     }
 };
+
+export enum APIError {
+    ALREADY_REGISTERED = "69 is already registered!",
+};
+
+export const ApiErrorMap = {
+    [APIError.ALREADY_REGISTERED]: "Użytkownik jest już zapisany!"
+};
