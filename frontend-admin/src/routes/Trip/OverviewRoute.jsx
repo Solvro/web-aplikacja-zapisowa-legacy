@@ -31,7 +31,7 @@ class OverviewRoute extends Component {
     const details = await getEventDetails(id);
     const statistics = await getStatistics(id);
     if (details) {
-      this.setState({ details, statistics, statisticsLoaded: true });
+      this.setState({ ...details, statistics, statisticsLoaded: true });
     }
   }
 
