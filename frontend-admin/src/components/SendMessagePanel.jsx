@@ -151,7 +151,7 @@ class SendMessagePanel extends React.Component {
             <Button
               onClick={this.sendButton}
               variant="contained"
-              color="secondary"
+              color="primary"
             >
               Wyślij
             </Button>

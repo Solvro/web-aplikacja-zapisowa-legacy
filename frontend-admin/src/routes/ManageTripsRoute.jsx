@@ -20,7 +20,7 @@ export default class ManageTripsRoute extends Component {
           component={CreateTripRoute}
         />
         <PrivateRoute
-          path="/trips/:id([\w ]+)"
+          path="/trips/:id([\w AaĄąBbCcĆćDdEeĘęFfGgHhIiJjKkLlŁłMmNnŃńOoÓóPpRrSsŚśTtUuWwYyZzŹźŻż]+)"
           component={TripRoute}
         />
         <PrivateRoute
