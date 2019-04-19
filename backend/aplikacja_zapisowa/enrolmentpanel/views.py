@@ -34,7 +34,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             serialized_room_mates = []
 
             if token['room']:
-                room_mates = Student.objects.get(room=logged_student.room)
+                room_mates = Student.objects.filter(room=logged_student.room)
                 
                 try:
                     for room_mate in room_mates:

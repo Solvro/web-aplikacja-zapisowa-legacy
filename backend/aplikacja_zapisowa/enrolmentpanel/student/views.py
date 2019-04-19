@@ -25,12 +25,12 @@ from enrolmentpanel.utils.notify_utils import notify_consumers_on_room_change
 import json
 
 
-class StudentAlreadyRegisteredException(APIException):
+class SoloStudentAlreadyRegisteredException(APIException):
     status_code = 400
     default_detail = 'Student already registered'
 
     def __init__(self, student_id):
-        self.detail = f"{student_id} is already registered!"
+        self.detail = f"{student_id} is already registered in room!"
         super().__init__(self)
     
 
@@ -74,7 +74,7 @@ class SoloRoomView(APIView):
         self.check_object_permissions(request, event)
 
         if student.status != 'N':
-            raise StudentAlreadyRegisteredException(student.index)
+            raise SoloStudentAlreadyRegisteredException(student.index)
 
         room = self.get_room_for_solo(event)
         room.add_people([student])
@@ -110,7 +110,7 @@ class GroupRoomView(APIView):
     def validate_students(self, students):
         for student in students:
             if not student.status == 'N':
-                raise StudentAlreadyRegisteredException(student.index)
+                raise SoloStudentAlreadyRegisteredException(student.index)
 
     def post(self, request, event_name, room_no):
         user_names = self.get_users_from_request(request)
