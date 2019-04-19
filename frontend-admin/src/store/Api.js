@@ -37,6 +37,12 @@ instance.interceptors.response.use(undefined, (err) => {
   return err;
 });
 
+export function logout() {
+  localStorage.removeItem('token');
+  localStorage.removeItem('refresh');
+  return Promise.resolve().finally(() => window.location.replace('/'));
+}
+
 export async function authorizeUser(username, password) {
   try {
     const token = await instance.post('/token/', { username, password });

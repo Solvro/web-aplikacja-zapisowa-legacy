@@ -5,7 +5,6 @@ import 'typeface-roboto';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { withStyles } from '@material-ui/core';
 import theme from './theme';
-import TableRoute from './routes/TableRoute';
 import LoginRoute from './routes/LoginRoute';
 import ManageTripsRoute from './routes/ManageTripsRoute';
 import TripAppBar from './components/TripAppBar';
