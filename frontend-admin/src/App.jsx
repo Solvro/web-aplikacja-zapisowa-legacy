@@ -24,10 +24,6 @@ const renderContent = classes => (
       path="/trips"
       component={ManageTripsRoute}
     />
-    <PrivateRoute
-      path="/table"
-      component={TableRoute}
-    />
   </>
 );
 
