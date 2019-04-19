@@ -8,7 +8,6 @@ import Tile from './Tile';
 import StatisticsProgress from './StatisticsProgress';
 
 function StatisticsTile(props) {
-  console.log(props);
   const {
     studentsNumber,
     registeredStudents,
