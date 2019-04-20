@@ -8,7 +8,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 
 function AlertDialog(props) {
   const {
-    isOpen, onClose, message, title,
+    isOpen, message, title, children,
   } = props;
   return (
     <div>
@@ -22,12 +22,7 @@ function AlertDialog(props) {
           <DialogContentText id="alert-dialog-description">{message}</DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => onClose(false)} color="primary" autoFocus>
-            Anuluj
-          </Button>
-          <Button onClick={() => onClose(true)} color="secondary">
-            OK
-          </Button>
+          {children}
         </DialogActions>
       </Dialog>
     </div>
