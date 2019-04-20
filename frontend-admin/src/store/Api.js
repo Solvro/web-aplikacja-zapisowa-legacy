@@ -86,17 +86,15 @@ export async function createEvent(data) {
     formData.append(arr[0], arr[1]);
   });
 
-  try {
-    const response = await instance.post(
-      '/organiser/event',
-      formData,
-      config,
-    );
-    const statusOK = response && response.status === 201;
-    return statusOK;
-  } catch (error) {
-    return false;
+  const response = await instance.post(
+    '/organiser/event',
+    formData,
+    config,
+  );
+  if (response.status !== 201) {
+    throw response.response.data.detail;
   }
+  return response;
 }
 
 export async function removeParticipant(eventName, participantInfo) {
@@ -168,7 +166,7 @@ export async function updateEvent(eventName, data) {
   const formData = new FormData();
 
   Object.entries(data).forEach((arr) => {
-    if(arr[1]) {
+    if (arr[1]) {
       formData.append(arr[0], arr[1]);
     }
   });
