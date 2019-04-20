@@ -96,24 +96,41 @@ class StudentListSerializer(serializers.ListSerializer):
 
 class StudentSerializer(serializers.ModelSerializer):
 
+    def __create_user(self, instance, new_index):
+        username, password = StudentManager.generate_student_credentials(new_index)
+        user = User.objects.create_user(
+                    username=username,
+                    password=password,
+                    is_participant=True,
+                    is_active=self.context.get('is_active', False))
+        return user, username, password
+
+    def __is_updated(self, new_value, previous_value):
+        return new_value is not None and previous_value != new_value
+
+
     def create(self, validated_data):
         if validated_data.get("email") is None:
             validated_data["email"] = f"{validated_data['index']}@student.pwr.edu.pl"
-        return Student.objects.create(**validated_data)
+        return Student.objects.create(**validated_data, is_active=self.context.get('is_active', False))
 
     def update(self, instance, validated_data):
+        validated_data.pop('event', None)
         new_index = validated_data.get("index", None)
-        if new_index is not None and instance.index != new_index:
-            username, password = StudentManager.generate_student_credentials(new_index)
-            user = User(username=username, password=password, is_participant=True)
+        new_email = validated_data.get("email", f"{validated_data['index']}@student.pwr.edu.pl")
+
+        # student should get new login and password if email or index is changing
+        if self.__is_updated(new_index, instance.index) or self.__is_updated(new_email, instance.email):
+            user, _, password = self.__create_user(instance, new_index)
             user_to_delete = instance.user
-            instance.user = user
-            user_to_delete.delete()
-            user.save()
             validated_data['user'] = user
+            validated_data['email'] = new_email
+            updated_instance = super().update(instance, validated_data)
             mail = StudentRegisterMail(instance.event, instance, password)
             mail.send_email()
-        validated_data.pop('event', None)
+            user_to_delete.delete()
+            return updated_instance
+
         return super().update(instance, validated_data)
 
     def validate_index(self, value):
@@ -188,7 +205,9 @@ class EventSerializer(serializers.ModelSerializer):
         try:
             for participant in participants:
                 participant['event'] = event.name
-            students_serializer = StudentSerializer(data=participants, many=True)
+            students_serializer = StudentSerializer(data=participants,
+                                                    many=True,
+                                                    context={'is_active': event.is_active})
             if students_serializer.is_valid(raise_exception=True):
                 students_serializer.save()
         except IntegrityError as e:
@@ -202,10 +221,13 @@ class EventSerializer(serializers.ModelSerializer):
         for line_no, participant in enumerate(participants):
             try:
                 obj = Student.objects.get(index=participant['index'], event=event)
-                serializer = StudentSerializer(obj, participant, partial=True)
+                serializer = StudentSerializer(obj,
+                                               participant,
+                                               partial=True)
             except Student.DoesNotExist:
                 participant['event'] = event.name
-                serializer = StudentSerializer(data=participant)
+                serializer = StudentSerializer(data=participant,
+                                               context={'is_active': event.is_active})
 
             try:
                 if serializer.is_valid(raise_exception=True):
@@ -268,8 +290,9 @@ class EventSerializer(serializers.ModelSerializer):
                   "ending_date",
                   "image_link",
                   "participants",
-                  "rooms")
-        read_only_fields = ("image_link", )
+                  "rooms",
+                  "is_active")
+        read_only_fields = ("image_link", "is_active")
         extra_kwargs = {'image': {'write_only': True},
                         'participants': {'write_only': True},
                         'rooms': {'write_only': True}}
