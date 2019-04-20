@@ -3,14 +3,12 @@ from django.shortcuts import get_object_or_404
 
 from drf_yasg.utils import swagger_auto_schema
 
-from rest_framework.exceptions import APIException
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
+from rest_framework.response import Response 
 
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
-
 from enrolmentpanel.models import Student, User, Event
 from enrolmentpanel.serializers import (
     StudentSerializer,
@@ -31,21 +29,6 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
             token['student'] = serializer.data
             token['room'] = (not logged_student.room is None)
-            serialized_room_mates = []
-
-            if token['room']:
-                room_mates = Student.objects.get(room=logged_student.room)
-                
-                try:
-                    for room_mate in room_mates:
-                        if room_mate != logged_student:
-                            serialized_room_mates.append(
-                                StudentSerializer(room_mate).data
-                            )
-                except Exception:
-                    pass
-
-            token['roomMates'] = serialized_room_mates
         elif user.is_organiser:
             organiser_data = OrganiserSerializer(user.organiser).data
             organiser_data.pop("user")
@@ -61,7 +44,6 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         if self.user.is_participant:
             data['student'] = token['student']
             data['room'] = token['room']
-            data['roomMates'] = token['roomMates']
         elif self.user.is_organiser:
             data['organiser'] = token['organiserInfo']
 
@@ -83,11 +65,7 @@ class StudentView(APIView):
         e = Event.objects.get(pk=event_name)
         u = User.objects.get(username=username)
 
-        try:
-            self.check_object_permissions(request, e)
-        except APIException:
-            # TODO
-            raise Exception
+        self.check_object_permissions(request, e)
 
         queryset = Student.objects.all()
         student = get_object_or_404(queryset, user=u)
