@@ -14,6 +14,7 @@ class EditRoute extends Component {
       isAlertOpen: false,
       dialogMessage: '',
     };
+    this.toggleDialog = this.toggleDialog.bind(this);
   }
 
   async componentDidMount() {
