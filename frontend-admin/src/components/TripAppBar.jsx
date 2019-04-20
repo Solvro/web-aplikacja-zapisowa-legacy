@@ -28,17 +28,13 @@ const logoutButtonStyles = theme => ({
 
 const LogoutButton = withStyles(logoutButtonStyles)(Button);
 
-function logoutAndReload() {
-  logout().then(() => console.log('Logging out and cleaning'));
-}
-
 const SimpleAppBar = ({classes}) => (
   <AppBar position="fixed" className={classes.root}>
     <Toolbar>
       <Typography variant="h6" color="inherit" noWrap>
         Aplikacja zapisowa
       </Typography>
-      <LogoutButton className={classes.button} onClick={logoutAndReload}>
+      <LogoutButton className={classes.button} onClick={logout}>
         Wyloguj
         <PowerSettingsNewIcon className={classes.rightIcon} />
       </LogoutButton>

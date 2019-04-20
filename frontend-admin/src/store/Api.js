@@ -40,7 +40,7 @@ instance.interceptors.response.use(undefined, (err) => {
 export function logout() {
   localStorage.removeItem('token');
   localStorage.removeItem('refresh');
-  return Promise.resolve().finally(() => window.location.replace('/'));
+  window.location.replace('/');
 }
 
 export async function authorizeUser(username, password) {
