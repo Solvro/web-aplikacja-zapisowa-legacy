@@ -8,7 +8,7 @@ import {RoomMate} from "../../store/RoomMate/types";
 import {connect, Dispatch} from "react-redux";
 import BackButton from "../BackButton";
 import {RouteComponentProps, withRouter} from "react-router-dom";
-import {APIError, ApiErrorMap, enrollStudentsInRoom} from "../../store/api";
+import {enrollStudentsInRoom} from "../../store/api";
 import {addError} from "../../store/RoomMate/actions";
 
 type ChooseRoomModalProps = {
@@ -177,16 +177,14 @@ class ChooseRoomModal extends React.Component<WithStyles<typeof chooseRoomModalS
 
     private enrollStudentsInRoom = async () => {
         try {
-            const { roomMates, user, addError } = this.props;
+            const { roomMates, user, addError, history } = this.props;
             const { pickedRoom } = this.state;
             const result = await enrollStudentsInRoom(roomMates, pickedRoom.number, user.event);
             const resultBody = await result.json();
             if (result.status === 200) {
-                this.props.history.push('/Summary', {roomNumber: pickedRoom.number});
+                history.replace('/Summary', { roomNumber: pickedRoom.number, roomMates, user});
             } else {
-                if (Object.keys(APIError).includes(resultBody.details)) {
-                    addError(ApiErrorMap[resultBody.details]);
-                }
+                addError(resultBody.details);
             }
         } catch(e){
             throw e;
@@ -195,4 +193,4 @@ class ChooseRoomModal extends React.Component<WithStyles<typeof chooseRoomModalS
 }
 
 const ChooseRoomModalWithStyles = withStyles(chooseRoomModalStyles)(ChooseRoomModal);
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter<RouteComponentProps<{}>>(ChooseRoomModalWithStyles))
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(ChooseRoomModalWithStyles))

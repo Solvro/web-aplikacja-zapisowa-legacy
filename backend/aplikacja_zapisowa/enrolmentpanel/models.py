@@ -7,7 +7,10 @@ from django.db.models.signals import post_delete
 from django.dispatch import receiver
 
 
-from enrolmentpanel.exceptions import NotPositiveNumberOfPeople
+from enrolmentpanel.exceptions import (
+    NotPositiveNumberOfPeople,
+    RoomAlreadyFullException,
+)
 from enrolmentpanel.utils.email_utils import StudentRegisterMail
 
 import os
@@ -59,6 +62,7 @@ class Event(models.Model):
     beginning_date = models.DateField(null=False)
     ending_date = models.DateField(null=False)
     organizer = models.ForeignKey(Organiser, on_delete=models.CASCADE)
+    is_active = models.BooleanField(default=False)
 
 
 class Room(models.Model):
@@ -86,15 +90,16 @@ class Room(models.Model):
         :param people: list-like object with models
         """
         # probably will be modified
-        needed_people = self.max_capacity - Student.objects.filter(room=self).count()
-        if len(people) <= needed_people:
-            self.cur_capacity += len(people)
+        if len(people) > self.vacancies:
+            raise RoomAlreadyFullException(self)
+        
+        self.cur_capacity += len(people)
 
-            for person in people:
-                person.room = self
-                person.save()
+        for person in people:
+            person.room = self
+            person.save()
 
-            self.save()
+        self.save()
 
     def remove_person(self, student):
         student.room = None
@@ -105,34 +110,41 @@ class Room(models.Model):
 
 class StudentManager(models.Manager):
 
-    def bulk_create(self, objs, batch_size=None):
+    def bulk_create(self, objs, is_active=False, batch_size=None):
         users = []
         passwords = []
         for student in objs:
             username, password = self.generate_student_credentials(student.index)
             passwords.append(password)
-            user = User(username=username, password=make_password(password), is_participant=True)
+            user = User(username=username,
+                        password=make_password(password),
+                        is_participant=True,
+                        is_active=is_active)
             users.append(user)
         saved_users = User.objects.bulk_create(users)
         for student, user in zip(objs, saved_users):
             student.user = user
             student.status = 'N'
+            if student.email is None:
+                student.email = f"{student.index}@student.pwr.edu.pl"
 
         saved_students = super().bulk_create(objs, batch_size=batch_size)
         for student, password in zip(objs, passwords):
-            mail = StudentRegisterMail(student.event, student.index, student.user.username, password)
+            mail = StudentRegisterMail(student.event, student, password)
             mail.send_email()
         return saved_students
 
 
 
-    def create(self, index, event, sex, name, faculty):
+    def create(self, index, event, sex, name, faculty, is_active=False, email=None):
+        if email is None:
+            email = f"{index}@student.pwr.edu.pl"
         username, password = StudentManager.generate_student_credentials(index)
         student_user = User.objects.create_user(
             username=username,
-            password=password
-        )
-        student_user.is_participant = True
+            password=password,
+            is_participant = True,
+            is_active=is_active)
         student_user.save()
 
         new_student = Student(
@@ -142,11 +154,12 @@ class StudentManager(models.Manager):
             sex=sex,
             name=name,
             faculty=faculty,
-            status='N'
+            status='N',
+            email=email
         )
 
         new_student.save()
-        mail = StudentRegisterMail(event, index, username, password)
+        mail = StudentRegisterMail(event, new_student, password)
         mail.send_email()
 
         # for development purposes
@@ -185,11 +198,11 @@ class Student(models.Model):
     index = models.CharField(max_length=30)
     faculty = models.PositiveSmallIntegerField()
     sex = models.CharField(
-        default='N',
         max_length=1,
         choices=SEX_CHOICES
     )
     status = models.CharField(
+        default='N',
         max_length=1,
         choices=STATUS_CHOICES
     )
@@ -197,6 +210,7 @@ class Student(models.Model):
                              default=None,
                              null=True,
                              on_delete=models.SET_NULL)
+    email = models.EmailField(default=None)
 
     class Meta:
         unique_together = (('index', 'event'),)

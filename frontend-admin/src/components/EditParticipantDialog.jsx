@@ -5,7 +5,7 @@ import TextField from '@material-ui/core/TextField';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { Grid, Dialog, RadioGroup, FormControlLabel, Radio, FormControl, FormLabel, InputLabel, Select, MenuItem } from '@material-ui/core';
+import { Grid, Dialog, RadioGroup, FormControlLabel, Radio, FormControl, FormLabel, Select, MenuItem } from '@material-ui/core';
 
 const styles = theme => ({
   root: {
@@ -108,7 +108,8 @@ class EditParticipantDialog extends React.Component {
                     }}
                   >
                     <MenuItem value='N'>Niezapisany</MenuItem>
-                    <MenuItem value='Z'>Zapisany</MenuItem>
+                    <MenuItem value='S'>Zapisany Solowo</MenuItem>
+                    <MenuItem value='G'>Zapisany Grupowo</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>

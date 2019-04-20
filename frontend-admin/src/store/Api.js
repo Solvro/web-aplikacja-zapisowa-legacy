@@ -37,6 +37,11 @@ instance.interceptors.response.use(undefined, (err) => {
   return err;
 });
 
+export function logout() {
+  localStorage.removeItem('token');
+  localStorage.removeItem('refresh');
+}
+
 export async function authorizeUser(username, password) {
   try {
     const token = await instance.post('/token/', { username, password });
@@ -125,6 +130,15 @@ export async function getEventDetails(eventName) {
   }
 }
 
+export async function getStatistics(eventName) {
+  try {
+    const response = await instance.get(`/organiser/${eventName}/statistics`);
+    return response.data;
+  } catch (error) {
+    return null;
+  }
+}
+
 export async function getRoomsList(eventName) {
   try {
     const response = await instance.get(`/organiser/event/${eventName}/rooms`);
@@ -168,7 +182,7 @@ export async function updateEvent(eventName, data) {
     const statusOK = response && response.status === 200;
     return statusOK;
   } catch (error) {
-    console.error(error)
+    console.error(error);
     return false;
   }
 }
@@ -176,10 +190,33 @@ export async function updateEvent(eventName, data) {
 export async function sendMail(eventName, data) {
   try {
     const response = await instance.post(`/organiser/${eventName}/email/`, data);
-    console.log(data)
     return response.data;
   } catch (error) {
-    console.error(error)
+    console.error(error);
+    return error;
+  }
+}
+
+export async function changeEventRegistrationStatus(data) {
+  try {
+    // TODO: Implement real endpoint
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(data);
+      }, 500);
+    });
+  } catch (error) {
+    console.error(error);
     return null;
+  }
+}
+
+export async function deleteEvent(eventName) {
+  try {
+    const response = await instance.delete(`/organiser/event/${eventName}`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return error;
   }
 }

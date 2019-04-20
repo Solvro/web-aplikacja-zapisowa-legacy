@@ -1,4 +1,5 @@
-from django.db import transaction
+from django.core import exceptions
+from django.db import transaction, IntegrityError
 from django.db.models import Prefetch
 from django.shortcuts import (
     render,
@@ -15,16 +16,24 @@ from rest_framework.views import APIView
 from rest_framework.exceptions import ValidationError
 
 from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+
 
 from .permissions import (IsOrganiserAccount, IsEventOwner)
-from enrolmentpanel.models import Event, Student, Room
+from enrolmentpanel.models import (
+    Event,
+    Student,
+    Room,
+    User
+)
 from enrolmentpanel.serializers import (
     PartialStudentSerializer,
     StudentSerializer,
     EventSerializer,
     RoomSerializer,
     RoomDetailedSerializer,
-    CustomEmailViewSerializer
+    CustomEmailViewSerializer,
+    EventStatisticsSerializer,
 )
 from enrolmentpanel.exceptions import UniqueEventNameError
 
@@ -58,7 +67,7 @@ class CreateStudentView(APIView):
         self.check_object_permissions(request, event)
 
         request.data['event'] = event_name # event -> event_name (because 'event' is not a pk, but an object)
-        student_serializer = StudentSerializer(data=request.data)
+        student_serializer = StudentSerializer(data=request.data, context={'is_active': event.is_active})
         if student_serializer.is_valid(raise_exception=True):
             student_serializer.save()
         return Response(student_serializer.initial_data)
@@ -112,6 +121,16 @@ class DetailEventView(APIView):
         except ValidationError:
             raise UniqueEventNameError
         return Response(status=status.HTTP_200_OK)
+
+    def delete(self, request, event_name):
+        event = get_object_or_404(
+            Event.objects.filter(
+                name=event_name,
+                organizer__user=request.user
+            )
+        )
+        event.delete()
+        return Response(status=status.HTTP_202_ACCEPTED)
 
 
 class StudentStatusView(APIView):
@@ -234,7 +253,12 @@ class StudentEditView(APIView):
         return Response(status=status.HTTP_202_ACCEPTED)
 
     @swagger_auto_schema(request_body=StudentSerializer(partial=True),
-                         operation_description="Patches student's info. Event acctually can not be changed")
+                         operation_description="""Patches student's info. Event acctually can not be changed.
+                         Student's statuses means Not registered, Solo registered and Grouped registered respectively.""",
+                         responses={
+                                202: "Accepted",
+                                400: "Bad Request"
+                            })
     @transaction.atomic
     def patch(self, request, event_name, student_index):
         student = get_object_or_404(Student.objects.filter(
@@ -242,7 +266,80 @@ class StudentEditView(APIView):
             index=student_index,
             event__organizer__user=request.user
         ))
-        student_serializer = StudentSerializer(student, request.data, partial=True)
+        is_active = Event.objects.only('is_active').get(name=event_name, organizer__user=request.user).is_active
+        student_serializer = StudentSerializer(student,
+                                               request.data,
+                                               partial=True,
+                                               context={
+                                                   'is_active': is_active
+                                               })
         if student_serializer.is_valid():
             student_serializer.save()
-        return Response(status=status.HTTP_202_ACCEPTED)
+            return Response(status=status.HTTP_202_ACCEPTED)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class EventStatisticsView(APIView):
+
+    permission_classes = (IsAuthenticated, IsOrganiserAccount)
+
+    @swagger_auto_schema(responses={
+                            200:"""
+                            {
+                                "students": {
+                                    "no": 3
+                                },
+                                "students_registered": {
+                                    "no": 2,
+                                    "percentage": 66.67
+                                },
+                                "students_solo": {
+                                    "no": 1
+                                },
+                                "rooms_not_full": {
+                                    "no": 3,
+                                    "percentage": 100.00
+                                }
+                            }
+                            """,
+                            404: "{\"detail\": \"Not found.\"}"
+                        },
+                        operation_description="Gets basic statistics about event's paricipant and rooms.")
+    def get(self, request, event_name):
+        event = get_object_or_404(
+                    Event.objects.prefetch_related(
+                        Prefetch('room_set'),
+                        Prefetch('student_set')),
+                    name=event_name, organizer__user=request.user)
+        statistics_serializer = EventStatisticsSerializer(event)
+
+        return Response(statistics_serializer.data, status=status.HTTP_200_OK)
+
+
+class ActivationEventView(APIView):
+
+    permission_classes = (IsAuthenticated, IsOrganiserAccount)
+
+    @swagger_auto_schema(responses={
+                            200: """{
+                                "is_active": true
+                            }""",
+                            404:"""{
+                                "detail": "Not found."
+                            }"""
+                         },
+                         operation_description="Activates event and users.")
+    def post(self, request, event_name):
+        event = get_object_or_404(Event, name=event_name, organizer__user=request.user)
+        event.is_active = not event.is_active
+        event.save()
+
+        User.objects.filter(
+            participant__event=event_name,
+            participant__event__organizer__user=request.user
+        ).update(is_active=event.is_active)
+
+        return Response({
+            "is_active": event.is_active
+        },
+        status=status.HTTP_200_OK)

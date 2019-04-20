@@ -1,5 +1,6 @@
 import React from 'react';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
+import { Button, Grid } from '@material-ui/core';
 import TripSettingsForm from '../components/TripSettingsForm';
 import { createEvent } from '../store/Api';
 
@@ -10,16 +11,37 @@ const CreateTripRoute = (props) => {
     <div style={{ width: '50%', margin: '0 auto' }}>
       <TripSettingsForm
         {...props}
-        onSubmit={(data) => {
-          createEvent(data).then((statusOk) => {
-            if (statusOk) {
-              history.push('/trips');
-            } else {
-              alert('ERROR WHILE CREATING EVENT');
-            }
-          });
-        }
-      }
+        render={data => (
+          <Grid container alignItems="center" alignContent="center" justify="center" spacing={16}>
+            <Grid item xs={6} style={{ textAlign: 'right' }}>
+              <Link to="/trips" style={{ textDecoration: 'none' }}>
+                <Button
+                  variant="contained"
+                  color="default"
+                >
+                  Powrót
+                </Button>
+              </Link>
+            </Grid>
+            <Grid item xs={6} style={{ textAlign: 'left' }}>
+              <Button
+                onClick={() => {
+                  createEvent(data).then((statusOk) => {
+                    if (statusOk) {
+                      history.push('/trips');
+                    } else {
+                      alert('ERROR WHILE CREATING EVENT');
+                    }
+                  });
+                }}
+                variant="contained"
+                color="primary"
+              >
+                Stwórz
+              </Button>
+            </Grid>
+          </Grid>
+        )}
       />
     </div>
   );

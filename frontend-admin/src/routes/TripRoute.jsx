@@ -28,21 +28,21 @@ function ClippedDrawer(props) {
       <main className={classes.content}>
         <Switch>
           <PrivateRoute
-            path="/trips/:id([\w ]+)/edit"
+            path="/trips/:id([\w AaĄąBbCcĆćDdEeĘęFfGgHhIiJjKkLlŁłMmNnŃńOoÓóPpRrSsŚśTtUuWwYyZzŹźŻż]+)/edit"
             component={EditRoute}
           />
           <PrivateRoute
-            path="/trips/:id([\w ]+)/message"
+            path="/trips/:id([\w AaĄąBbCcĆćDdEeĘęFfGgHhIiJjKkLlŁłMmNnŃńOoÓóPpRrSsŚśTtUuWwYyZzŹźŻż]+)/message"
             exact
             component={MessageRoute}
           />
           <PrivateRoute
-            path="/trips/:id([\w ]+)/participants"
+            path="/trips/:id([\w AaĄąBbCcĆćDdEeĘęFfGgHhIiJjKkLlŁłMmNnŃńOoÓóPpRrSsŚśTtUuWwYyZzŹźŻż]+)/participants"
             exact
             component={ParticipantsRoute}
           />
           <PrivateRoute
-            path="/trips/:id([\w ]+)/rooms"
+            path="/trips/:id([\w AaĄąBbCcĆćDdEeĘęFfGgHhIiJjKkLlŁłMmNnŃńOoÓóPpRrSsŚśTtUuWwYyZzŹźŻż]+)/rooms"
             exact
             component={RoomsRoute}
           />

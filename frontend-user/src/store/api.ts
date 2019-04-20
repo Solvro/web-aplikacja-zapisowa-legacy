@@ -57,10 +57,17 @@ export const enrollStudentsInRoom = async (students: RoomMate[], roomNumber: num
     }
 };
 
-export enum APIError {
-    ALREADY_REGISTERED = "69 is already registered!",
-};
-
-export const ApiErrorMap = {
-    [APIError.ALREADY_REGISTERED]: "Użytkownik jest już zapisany!"
+export const enrollStudentAlone = async (eventName: string) => {
+    try {
+        const token = localStorage.getItem('token');
+        return fetch(`http://localhost:8000/api/student/${eventName}/register/`, {
+            method: 'post',
+            headers: new Headers({
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }),
+        });
+    } catch (error) {
+        return error;
+    }
 };

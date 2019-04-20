@@ -5,10 +5,7 @@ import 'typeface-roboto';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { withStyles } from '@material-ui/core';
 import theme from './theme';
-import CreateTripRoute from './routes/CreateTripRoute';
-import TableRoute from './routes/TableRoute';
 import LoginRoute from './routes/LoginRoute';
-import NoMatchRoute from './routes/NoMatchRoute';
 import ManageTripsRoute from './routes/ManageTripsRoute';
 import TripAppBar from './components/TripAppBar';
 import PrivateRoute from './components/PrivateRoute';
@@ -25,10 +22,6 @@ const renderContent = classes => (
     <PrivateRoute
       path="/trips"
       component={ManageTripsRoute}
-    />
-    <PrivateRoute
-      path="/table"
-      component={TableRoute}
     />
   </>
 );

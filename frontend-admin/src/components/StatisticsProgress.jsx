@@ -14,7 +14,7 @@ function StatisticsProgress(props) {
 
   return <ContentGridItem
     {...other}
-    title={<Typography variant='h4'>{value}</Typography>}
+    title={<Typography variant='h4'>{value}%</Typography>}
     value={<Typography variant='subtitle2'>{description}</Typography>}
     icon={
       <div style={{ position: 'relative' }}>

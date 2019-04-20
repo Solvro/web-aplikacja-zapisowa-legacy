@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import TableCard from '../../components/TableCard';
-import { Button } from '@material-ui/core';
 import EditParticipantDialog from '../../components/EditParticipantDialog';
 import { getParticipantsList, removeParticipant, editParticipant } from '../../store/Api';
 
@@ -20,7 +19,7 @@ class ParticipantsRoute extends Component {
   }
 
   toggleDialog = () => {
-    this.setState(prevState => ({
+    this.setState(() => ({
       isDialogOpen: !this.state.isDialogOpen,
     }));
   }
@@ -35,7 +34,7 @@ class ParticipantsRoute extends Component {
     this.toggleDialog();
     console.log(data, 'dataSent')
     if(data !== null){
-      editParticipant(this.state.eventName, data);
+      await editParticipant(this.state.eventName, data);
       const response = await getParticipantsList(this.state.eventName);
       const { stats, students } = response;
 
@@ -54,7 +53,8 @@ class ParticipantsRoute extends Component {
     };
     const statusMap = {
       N: 'Niezapisany',
-      Z: 'Zapisany',
+      S: 'Zapisany Samodzielnie',
+      G: 'Zapisany Grupowo',
     };
 
     const students = preStudents.map((stud) => {

@@ -2,7 +2,7 @@ import React from 'react';
 import PeopleIcon from '@material-ui/icons/People';
 import DescriptionIcon from '@material-ui/icons/Description';
 import {
-  Grid, Paper, withStyles, Checkbox, FormControlLabel, Button,
+  Grid, Paper, withStyles, FormControlLabel, RadioGroup, FormControl, FormLabel, Button, Radio,
 } from '@material-ui/core';
 import SelectChips from './SelectChips';
 import FormTextInput from './FormTextInput';
@@ -31,16 +31,24 @@ class SendMessagePanel extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      all_students: false,
-      not_registered: false,
-      registered: false,
-      indexes: [],
-      students: [],
+      radioGroup: 'custom',
+      selectableStudents: [],
+      selectedStudents: [],
       subject: '',
-      body: ''
+      body: '',
     };
     this.handleChange = this.handleChange.bind(this);
-    this.handleCheckbox = this.handleCheckbox.bind(this);
+    this.sendButton = this.sendButton.bind(this);
+  }
+
+
+  async componentDidMount() {
+    const { eventName } = this.props;
+    const { students } = await getParticipantsList(eventName);
+    const selectableStudents = students.map(student => `${student.name} ${student.index}`);
+    this.setState({
+      selectableStudents,
+    });
   }
 
   handleChange(name) {
@@ -51,32 +59,29 @@ class SendMessagePanel extends React.Component {
     };
   }
 
-  handleCheckbox(event) {
-    this.setState({
-      all_students: event.target.checked,
-    });
-  }
-
-  async componentDidMount() {
-    const { eventName } = this.props;
-    const { students } = await getParticipantsList(eventName);
-    this.setState({
-      students
-    })
-  }
-
-  sendButton = () => {
+  sendButton() {
     const { handleSend } = this.props;
-    const { students } = this.state;
-    const newStateStudents = this.state.indexes.map(name => students.find((stud) => stud.name == name).index);
-    const newState = this.state;
-    newState.indexes = newStateStudents;
-    handleSend(newState)
+    const {
+      selectedStudents, radioGroup, subject, body,
+    } = this.state;
+    // selected students are in form of: <name surname index> so we take last part of string as their index
+    const indexes = selectedStudents.map(studRepresentation => studRepresentation.split(' ').slice(-1)[0]);
+    const request = {
+      indexes,
+      subject,
+      body,
+    };
+    if (radioGroup !== 'custom') {
+      request[radioGroup] = true;
+    }
+    handleSend(request);
   }
 
   render() {
     const { classes } = this.props;
-    const { indexes, students, all_students, body, subject } = this.state;
+    const {
+      selectedStudents, selectableStudents, radioGroup, body, subject,
+    } = this.state;
     return (
       <Paper className={classes.root}>
         <Grid
@@ -90,23 +95,29 @@ class SendMessagePanel extends React.Component {
               icon={PeopleIcon}
               fullWidth
               label="Odbiorcy"
-              items={students.map(student => student.name)}
+              items={selectableStudents}
               multiple
-              value={indexes}
-              disabled={all_students}
-              onChange={this.handleChange('indexes')}
+              value={selectedStudents}
+              disabled={radioGroup !== 'custom'}
+              onChange={this.handleChange('selectedStudents')}
             />
-            <FormControlLabel
-              control={(
-                <Checkbox
-                  checked={all_students}
-                  onChange={this.handleCheckbox}
-                  value="DO WSZYSTKICH"
-                />
-              )}
-              label="DO WSZYSTKICH"
-            />
-
+          </Grid>
+          <Grid item xs={12}>
+            <FormControl component="fieldset" className={classes.formControl}>
+              <FormLabel component="legend">Grupowe maile</FormLabel>
+              <RadioGroup
+                aria-label="Gender"
+                name="mailGroup"
+                className={classes.group}
+                value={radioGroup}
+                onChange={this.handleChange('radioGroup')}
+              >
+                <FormControlLabel value="custom" control={<Radio />} label="Wybór manualny" />
+                <FormControlLabel value="all_students" control={<Radio />} label="Do wszystkich" />
+                <FormControlLabel value="not_registered" control={<Radio />} label="Do niezapisanych" />
+                <FormControlLabel value="registered" control={<Radio />} label="Do zapisanych" />
+              </RadioGroup>
+            </FormControl>
           </Grid>
           <Grid item xs={12}>
             <FormTextInput
@@ -140,7 +151,7 @@ class SendMessagePanel extends React.Component {
             <Button
               onClick={this.sendButton}
               variant="contained"
-              color="secondary"
+              color="primary"
             >
               Wyślij
             </Button>
