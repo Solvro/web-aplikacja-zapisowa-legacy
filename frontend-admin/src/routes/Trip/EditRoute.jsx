@@ -22,7 +22,6 @@ class EditRoute extends Component {
     const { id } = match.params;
     const details = await getEventDetails(id);
     if (details) {
-      console.log(details);
       this.setState({
         ...details,
         isLoading: false,
