@@ -186,4 +186,4 @@ class ChooseRoomModal extends React.Component<WithStyles<typeof chooseRoomModalS
 }
 
 const ChooseRoomModalWithStyles = withStyles(chooseRoomModalStyles, {withTheme: true})(ChooseRoomModal);
-export default connect(mapStateToProps)(withRouter<RouteComponentProps<{}>>(ChooseRoomModalWithStyles))
+export default connect(mapStateToProps)(withRouter(ChooseRoomModalWithStyles))
