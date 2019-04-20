@@ -4,7 +4,8 @@ import {Close} from "@material-ui/icons";
 import {ApplicationError} from "../store/RoomMate/types";
 import {ApplicationState} from "../store";
 import {connect, Dispatch} from "react-redux";
-import {removeError} from "../store/RoomMate/actions";
+import {clearErrors, removeError} from "../store/RoomMate/actions";
+import {RouteComponentProps, withRouter} from "react-router";
 
 const errorDisplayStyles = (theme: Theme) => createStyles({
     error: {
@@ -27,25 +28,35 @@ const errorDisplayStyles = (theme: Theme) => createStyles({
         '& > div': {
             marginTop: theme.spacing.unit * 2,
         },
+        zIndex: 9999
     },
 });
 
-interface ErrorDisplayProps {
+type ErrorDisplayProps = {
     errors: ApplicationError[];
-    removeError(id: number): void;
-}
+    removeError: (id: number) => void;
+    clearErrors: () => void;
+} & RouteComponentProps<{}>;
 
 const mapStateToProps = (state: ApplicationState): Partial<ErrorDisplayProps> => ({
     errors: state.roomMateState.errors
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>): Partial<ErrorDisplayProps> => ({
-    removeError: id => dispatch(removeError(id))
+    removeError: id => dispatch(removeError(id)),
+    clearErrors: () => dispatch(clearErrors)
 });
 
 class ErrorDisplay extends React.PureComponent<ErrorDisplayProps & WithStyles<typeof errorDisplayStyles>> {
+    componentDidMount(): void {
+        const { history, clearErrors} = this.props;
+        history.listen(() => {
+            clearErrors();
+        })
+    }
+
     render() {
-        const {classes, errors} = this.props;
+        const {classes, errors, removeError} = this.props;
         return (
             <div className={classes.errorsContainer}>
                 {errors.map(error => (
@@ -64,7 +75,7 @@ class ErrorDisplay extends React.PureComponent<ErrorDisplayProps & WithStyles<ty
                                     key="close"
                                     aria-label="Close"
                                     color="inherit"
-                                    onClick={() => this.props.removeError(error.id)}
+                                    onClick={() => removeError(error.id)}
                                 >
                                     <Close className={classes.icon}/>
                                 </IconButton>,
@@ -74,11 +85,14 @@ class ErrorDisplay extends React.PureComponent<ErrorDisplayProps & WithStyles<ty
                 ))}
             </div>
         )
-
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(errorDisplayStyles, {withTheme: true})(ErrorDisplay));
+export default connect(mapStateToProps, mapDispatchToProps)(
+    withStyles(errorDisplayStyles)(
+        withRouter(ErrorDisplay)
+    )
+);
 
 
 

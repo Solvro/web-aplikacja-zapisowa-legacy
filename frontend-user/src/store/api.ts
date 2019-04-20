@@ -14,8 +14,6 @@ export async function fetchStudent(username: string, event: string) {
         return student.data;
     } catch (error) {
         console.log(`Error: ${error}`);
-    } finally {
-        console.log('well done');
     }
 }
 
