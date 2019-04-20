@@ -199,12 +199,8 @@ export async function sendMail(eventName, data) {
 
 export async function changeEventRegistrationStatus(data) {
   try {
-    // TODO: Implement real endpoint
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(data);
-      }, 500);
-    });
+    const response = await instance.post(`/organiser/${data.eventName}/activate/`, { is_active: data.is_active });
+    return response.data;
   } catch (error) {
     console.error(error);
     return null;
