@@ -1,7 +1,7 @@
 const axios = require('axios');
 
 const instance = axios.create({
-  baseURL: !process.env.NODE_ENV || process.env.NODE_ENV === 'development' ? process.env.API_URL_DEV : process.env.API_URL_PROD,
+  baseURL: !process.env.NODE_ENV || process.env.NODE_ENV === 'development' ? process.env.REACT_APP_API_URL_DEV : process.env.REACT_APP_API_URL_PROD,
 });
 
 instance.interceptors.request.use((config) => {
