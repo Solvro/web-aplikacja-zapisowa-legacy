@@ -191,7 +191,7 @@ class ChooseRoomModal extends React.Component<WithStyles<typeof chooseRoomModalS
 
     private updatePickedRoom = () => {
         const { pickedRoom } = this.state;
-        if ( this.props.roomMates.length + 1 >= pickedRoom.capacity - pickedRoom.occupancy) {
+        if ( this.props.roomMates.length > pickedRoom.capacity - pickedRoom.occupancy) {
             this.setState({
                 isModalVisible: false,
             })
