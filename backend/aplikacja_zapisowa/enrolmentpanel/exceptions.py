@@ -78,24 +78,23 @@ class CSVErrorManager:
 
 class StudentAlreadyRegisteredException(APIException):
     status_code = 400
-    default_detail = 'Student already registered'
 
     def __init__(self, student):
-        self.detail = f"{student.name} is already registered in room: {student.room.number}!"
+        self.detail = f"{student.name} juz jest zarejstrowany w pokoju: {student.room.number}!"
         super().__init__(self)
 
 class StudentNotFoundException(APIException):
     status_code = 404
     
     def __init__(self, nick):
-        self.detail = f"Student with nick: {nick} not found"
+        self.detail = f"Nie znaleziona studenta o loginie: {nick}"
         super().__init__(self)
 
 class RoomAlreadyFullException(APIException):
     status_code = 400
 
     def __init__(self, room):
-        self.detail = f"Room: {room.number} has not enough space for your team with {room.vacancies} places left!"
+        self.detail = f"Pokój: {room.number} nie ma wystarczająco miejsc na twoją druzynę, pozostaało {room.vacancies} miejsc!"
         super().__init__(self)
 
 class UniqueEventNameError(APIException):

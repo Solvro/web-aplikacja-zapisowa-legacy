@@ -67,7 +67,7 @@ class CreateStudentView(APIView):
         self.check_object_permissions(request, event)
 
         request.data['event'] = event_name # event -> event_name (because 'event' is not a pk, but an object)
-        student_serializer = StudentSerializer(data=request.data)
+        student_serializer = StudentSerializer(data=request.data, context={'is_active': event.is_active})
         if student_serializer.is_valid(raise_exception=True):
             student_serializer.save()
         return Response(student_serializer.initial_data)
@@ -266,7 +266,13 @@ class StudentEditView(APIView):
             index=student_index,
             event__organizer__user=request.user
         ))
-        student_serializer = StudentSerializer(student, request.data, partial=True)
+        is_active = Event.objects.only('is_active').get(name=event_name, organizer__user=request.user).is_active
+        student_serializer = StudentSerializer(student,
+                                               request.data,
+                                               partial=True,
+                                               context={
+                                                   'is_active': is_active
+                                               })
         if student_serializer.is_valid():
             student_serializer.save()
             return Response(status=status.HTTP_202_ACCEPTED)
@@ -314,23 +320,26 @@ class ActivationEventView(APIView):
 
     permission_classes = (IsAuthenticated, IsOrganiserAccount)
 
-    @swagger_auto_schema(manual_parameters=[
-                            openapi.Parameter(
-                                'activate',
-                                openapi.IN_QUERY,
-                                description="True if event has to be activated, False otherwise.",
-                                type=openapi.TYPE_BOOLEAN)],
-                         operation_description="Gets basic statistics about event's paricipant and rooms.")
-    def get(self, request, event_name):
-        try:
-            User.objects.filter(
-                participant__event=event_name,
-                participant__event__organizer__user=request.user
-            ).update(is_active=request.query_params.get('activate'))
-        except exceptions.ValidationError as e:
-            return Response({'detail': e.message % e.params}, status=status.HTTP_400_BAD_REQUEST)
-        except IntegrityError as e:
-            return Response(
-                {'detail': 'activate parameter was not provided'},
-                status=status.HTTP_400_BAD_REQUEST)
-        return Response(status=status.HTTP_200_OK)
+    @swagger_auto_schema(responses={
+                            200: """{
+                                "is_active": true
+                            }""",
+                            404:"""{
+                                "detail": "Not found."
+                            }"""
+                         },
+                         operation_description="Activates event and users.")
+    def post(self, request, event_name):
+        event = get_object_or_404(Event, name=event_name, organizer__user=request.user)
+        event.is_active = not event.is_active
+        event.save()
+
+        User.objects.filter(
+            participant__event=event_name,
+            participant__event__organizer__user=request.user
+        ).update(is_active=event.is_active)
+
+        return Response({
+            "is_active": event.is_active
+        },
+        status=status.HTTP_200_OK)

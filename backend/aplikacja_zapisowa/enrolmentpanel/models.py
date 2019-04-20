@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
+from django.contrib.auth.hashers import make_password
 from django.core.files.storage import FileSystemStorage
 from django.db import models
 from django.db.models.signals import post_delete
@@ -61,6 +62,7 @@ class Event(models.Model):
     beginning_date = models.DateField(null=False)
     ending_date = models.DateField(null=False)
     organizer = models.ForeignKey(Organiser, on_delete=models.CASCADE)
+    is_active = models.BooleanField(default=False)
 
 
 class Room(models.Model):
@@ -108,22 +110,23 @@ class Room(models.Model):
 
 class StudentManager(models.Manager):
 
-    def bulk_create(self, objs, batch_size=None):
+    def bulk_create(self, objs, is_active=False, batch_size=None):
         users = []
         passwords = []
         for student in objs:
             username, password = self.generate_student_credentials(student.index)
             passwords.append(password)
-            user = User.objects.create_user(
-                username=username,
-                password=password,
-                is_participant=True,
-                is_active=False)
+            user = User(username=username,
+                        password=make_password(password),
+                        is_participant=True,
+                        is_active=is_active)
             users.append(user)
         saved_users = User.objects.bulk_create(users)
         for student, user in zip(objs, saved_users):
             student.user = user
             student.status = 'N'
+            if student.email is None:
+                student.email = f"{student.index}@student.pwr.edu.pl"
 
         saved_students = super().bulk_create(objs, batch_size=batch_size)
         for student, password in zip(objs, passwords):
@@ -133,7 +136,7 @@ class StudentManager(models.Manager):
 
 
 
-    def create(self, index, event, sex, name, faculty, email=None):
+    def create(self, index, event, sex, name, faculty, is_active=False, email=None):
         if email is None:
             email = f"{index}@student.pwr.edu.pl"
         username, password = StudentManager.generate_student_credentials(index)
@@ -141,7 +144,7 @@ class StudentManager(models.Manager):
             username=username,
             password=password,
             is_participant = True,
-            is_active=False)
+            is_active=is_active)
         student_user.save()
 
         new_student = Student(

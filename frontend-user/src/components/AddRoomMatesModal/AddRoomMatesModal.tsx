@@ -18,7 +18,8 @@ import {ApplicationError, RoomMate, StudentErrors} from "../../store/RoomMate/ty
 import {addError, initFetchRoomMate, removeRoomMate} from "../../store/RoomMate/actions";
 import {UserChip} from "../UserChip/UserChip";
 import {GroupAdd} from "@material-ui/icons";
-import {NavLink} from "react-router-dom";
+import {NavLink, RouteComponentProps, withRouter} from "react-router-dom";
+import {enrollStudentAlone} from "../../store/api";
 
 type AddRoomMatesModalProps = {
     status: string;
@@ -29,7 +30,7 @@ type AddRoomMatesModalProps = {
     initFetchRoomMate(login: string, eventName: string): void;
     removeRoomMate(login: string): void;
     sendSignedUserAddedError(name: string): void;
-}
+} & RouteComponentProps<{}> & WithStyles<typeof addRoomMatesModalStyles>;
 
 const mapStateToProps = (state: ApplicationState): Partial<AddRoomMatesModalProps> => {
     return {
@@ -48,7 +49,7 @@ const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>): Partial<AddRo
     }
 };
 
-class AddRoomMatesModal extends React.Component<WithStyles<typeof addRoomMatesModalStyles> & AddRoomMatesModalProps> {
+class AddRoomMatesModal extends React.Component<AddRoomMatesModalProps> {
     state = {
         inputCode: "",
     };
@@ -75,7 +76,7 @@ class AddRoomMatesModal extends React.Component<WithStyles<typeof addRoomMatesMo
     };
 
     public render(): React.ReactNode {
-        const { removeRoomMate, classes, isFetching, roomMates, user } = this.props;
+        const {removeRoomMate, classes, isFetching, roomMates, user} = this.props;
         return (
             <div className={classes.container}>
                 <Grid
@@ -152,10 +153,9 @@ class AddRoomMatesModal extends React.Component<WithStyles<typeof addRoomMatesMo
                                 variant={"contained"}
                                 color={roomMates.length === 0 ? "primary" : "default"}
                                 disabled={roomMates.length > 0}
+                                onClick={this.handleClickEnrollAlone}
                             >
-                                <NavLink to={'/Summary'} style={{textDecoration: 'none', color: 'inherit'}}>
                                     Jestem sam
-                                </NavLink>
                             </Button>
                         </div>
                     </Paper>
@@ -165,15 +165,33 @@ class AddRoomMatesModal extends React.Component<WithStyles<typeof addRoomMatesMo
     }
 
     private addRoomMate = (inputCode: string, event: string) => {
-        const { login, name } = this.props.user;
+        const {login, name} = this.props.user;
         if (inputCode === login) {
             this.props.sendSignedUserAddedError(name);
         } else {
             this.props.initFetchRoomMate(inputCode, event);
         }
+    };
+
+    private handleClickEnrollAlone = async () => {
+        try {
+            const { user, history } = this.props;
+            const result = await enrollStudentAlone(user.event);
+            const resultBody = await result.json();
+            console.log(result, 'result');
+            if (result.status === 200) {
+                history.replace('/Summary', {user});
+            } else {
+                console.log(resultBody);
+            }
+        } catch (e) {
+            throw e;
+        }
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)((withStyles(addRoomMatesModalStyles, {withTheme: true})(
-    AddRoomMatesModal
-)));
+export default connect(mapStateToProps, mapDispatchToProps)(
+    withStyles(addRoomMatesModalStyles)(
+        withRouter(AddRoomMatesModal)
+    )
+);
