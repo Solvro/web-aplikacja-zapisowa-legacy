@@ -1,7 +1,8 @@
 const axios = require('axios');
 
+
 const instance = axios.create({
-  baseURL: !process.env.NODE_ENV || process.env.NODE_ENV === 'development' ? process.env.API_URL_DEV : process.env.API_URL_PROD,
+  baseURL: process.env.NODE_ENV === 'development' ? 'http://localhost:8000/api/' : 'http://51.38.135.139:8000',
 });
 
 instance.interceptors.request.use((config) => {
