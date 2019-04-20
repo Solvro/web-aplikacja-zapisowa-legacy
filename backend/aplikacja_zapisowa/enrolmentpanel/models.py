@@ -1,6 +1,5 @@
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
-from django.contrib.auth.hashers import make_password
 from django.core.files.storage import FileSystemStorage
 from django.db import models
 from django.db.models.signals import post_delete
@@ -115,10 +114,11 @@ class StudentManager(models.Manager):
         for student in objs:
             username, password = self.generate_student_credentials(student.index)
             passwords.append(password)
-            user = User(username=username,
-                        password=make_password(password),
-                        is_participant=True,
-                        is_active=False)
+            user = User.objects.create_user(
+                username=username,
+                password=password,
+                is_participant=True,
+                is_active=False)
             users.append(user)
         saved_users = User.objects.bulk_create(users)
         for student, user in zip(objs, saved_users):
@@ -139,7 +139,7 @@ class StudentManager(models.Manager):
         username, password = StudentManager.generate_student_credentials(index)
         student_user = User.objects.create_user(
             username=username,
-            password=make_password(password),
+            password=password,
             is_participant = True,
             is_active=False)
         student_user.save()
