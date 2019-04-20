@@ -40,7 +40,7 @@ class ChooseRoomModal extends React.Component<WithStyles<typeof chooseRoomModalS
     };
 
     public componentDidMount() {
-        const wb = new WebSocket('ws://localhost:8000/ws/testowy/rooms/');
+        const wb = new WebSocket(`ws://localhost:8000/ws/${this.props.user.event}/rooms/`);
         wb.onmessage = (message: MessageEvent) => {
             try {
                 const data = JSON.parse(message.data);
