@@ -96,7 +96,7 @@ class ParticipantsRoute extends Component {
   deleteParticipants = async (participantInfo, eventName) => {
     const decision = prompt(`Czy jesteś pewien, że chcesz usunąć ${participantInfo['Imię i nazwisko'].props.children.props.children}? Wpisz tak, aby potwierdzić.`);
     if(decision === 'tak'){
-      removeParticipant(eventName, participantInfo);
+      await removeParticipant(eventName, participantInfo);
       const response = await getParticipantsList(eventName);
       const { stats, students } = response;
 
