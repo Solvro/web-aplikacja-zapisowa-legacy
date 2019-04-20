@@ -182,8 +182,6 @@ class ChooseRoomModal extends React.Component<WithStyles<typeof chooseRoomModalS
         } catch(e){
             throw e;
         }
-
-
     }
 }
 
