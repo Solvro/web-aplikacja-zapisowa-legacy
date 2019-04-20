@@ -8,7 +8,7 @@ import {RoomMate} from "../../store/RoomMate/types";
 import {connect} from "react-redux";
 import BackButton from "../BackButton";
 import {RouteComponentProps, withRouter} from "react-router-dom";
-import {enrollStudentsInRoom} from "../../store/api";
+import {APIurl, enrollStudentsInRoom} from "../../store/api";
 
 type ChooseRoomModalProps = {
     roomMates: RoomMate[];
@@ -40,7 +40,7 @@ class ChooseRoomModal extends React.Component<WithStyles<typeof chooseRoomModalS
     };
 
     public componentDidMount() {
-        const wb = new WebSocket(`ws://localhost:8000/ws/${this.props.user.event}/rooms/`);
+        const wb = new WebSocket(`ws://${APIurl}/ws/${this.props.user.event}/rooms/`);
         wb.onmessage = (message: MessageEvent) => {
             try {
                 const data = JSON.parse(message.data);
@@ -63,7 +63,7 @@ class ChooseRoomModal extends React.Component<WithStyles<typeof chooseRoomModalS
                     this.setState({
                         rooms: this.state.rooms.map((room: Room) =>
                             (room.number !== newRoom.number) ? room : newRoom)
-                    });
+                    }, this.updatePickedRoom);
                 }
             } catch (error) {
                 console.error(error);
@@ -186,6 +186,15 @@ class ChooseRoomModal extends React.Component<WithStyles<typeof chooseRoomModalS
             }
         } catch (e) {
             throw e;
+        }
+    };
+
+    private updatePickedRoom = () => {
+        const { pickedRoom } = this.state;
+        if ( this.props.roomMates.length + 1 >= pickedRoom.capacity - pickedRoom.occupancy) {
+            this.setState({
+                isModalVisible: false,
+            })
         }
     }
 }

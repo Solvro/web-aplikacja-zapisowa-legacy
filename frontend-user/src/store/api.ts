@@ -1,9 +1,10 @@
 import {RoomMate} from "./RoomMate/types";
 
 const axios = require('axios');
+export const APIurl = 'localhost:8000';
 
 const instance = axios.create({
-    baseURL: 'http://localhost:8000/api/',
+    baseURL: `http://${APIurl}/api/`,
     timeout: 1000,
 });
 
