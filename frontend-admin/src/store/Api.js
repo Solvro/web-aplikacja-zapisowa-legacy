@@ -37,6 +37,11 @@ instance.interceptors.response.use(undefined, (err) => {
   return err;
 });
 
+export function logout() {
+  localStorage.removeItem('token');
+  localStorage.removeItem('refresh');
+}
+
 export async function authorizeUser(username, password) {
   try {
     const token = await instance.post('/token/', { username, password });
@@ -201,21 +206,17 @@ export async function changeEventRegistrationStatus(data) {
       }, 500);
     });
   } catch (error) {
-    console.error(error)
+    console.error(error);
     return null;
   }
 }
 
 export async function deleteEvent(eventName) {
   try {
-    // TODO: Implement real endpoint
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(`Pomyślnie usunięto ${eventName}`);
-      }, 500);
-    });
+    const response = await instance.delete(`/organiser/event/${eventName}`);
+    return response.data;
   } catch (error) {
-    console.error(error)
-    return null;
+    console.error(error);
+    return error;
   }
 }

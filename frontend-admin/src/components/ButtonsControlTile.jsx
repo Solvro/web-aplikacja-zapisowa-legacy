@@ -46,7 +46,7 @@ function ButtonsControlTile(props) {
                 value={isRegistrationOpen}
               />
               <Typography style={{ display: 'inline-block' }} variant="subtitle2">
-                { `Zapisy ${ isRegistrationOpen ? 'otwarte' : 'zamknięte'}`}
+                { `Zapisy ${isRegistrationOpen ? 'otwarte' : 'zamknięte'}`}
               </Typography>
             </>
           )}
