@@ -184,7 +184,8 @@ class ChooseRoomModal extends React.Component<WithStyles<typeof chooseRoomModalS
             if (result.status === 200) {
                 history.replace('/Summary', { roomNumber: pickedRoom.number, roomMates, user});
             } else {
-                addError(resultBody.details);
+                addError(resultBody.detail);
+                console.log(resultBody);
             }
         } catch(e){
             throw e;
