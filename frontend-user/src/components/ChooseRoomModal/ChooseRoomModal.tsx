@@ -175,7 +175,7 @@ class ChooseRoomModal extends React.Component<WithStyles<typeof chooseRoomModalS
             const resultBody = await result.json();
             console.log(result, 'result');
             if (result.status === 200) {
-                history.push('/Summary', { roomNumber: pickedRoom.number, roomMates, user});
+                history.replace('/Summary', { roomNumber: pickedRoom.number, roomMates, user});
             } else {
                 console.log(resultBody);
             }

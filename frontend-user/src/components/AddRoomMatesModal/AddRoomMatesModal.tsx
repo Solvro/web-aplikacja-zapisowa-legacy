@@ -153,7 +153,7 @@ class AddRoomMatesModal extends React.Component<AddRoomMatesModalProps> {
                                 variant={"contained"}
                                 color={roomMates.length === 0 ? "primary" : "default"}
                                 disabled={roomMates.length > 0}
-                                onClick={this.enrollStudentAlone}
+                                onClick={this.handleClickEnrollAlone}
                             >
                                     Jestem sam
                             </Button>
@@ -173,14 +173,14 @@ class AddRoomMatesModal extends React.Component<AddRoomMatesModalProps> {
         }
     };
 
-    private enrollStudentAlone = async () => {
+    private handleClickEnrollAlone = async () => {
         try {
             const { user, history } = this.props;
             const result = await enrollStudentAlone(user.event);
             const resultBody = await result.json();
             console.log(result, 'result');
             if (result.status === 200) {
-                history.push('/Summary', {user});
+                history.replace('/Summary', {user});
             } else {
                 console.log(resultBody);
             }
