@@ -19,6 +19,8 @@ export const signOut = action(RoomMateType.SIGN_OUT);
 
 export const addError = createStandardAction(RoomMateType.ADD_ERROR)<string>();
 
+export const clearErrors = action(RoomMateType.CLEAR_ERRORS);
+
 export const initFetchRoomMate = (username: string, eventName: string) => {
     return async (dispatch: Dispatch<RoomMateState>) => {
         dispatch(fetchRoomMate.request());
