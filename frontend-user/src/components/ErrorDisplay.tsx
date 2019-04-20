@@ -36,7 +36,7 @@ type ErrorDisplayProps = {
     errors: ApplicationError[];
     removeError: (id: number) => void;
     clearErrors: () => void;
-} & RouteComponentProps<{}>;
+} & RouteComponentProps<{}> & WithStyles<typeof errorDisplayStyles>;
 
 const mapStateToProps = (state: ApplicationState): Partial<ErrorDisplayProps> => ({
     errors: state.roomMateState.errors
@@ -47,7 +47,7 @@ const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>): Partial<Error
     clearErrors: () => dispatch(clearErrors)
 });
 
-class ErrorDisplay extends React.PureComponent<ErrorDisplayProps & WithStyles<typeof errorDisplayStyles>> {
+class ErrorDisplay extends React.PureComponent<ErrorDisplayProps> {
     componentDidMount(): void {
         const { history, clearErrors} = this.props;
         history.listen(() => {
