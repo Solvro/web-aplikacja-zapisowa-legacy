@@ -120,8 +120,7 @@ class StudentManager(models.Manager):
                 is_participant=True,
                 is_active=False)
             users.append(user)
-        saved_users = User.objects.bulk_create(users)
-        for student, user in zip(objs, saved_users):
+        for student, user in zip(objs, users):
             student.user = user
             student.status = 'N'
 
