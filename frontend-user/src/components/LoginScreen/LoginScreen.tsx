@@ -14,17 +14,13 @@ import {connect, Dispatch} from "react-redux";
 import {ApplicationState} from "../../store";
 import {addError, signIn} from "../../store/RoomMate/actions";
 import {RoomMate, StudentErrors} from "../../store/RoomMate/types";
+import {RouteComponentProps, withRouter} from "react-router";
 
-
-interface Props {
-    history: {
-        push(url: string): void;
-    };
-
+type Props = {
     signIn(user: RoomMate): void;
 
     addError(message: string): void;
-}
+} & RouteComponentProps<{}>;
 
 const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>): Partial<Props> => {
     return {
@@ -51,12 +47,17 @@ class LoginScreen extends React.Component<WithStyles<typeof loginScreenStyles> &
         console.log(authorizationResult);
         const token = authorizationResult ? authorizationResult.access : false;
         if (token) {
+            const { room, refresh } = authorizationResult;
             const user = {...authorizationResult.student, login: username};
             localStorage.setItem('token', token);
-            localStorage.setItem('refresh', authorizationResult.refresh);
+            localStorage.setItem('refresh', refresh);
             localStorage.setItem('signedInStudent', JSON.stringify(user));
             this.props.signIn(user);
-            this.props.history.push('/AddingRoomMates');
+            if (room) {
+                this.props.history.replace('/Summary', { roomNumber: room, user });
+            } else {
+                this.props.history.push('/AddingRoomMates');
+            }
         } else {
             this.props.addError(StudentErrors.signInFailed);
         }
@@ -144,4 +145,4 @@ class LoginScreen extends React.Component<WithStyles<typeof loginScreenStyles> &
 
 }
 
-export default connect(null, mapDispatchToProps)(withStyles(loginScreenStyles)(LoginScreen));
+export default connect(null, mapDispatchToProps)(withStyles(loginScreenStyles)(withRouter(LoginScreen)));

@@ -77,11 +77,10 @@ class SummaryRoute extends React.Component<SummaryRouteProps> {
                                             {roomNumber ?
                                                 <>
                                                     <Typography variant={"subheading"}>
-                                                        Jesteś zapisany do pokoju nr {roomNumber}
+                                                        Jesteś zapisany do pokoju nr {roomNumber}.
                                                     </Typography>
                                                     <Typography variant={"subheading"}>
-                                                        By uzyskać więcej informacji, sprawdź potwierdzenie na poczcie
-                                                        mailowej lub skontaktuj się z administratorem wydarzenia
+                                                        By uzyskać więcej informacji, skontaktuj się z administratorem wydarzenia.
                                                     </Typography>
                                                 </> :
                                                 <Typography variant={"subheading"}>
