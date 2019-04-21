@@ -6,3 +6,8 @@ frontend/yarn.lock
 .vscode
 .DS_Store
 backend/aplikacja_zapisowa/enrolmentpanel/static/images/*
+deploy-conf.json
+prod-compose.yml
+frontend-admin/build
+frontend-user/build
+build

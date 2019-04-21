@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import os
 
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -23,13 +26,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'pk&sqp9pwy&o0x1v72%la(2w&$y!p0(ia!iohw3ryt1_fuli(l'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = bool(int(os.getenv("DEBUG")))
 
 ALLOWED_HOSTS = []
 
 if DEBUG:
     ALLOWED_HOSTS.append('*')
-
 
 # Application definition
 
@@ -45,6 +47,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'enrolmentpanel',
     'channels',
+    'django_statsd',
 ]
 
 MIDDLEWARE = [
@@ -58,6 +61,27 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+# production only config
+if os.getenv("ENVIROMENT") == "PROD":
+    sentry_sdk.init(
+        dsn=os.getenv("SENTRY_URL"),
+        integrations=[DjangoIntegration()]
+    )
+    SECRET_KEY = os.getenv("SECRET_KEY")
+
+    MIDDLEWARE = [
+            'django_statsd.middleware.StatsdMiddleware',
+        ] + MIDDLEWARE + [
+            'django_statsd.middleware.StatsdMiddlewareTimer'
+        ]
+
+    STATSD_HOST = os.getenv("STATSD_HOST")
+    STATSD_PORT = os.getenv("STATSD_PORT")
+    STATSD_PREFIX = os.getenv("STATSD_PREFIX")
+
+    ALLOWED_HOSTS.append("api.zapisowa.tk")
+
 
 ROOT_URLCONF = 'aplikacja_zapisowa.urls'
 

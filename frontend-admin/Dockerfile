@@ -5,7 +5,8 @@ WORKDIR /app
 
 ENV PATH /app/node_modules/.bin:$PATH
 
+COPY . /app
 COPY ./package.json /app/package.json
-RUN yarn install
+RUN yarn install --silent
 
 CMD ["yarn", "start"]
