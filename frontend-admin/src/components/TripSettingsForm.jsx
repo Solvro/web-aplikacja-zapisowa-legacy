@@ -1,15 +1,13 @@
 import React from 'react';
-import {
-  withStyles, Grid, Paper,
-} from '@material-ui/core';
-import { withRouter } from 'react-router-dom';
+import {Grid, Paper, withStyles,} from '@material-ui/core';
+import {withRouter} from 'react-router-dom';
 import DateIcon from '@material-ui/icons/DateRange';
 import HotelIcon from '@material-ui/icons/LocalHotel';
 import LocationIcon from '@material-ui/icons/LocationOn';
 import DescriptionIcon from '@material-ui/icons/Description';
 import ImageIcon from '@material-ui/icons/Image';
 import AttachmentIcon from '@material-ui/icons/Attachment';
-import { DatePicker, MuiPickersUtilsProvider } from 'material-ui-pickers';
+import {DatePicker, MuiPickersUtilsProvider} from 'material-ui-pickers';
 import MomentUtils from '@date-io/moment';
 import FormTextInput from './FormTextInput';
 import UploadFileInput from './UploadFileInput';
@@ -29,6 +27,27 @@ const styles = theme => ({
 });
 
 const formItemSpacing = 16;
+
+export const isFormValid = (state) => {
+  const {
+    name, description, place, accommodation, participants, image, beginning_date, ending_date, rooms,
+  } = state;
+
+  const isValid = name
+      && !!description
+      && !!place
+      && !!accommodation
+      && !!participants
+      && !!image
+      && !!rooms
+      && !!accommodation
+      && !!beginning_date
+      && !!ending_date
+      && beginning_date <= ending_date;
+
+  console.log(isValid);
+  return isValid;
+};
 
 class TripSettingsForm extends React.Component {
   constructor(props) {
@@ -51,8 +70,8 @@ class TripSettingsForm extends React.Component {
 
   async componentDidMount() {
     const { defaultState } = this.props;
-    if(defaultState) {
-      this.setState(defaultState)
+    if (defaultState) {
+      this.setState(defaultState);
     }
   }
 
@@ -159,7 +178,7 @@ class TripSettingsForm extends React.Component {
               </Grid>
               <Grid item xs={12} sm={6} lg={4}>
                 <UploadFileInput
-                  accept="image/*"
+                  accept=".jpg, .jpeg, .png"
                   id="image"
                   name="image"
                   value={image}
@@ -189,7 +208,6 @@ class TripSettingsForm extends React.Component {
                   name="ending_date"
                 />
               </Grid>
-
               {render(this.state)}
             </Grid>
           </Paper>
