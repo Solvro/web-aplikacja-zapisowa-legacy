@@ -75,7 +75,7 @@ class SoloRoomView(APIView):
         room.add_people([student])
         student.status = 'S'
         student.save()
-        notify_consumers_on_room_change(event_name, room)
+        notify_consumers_on_room_change(event_name, event.organizer.user.username, room)
 
         return Response(
             RoomSerializer(room).data,
@@ -126,7 +126,7 @@ class GroupRoomView(APIView):
         for student in students:
             student.status = 'G'
             student.save()
-        notify_consumers_on_room_change(event_name, room)
+        notify_consumers_on_room_change(event_name, event.organizer.user.username, room)
 
 
         return Response(

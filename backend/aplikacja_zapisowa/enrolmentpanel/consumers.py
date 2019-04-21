@@ -1,4 +1,5 @@
 import json
+import re
 
 from channels.generic.websocket import AsyncWebsocketConsumer
 
@@ -11,12 +12,15 @@ from enrolmentpanel.serializers import PartialRoomSerializer
 
 class RoomConsumer(AsyncWebsocketConsumer):
 
+    def create_channel_group_name(self, event_name, username):
+        event_name = re.sub('[^0-9a-zA-Z]+', '_', event_name)
+        username = re.sub('[^0-9a-zA-Z]+', '_', username)
+        return f'event_{event_name}_{username}'
+
     async def connect(self):
         self.event_name = self.scope['url_route']['kwargs']['event_name']
-        self.channel_group_name = 'event_{}'.format(self.event_name)
-        
         event = Event.objects.get(name=self.event_name)
-
+        self.channel_group_name = self.create_channel_group_name(self.event_name, event.organizer.user.username)
         await self.channel_layer.group_add(
             self.channel_group_name,
             self.channel_name
