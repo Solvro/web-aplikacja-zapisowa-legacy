@@ -8,8 +8,8 @@ import {RoomMate} from "../../store/RoomMate/types";
 import {connect, Dispatch} from "react-redux";
 import BackButton from "../BackButton";
 import {RouteComponentProps, withRouter} from "react-router-dom";
-import {enrollStudentsInRoom} from "../../store/api";
 import {addError} from "../../store/RoomMate/actions";
+import {APIurl, enrollStudentsInRoom} from "../../store/api";
 
 type ChooseRoomModalProps = {
     roomMates: RoomMate[];
@@ -48,12 +48,11 @@ class ChooseRoomModal extends React.Component<WithStyles<typeof chooseRoomModalS
     };
 
     public componentDidMount() {
-        const wb = new WebSocket('ws://localhost:8000/ws/testowy/rooms/');
-
+        const wb = new WebSocket(`ws://${APIurl}/ws/${this.props.user.event}/rooms/`);
         wb.onmessage = (message: MessageEvent) => {
             try {
                 const data = JSON.parse(message.data);
-                if  (data.rooms) {
+                if (data.rooms) {
                     const rooms: Room[] = data.rooms
                         .map((room: WebSocketRoom): Room => ({
                             capacity: room.max_capacity,
@@ -72,7 +71,7 @@ class ChooseRoomModal extends React.Component<WithStyles<typeof chooseRoomModalS
                     this.setState({
                         rooms: this.state.rooms.map((room: Room) =>
                             (room.number !== newRoom.number) ? room : newRoom)
-                    });
+                    }, this.updatePickedRoom);
                 }
             } catch (error) {
                 console.error(error);
@@ -81,8 +80,12 @@ class ChooseRoomModal extends React.Component<WithStyles<typeof chooseRoomModalS
     }
 
     public render(): React.ReactNode {
-        const { classes, roomMates, user } = this.props;
-        return (
+        const {classes, roomMates, user, history} = this.props;
+
+        if (!roomMates.length) {
+            history.replace('/AddRoomMates');
+            return null;
+        } else return (
             <Grid
                 container={true}
                 item={true}
@@ -124,7 +127,7 @@ class ChooseRoomModal extends React.Component<WithStyles<typeof chooseRoomModalS
                                 color={"primary"}
                                 onClick={this.enrollStudentsInRoom}
                             >
-                                    REZERWUJ
+                                REZERWUJ
                             </Button>
                         </div>
                     </Paper>
@@ -162,13 +165,15 @@ class ChooseRoomModal extends React.Component<WithStyles<typeof chooseRoomModalS
                         {this.state.rooms
                             .sort((r1: Room, r2: Room) => r1.number - r2.number)
                             .map((room: Room, index: number) => {
-                            return (
-                                <Grid item={true} xs={12} sm={6} md={4} lg={3} style={{padding: '0.5em'}} key={index}>
-                                    <RoomCard onClick={() => this.setState({isModalVisible: true, pickedRoom: room})}
-                                              desiredSpace={roomMates.length} room={room}/>
-                                </Grid>
-                            );
-                        })}
+                                return (
+                                    <Grid item={true} xs={12} sm={6} md={4} lg={3} style={{padding: '0.5em'}}
+                                          key={index}>
+                                        <RoomCard
+                                            onClick={() => this.setState({isModalVisible: true, pickedRoom: room})}
+                                            desiredSpace={roomMates.length} room={room}/>
+                                    </Grid>
+                                );
+                            })}
                     </Grid>
                 </Paper>
             </Grid>
@@ -182,13 +187,22 @@ class ChooseRoomModal extends React.Component<WithStyles<typeof chooseRoomModalS
             const result = await enrollStudentsInRoom(roomMates, pickedRoom.number, user.event);
             const resultBody = await result.json();
             if (result.status === 200) {
-                history.replace('/Summary', { roomNumber: pickedRoom.number, roomMates, user});
+                history.replace('/Summary', {roomNumber: pickedRoom.number, roomMates, user});
             } else {
                 addError(resultBody.detail);
                 console.log(resultBody);
             }
-        } catch(e){
+        } catch (e) {
             throw e;
+        }
+    };
+
+    private updatePickedRoom = () => {
+        const { pickedRoom } = this.state;
+        if ( this.props.roomMates.length > pickedRoom.capacity - pickedRoom.occupancy) {
+            this.setState({
+                isModalVisible: false,
+            })
         }
     }
 }

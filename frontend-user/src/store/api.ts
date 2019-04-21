@@ -1,9 +1,10 @@
 import {RoomMate} from "./RoomMate/types";
 
 const axios = require('axios');
+export const APIurl = 'localhost:8000';
 
 const instance = axios.create({
-    baseURL: 'http://localhost:8000/api/',
+    baseURL: `http://${APIurl}/api/`,
     timeout: 1000,
 });
 
@@ -14,8 +15,6 @@ export async function fetchStudent(username: string, event: string) {
         return student.data;
     } catch (error) {
         console.log(`Error: ${error}`);
-    } finally {
-        console.log('well done');
     }
 }
 

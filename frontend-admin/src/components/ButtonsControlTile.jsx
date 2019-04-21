@@ -42,8 +42,8 @@ function ButtonsControlTile(props) {
             <>
               <Switch
                 checked={isRegistrationOpen}
-                onChange={onRegistrationStatusChange}
                 value={isRegistrationOpen}
+                onChange={onRegistrationStatusChange}
               />
               <Typography style={{ display: 'inline-block' }} variant="subtitle2">
                 { `Zapisy ${isRegistrationOpen ? 'otwarte' : 'zamknięte'}`}

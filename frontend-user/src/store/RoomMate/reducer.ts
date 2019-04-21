@@ -68,6 +68,12 @@ const reducer: Reducer<RoomMateState> = (state = initialState, action) => {
                     }]
             }
         }
+        case RoomMateType.CLEAR_ERRORS: {
+            return {
+                ...state,
+                errors: []
+            }
+        }
         default:
             return state;
     }

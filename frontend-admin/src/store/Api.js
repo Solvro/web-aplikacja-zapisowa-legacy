@@ -1,7 +1,8 @@
 const axios = require('axios');
 
+
 const instance = axios.create({
-  baseURL: 'http://localhost:8000/api/',
+  baseURL: !process.env.NODE_ENV || process.env.NODE_ENV === 'development' ? process.env.REACT_APP_API_URL_DEV : process.env.REACT_APP_API_URL_PROD,
 });
 
 instance.interceptors.request.use((config) => {
@@ -86,17 +87,15 @@ export async function createEvent(data) {
     formData.append(arr[0], arr[1]);
   });
 
-  try {
-    const response = await instance.post(
-      '/organiser/event',
-      formData,
-      config,
-    );
-    const statusOK = response && response.status === 201;
-    return statusOK;
-  } catch (error) {
-    return false;
+  const response = await instance.post(
+    '/organiser/event',
+    formData,
+    config,
+  );
+  if (response.status !== 201) {
+    throw response.response.data.detail;
   }
+  return response;
 }
 
 export async function removeParticipant(eventName, participantInfo) {
@@ -168,7 +167,7 @@ export async function updateEvent(eventName, data) {
   const formData = new FormData();
 
   Object.entries(data).forEach((arr) => {
-    if(arr[1]) {
+    if (arr[1]) {
       formData.append(arr[0], arr[1]);
     }
   });
@@ -199,12 +198,8 @@ export async function sendMail(eventName, data) {
 
 export async function changeEventRegistrationStatus(data) {
   try {
-    // TODO: Implement real endpoint
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(data);
-      }, 500);
-    });
+    const response = await instance.post(`/organiser/${data.eventName}/activate/`, { is_active: data.is_active });
+    return response.data;
   } catch (error) {
     console.error(error);
     return null;
