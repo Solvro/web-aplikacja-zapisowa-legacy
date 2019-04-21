@@ -187,7 +187,17 @@ else:
 
 
 #CORS settings
-CORS_ORIGIN_ALLOW_ALL = DEBUG
+if DEBUG:
+    CORS_ORIGIN_ALLOW_ALL = True
+else:
+    CORS_ORIGIN_WHITELIST = [
+        'zapisowa.tk',
+        'admin.zapisowa.tk',
+        'api.zapisowa.tk',
+        'www.zapisowa.tk',
+        'www.admin.zapisowa.tk',
+        'www.api.zapisowa.tk',
+    ]
 
 # ASGI channels configuration
 ASGI_APPLICATION = "aplikacja_zapisowa.routing.application"
