@@ -75,7 +75,7 @@ export const enrollStudentsInRoom = async (students: RoomMate[], roomNumber: num
     try {
         const logins = students.map(student => student.login);
         const token = localStorage.getItem('token');
-        return fetch(`http://localhost:8000/api/student/${eventName}/register/${roomNumber}/`, {
+        return fetch(`http://${APIurl}/api/student/${eventName}/register/${roomNumber}/`, {
             method: 'post',
             headers: new Headers({
                 'Authorization': `Bearer ${token}`,
@@ -91,7 +91,7 @@ export const enrollStudentsInRoom = async (students: RoomMate[], roomNumber: num
 export const enrollStudentAlone = async (eventName: string) => {
     try {
         const token = localStorage.getItem('token');
-        return fetch(`http://localhost:8000/api/student/${eventName}/register/`, {
+        return fetch(`http://${APIurl}/api/student/${eventName}/register/`, {
             method: 'post',
             headers: new Headers({
                 'Authorization': `Bearer ${token}`,
