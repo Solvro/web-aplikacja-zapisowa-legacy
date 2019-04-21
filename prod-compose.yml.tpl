@@ -16,6 +16,7 @@ services:
           - STATSD_PORT=<STATSD_PORT>
           - STATSD_PREFIX=<STATSD_PREFIX>
           - SECRET_KEY=<SECRET_KEY>
+          - SENDGRID_PASSWORD=<SENDGRID_PASSWORD>
     db:
       image: "postgres:latest"
       volumes:
