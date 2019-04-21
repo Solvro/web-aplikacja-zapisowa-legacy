@@ -182,7 +182,7 @@ class EventSerializer(serializers.ModelSerializer):
         """
         if obj.image.name:
             image_url = obj.image.url
-            return f"localhost:8000/static/images/{image_url}"
+            return f"api.zapisowa.tk/static/images/{image_url}"
         return None
 
     def validate_csv_file(self, csv_file):

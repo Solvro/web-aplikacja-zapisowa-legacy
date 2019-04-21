@@ -8,6 +8,8 @@ services:
       depends_on:
           - "db"
           - "redis"
+      volumes:
+          - "/var/www/static:/app/enrolmentpanel/static"
       environment:
           - ENVIROMENT=PROD
           - DEBUG=0
