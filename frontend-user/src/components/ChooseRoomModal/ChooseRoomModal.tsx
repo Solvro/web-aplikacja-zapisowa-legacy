@@ -5,14 +5,16 @@ import {UserChip} from "../UserChip/UserChip";
 import {Room, RoomCard} from "./RoomCard";
 import {ApplicationState} from "../../store";
 import {RoomMate} from "../../store/RoomMate/types";
-import {connect} from "react-redux";
+import {connect, Dispatch} from "react-redux";
 import BackButton from "../BackButton";
 import {RouteComponentProps, withRouter} from "react-router-dom";
+import {addError} from "../../store/RoomMate/actions";
 import {APIurl, enrollStudentsInRoom} from "../../store/api";
 
 type ChooseRoomModalProps = {
     roomMates: RoomMate[];
     user: RoomMate;
+    addError: (message: string) => void;
 } & RouteComponentProps<{}>;
 
 type WebSocketRoom = {
@@ -25,6 +27,12 @@ const mapStateToProps = (state: ApplicationState): Partial<ChooseRoomModalProps>
     return {
         roomMates: state.roomMateState.roomMates,
         user: state.roomMateState.user,
+    }
+};
+
+const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>): Partial<ChooseRoomModalProps> => {
+    return {
+        addError: (message: string) => dispatch(addError(message))
     }
 };
 
@@ -174,14 +182,14 @@ class ChooseRoomModal extends React.Component<WithStyles<typeof chooseRoomModalS
 
     private enrollStudentsInRoom = async () => {
         try {
-            const {roomMates, user, history} = this.props;
-            const {pickedRoom} = this.state;
+            const { roomMates, user, addError, history } = this.props;
+            const { pickedRoom } = this.state;
             const result = await enrollStudentsInRoom(roomMates, pickedRoom.number, user.event);
             const resultBody = await result.json();
-            console.log(result, 'result');
             if (result.status === 200) {
                 history.replace('/Summary', {roomNumber: pickedRoom.number, roomMates, user});
             } else {
+                addError(resultBody.detail);
                 console.log(resultBody);
             }
         } catch (e) {
@@ -199,5 +207,5 @@ class ChooseRoomModal extends React.Component<WithStyles<typeof chooseRoomModalS
     }
 }
 
-const ChooseRoomModalWithStyles = withStyles(chooseRoomModalStyles, {withTheme: true})(ChooseRoomModal);
-export default connect(mapStateToProps)(withRouter(ChooseRoomModalWithStyles))
+const ChooseRoomModalWithStyles = withStyles(chooseRoomModalStyles)(ChooseRoomModal);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(ChooseRoomModalWithStyles))
