@@ -117,18 +117,19 @@ class StudentSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         validated_data.pop('event', None)
         new_index = validated_data.get("index", None)
-        new_email = validated_data.get("email", f"{validated_data['index']}@student.pwr.edu.pl")
+        new_email = validated_data.get("email", None)
 
         # student should get new login and password if email or index is changing
         if self.__is_updated(new_index, instance.index) or self.__is_updated(new_email, instance.email):
-            user, _, password = self.__create_user(instance, new_index)
-            user_to_delete = instance.user
-            validated_data['user'] = user
-            validated_data['email'] = new_email
+            if new_email is None:
+                new_email = f"{validated_data['index']}@student.pwr.edu.pl"
+                validated_data['email'] = new_email
+            username, password = StudentManager.generate_student_credentials(new_index)
+            instance.user.username = username
+            instance.user.set_password(password)
             updated_instance = super().update(instance, validated_data)
             mail = StudentRegisterMail(instance.event, instance, password)
             mail.send_email()
-            user_to_delete.delete()
             return updated_instance
 
         return super().update(instance, validated_data)
