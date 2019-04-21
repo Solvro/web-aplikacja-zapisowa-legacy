@@ -28,7 +28,8 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             serializer = StudentSerializer(logged_student)
 
             token['student'] = serializer.data
-            token['room'] = (not logged_student.room is None)
+            token['register_status'] = logged_student.status
+            token['room'] = None if logged_student.room is None else logged_student.room.number
         elif user.is_organiser:
             organiser_data = OrganiserSerializer(user.organiser).data
             organiser_data.pop("user")
