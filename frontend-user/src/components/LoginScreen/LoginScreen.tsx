@@ -44,7 +44,6 @@ class LoginScreen extends React.Component<WithStyles<typeof loginScreenStyles> &
         e.preventDefault();
         const {username, password} = this.state;
         const authorizationResult = await authorizeUser(username, password);
-        console.log(authorizationResult);
         const token = authorizationResult ? authorizationResult.access : false;
         if (token) {
             const { room, refresh } = authorizationResult;
