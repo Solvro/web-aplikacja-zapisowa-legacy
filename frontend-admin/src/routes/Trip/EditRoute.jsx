@@ -53,7 +53,7 @@ class EditRoute extends Component {
               <Grid container alignItems="center" alignContent="center" justify="center" spacing={16}>
                 <Grid item xs={12} style={{ textAlign: 'center' }}>
                   <Button
-                    disabled={!isFormValid(data)}
+                    disabled={!isFormValid(data, true)}
                     onClick={() => {
                       updateEvent(eventName, data).then((statusOk) => {
                         let msg = '';
