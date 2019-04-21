@@ -53,6 +53,7 @@ class LoginScreen extends React.Component<WithStyles<typeof loginScreenStyles> &
         if (token) {
             const user = {...authorizationResult.student, login: username};
             localStorage.setItem('token', token);
+            localStorage.setItem('refresh', authorizationResult.refresh);
             localStorage.setItem('signedInStudent', JSON.stringify(user));
             this.props.signIn(user);
             this.props.history.push('/AddingRoomMates');
