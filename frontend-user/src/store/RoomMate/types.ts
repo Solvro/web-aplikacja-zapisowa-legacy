@@ -18,7 +18,7 @@ export interface RoomMateState {
 const addedYetERROR = (name: string) => `Student ${name} już znajduje się na liście`;
 const notExistERROR = (username: string) => `Student o loginie ${username} nie istnieje`;
 const emptyUsernameERROR = `Login użytkownika nie może być pusty`;
-const signInFailedERROR = `Błędny login lub hasło`;
+const signInFailedERROR = `Błędne dane logowania lub nieaktywne wydarzenie`;
 
 export const StudentErrors = {
     addedYet: addedYetERROR,
