@@ -28,7 +28,7 @@ const styles = theme => ({
 
 const formItemSpacing = 16;
 
-export const isFormValid = (state) => {
+export const isFormValid = (state, editing = false) => {
   const {
     name, description, place, accommodation, participants, image, beginning_date, ending_date, rooms,
   } = state;
@@ -37,13 +37,10 @@ export const isFormValid = (state) => {
       && !!description
       && !!place
       && !!accommodation
-      && !!participants
-      && !!image
-      && !!rooms
-      && !!accommodation
       && !!beginning_date
       && !!ending_date
-      && beginning_date <= ending_date;
+      && beginning_date <= ending_date
+      && editing ? true : (!!participants && !!image && !!rooms);
 };
 
 class TripSettingsForm extends React.Component {
