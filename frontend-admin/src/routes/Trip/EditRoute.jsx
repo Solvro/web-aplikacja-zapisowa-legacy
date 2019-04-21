@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { Grid, Button } from '@material-ui/core';
-import TripSettingsForm from '../../components/TripSettingsForm';
+import TripSettingsForm, {isFormValid} from '../../components/TripSettingsForm';
 import { updateEvent, getEventDetails } from '../../store/Api';
 import AlertDialog from '../../components/AlertDialog';
 import LoadingModal from '../../components/LoadingModal';
@@ -53,6 +53,7 @@ class EditRoute extends Component {
               <Grid container alignItems="center" alignContent="center" justify="center" spacing={16}>
                 <Grid item xs={12} style={{ textAlign: 'center' }}>
                   <Button
+                    disabled={!isFormValid(data)}
                     onClick={() => {
                       updateEvent(eventName, data).then((statusOk) => {
                         let msg = '';
@@ -70,7 +71,7 @@ class EditRoute extends Component {
                     variant="contained"
                     color="primary"
                   >
-                    Edytuj
+                    Zapisz edycję
                   </Button>
                 </Grid>
               </Grid>
