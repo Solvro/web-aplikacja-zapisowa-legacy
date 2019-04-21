@@ -11,74 +11,90 @@ import {RoomMate} from "../../store/RoomMate/types";
 
 type SummaryRouteProps = {
     signOut: () => void
-} & RouteComponentProps<{}>;
+} & RouteComponentProps<{}> & WithStyles<typeof SummaryRouteStyles>;
 
 const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>) => ({
-    signOut: () => { dispatch(signOut) }
+    signOut: () => {
+        dispatch(signOut)
+    }
 });
 
-class SummaryRoute extends React.Component<WithStyles<typeof SummaryRouteStyles> & SummaryRouteProps> {
-
-    public componentDidMount(): void {
-        localStorage.clear();
-        this.props.signOut();
-    }
+class SummaryRoute extends React.Component<SummaryRouteProps> {
 
     public render(): React.ReactNode {
-        const {classes} = this.props;
-        const {roomNumber, roomMates, user} = this.props.location.state;
-        return (
-            <div className={classes.container}>
-                <Grid
-                    container={true}
-                    item={true}
-                    className={classes.paperContainer}
-                    xl={7}
-                    lg={8}
-                    md={9}
-                    sm={10}
-                    xs={11}
-                >
-                    <Paper className={classes.paper}>
-                        <Typography variant={"h3"} gutterBottom={true}>
-                            {`To już wszystko`}
-                        </Typography>
-                        <div className={classes.planet}>
-                            <Planet size={250} mood="excited" color="#009688"/>
-                        </div>
-                        <div>
-                            {
-                                roomMates && roomMates.length
-                                    ?
-                                    <span>
+        const {classes, location, history, signOut} = this.props;
+
+        if (!location.state) {
+            history.replace('/AddRoomMates');
+            return null;
+        } else {
+            const {roomNumber, roomMates, user} = location.state;
+            localStorage.clear();
+            signOut();
+
+            return (
+                <div className={classes.container}>
+                    <Grid
+                        container={true}
+                        item={true}
+                        className={classes.paperContainer}
+                        xl={7}
+                        lg={8}
+                        md={9}
+                        sm={10}
+                        xs={11}
+                    >
+                        <Paper className={classes.paper}>
+                            <Typography variant={"h3"} gutterBottom={true}>
+                                {`To już wszystko`}
+                            </Typography>
+                            <div className={classes.planet}>
+                                <Planet size={250} mood="excited" color="#009688"/>
+                            </div>
+                            <div>
+                                {
+                                    roomMates && roomMates.length
+                                        ?
+                                        <span>
                                         <Typography variant={"body1"}>
                                             Numer pokoju: {roomNumber}
                                         </Typography>
                                         <Typography variant={"body1"}>Znajomi z twojej grupy pokojowej:</Typography>
-                                        {roomMates.map((rm: RoomMate, idx: number)  =>
-                                            (<Typography
-                                                variant={"body2"}
-                                                key={idx}
-                                                >
-                                                    {rm.name}
-                                            </Typography>
-                                            ))}
+                                            {roomMates.map((rm: RoomMate, idx: number) =>
+                                                (<Typography
+                                                        variant={"body2"}
+                                                        key={idx}
+                                                    >
+                                                        {rm.name}
+                                                    </Typography>
+                                                ))}
                                     </span>
-                                    :
-                                    (<span>
+                                        :
+                                        (<span>
                                         <Typography variant={"h5"}>
                                             Świetnie, że jedziesz z nami {user.name}!
                                         </Typography>
-                                        <Typography variant={"subheading"}>
-                                            Kiedy krasnoludki przydzielą Cię do pokoju, od razu damy Ci znać
-                                        </Typography>
+                                            {roomNumber ?
+                                                <>
+                                                    <Typography variant={"subheading"}>
+                                                        Jesteś zapisany do pokoju nr {roomNumber}
+                                                    </Typography>
+                                                    <Typography variant={"subheading"}>
+                                                        By uzyskać więcej informacji, sprawdź potwierdzenie na poczcie
+                                                        mailowej lub skontaktuj się z administratorem wydarzenia
+                                                    </Typography>
+                                                </> :
+                                                <Typography variant={"subheading"}>
+                                                    Kiedy krasnoludki przydzielą Cię do pokoju, od razu damy Ci znać
+                                                </Typography>}
                                     </span>)
-                            }
-                        </div>
-                    </Paper>
-                </Grid>
-            </div>
-        );
+                                }
+                            </div>
+                        </Paper>
+                    </Grid>
+                </div>
+            );
+        }
     }
 }
 

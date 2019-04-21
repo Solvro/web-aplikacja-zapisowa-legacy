@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-import { Grid } from '@material-ui/core';
+import { Grid, Button } from '@material-ui/core';
 import moment from 'moment';
 import 'moment/locale/pl';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import DashboardHeader from '../../components/DashboardHeader';
 import InformationTile from '../../components/InformationTile';
 import StatisticsTile from '../../components/StatisticsTile';
@@ -11,7 +10,7 @@ import {
   getEventDetails, deleteEvent, changeEventRegistrationStatus, getStatistics,
 } from '../../store/Api';
 import ButtonsControlTile from '../../components/ButtonsControlTile';
-import ConfirmDialog from '../../components/ConfirmDialog';
+import AlertDialog from '../../components/AlertDialog';
 import LoadingModal from '../../components/LoadingModal';
 
 moment.locale('pl');
@@ -46,16 +45,13 @@ class OverviewRoute extends Component {
     }
   }
 
-  async onDeleteTrip(confirm) {
-    this.toggleDialog();
-    if (confirm) {
-      const { history } = this.props;
-      const eventName = this.props.match.params.id;
-      this.setState({ isLoading: true });
-      await deleteEvent(eventName);
-      this.setState({ isLoading: false });
-      history.replace('/trips');
-    }
+  async onDeleteTrip() {
+    const { history, match } = this.props;
+    const eventName = match.params.id;
+    this.setState({ isLoading: true });
+    await deleteEvent(eventName);
+    this.setState({ isLoading: false });
+    history.replace('/trips');
   }
 
   toggleDialog() {
@@ -133,12 +129,18 @@ class OverviewRoute extends Component {
             />
           </Grid>
         </Grid>
-        <ConfirmDialog
+        <AlertDialog
           title="Usuwanie wycieczki"
           message="Czy na pewno chcesz usunąć wycieczkę?"
           isOpen={isAlertOpen}
-          onClose={this.onDeleteTrip}
-        />
+        >
+          <Button onClick={this.toggleDialog} color="primary" autoFocus>
+            Anuluj
+          </Button>
+          <Button onClick={this.onDeleteTrip} color="secondary">
+            OK
+          </Button>
+        </AlertDialog>
         <LoadingModal isOpen={isLoading} />
       </div>
     );
