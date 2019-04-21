@@ -46,14 +46,14 @@ class Command(BaseCommand):
 
             room = Room.objects.filter(event=event).all()[random_index]
             room.add_people((s, ))
-            notify_consumers_on_room_change(event.name, room)
+            notify_consumers_on_room_change(event.name, event.organizer.user.username, room)
 
             self.stdout.write(self.style.SUCCESS(
                 'Added user to room: {}'.format(room.number)))
             time.sleep(random.randint(1, 10))
 
             room.remove_person(s)
-            notify_consumers_on_room_change(event.name, room)
+            notify_consumers_on_room_change(event.name, event.organizer.user.username, room)
             self.stdout.write(self.style.SUCCESS(
                 'Removed user from room: {}'.format(room.number)))
             time.sleep(random.randint(1, 10))
