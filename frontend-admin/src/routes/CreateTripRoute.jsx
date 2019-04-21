@@ -1,7 +1,7 @@
 import React from 'react';
 import { withRouter, Link } from 'react-router-dom';
 import { Button, Grid } from '@material-ui/core';
-import TripSettingsForm from '../components/TripSettingsForm';
+import TripSettingsForm, {isFormValid} from '../components/TripSettingsForm';
 import { createEvent } from '../store/Api';
 import LoadingModal from '../components/LoadingModal';
 import AlertDialog from '../components/AlertDialog';
@@ -45,6 +45,7 @@ class CreateTripRoute extends React.Component {
               </Grid>
               <Grid item xs={6} style={{ textAlign: 'left' }}>
                 <Button
+                  disabled={!isFormValid(data)}
                   onClick={() => {
                     this.setState({
                       isLoading: true,
