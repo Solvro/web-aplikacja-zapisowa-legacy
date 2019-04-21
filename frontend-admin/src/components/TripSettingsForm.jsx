@@ -33,7 +33,7 @@ export const isFormValid = (state) => {
     name, description, place, accommodation, participants, image, beginning_date, ending_date, rooms,
   } = state;
 
-  const isValid = name
+  return name
       && !!description
       && !!place
       && !!accommodation
@@ -44,9 +44,6 @@ export const isFormValid = (state) => {
       && !!beginning_date
       && !!ending_date
       && beginning_date <= ending_date;
-
-  console.log(isValid);
-  return isValid;
 };
 
 class TripSettingsForm extends React.Component {
