@@ -27,9 +27,10 @@ type AddRoomMatesModalProps = {
     roomMates: RoomMate[];
     errors: ApplicationError[];
     user: RoomMate;
-    initFetchRoomMate(login: string, eventName: string): void;
-    removeRoomMate(login: string): void;
-    sendSignedUserAddedError(name: string): void;
+    initFetchRoomMate: (login: string, eventName: string) => void;
+    removeRoomMate: (login: string) => void;
+    sendSignedUserAddedError: (name: string) => void;
+    addError: (message: string) => void;
 } & RouteComponentProps<{}> & WithStyles<typeof addRoomMatesModalStyles>;
 
 const mapStateToProps = (state: ApplicationState): Partial<AddRoomMatesModalProps> => {
@@ -46,6 +47,7 @@ const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>): Partial<AddRo
         initFetchRoomMate: (login, eventName) => initFetchRoomMate(login, eventName)(dispatch),
         removeRoomMate: (login) => dispatch(removeRoomMate(login)),
         sendSignedUserAddedError: (name: string) => dispatch(addError(StudentErrors.addedYet(name))),
+        addError: (message: string) => dispatch(addError(message))
     }
 };
 
@@ -182,7 +184,7 @@ class AddRoomMatesModal extends React.Component<AddRoomMatesModalProps> {
             if (result.status === 200) {
                 history.replace('/Summary', {user});
             } else {
-                console.log(resultBody);
+                addError(resultBody.details);
             }
         } catch (e) {
             throw e;
