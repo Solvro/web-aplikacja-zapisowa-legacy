@@ -52,7 +52,6 @@ class CreateTripRoute extends React.Component {
                     });
                     createEvent(data)
                       .then(() => {
-                        console.log('THEN')
                         history.push('/trips');
                       })
                       .catch((err) => {

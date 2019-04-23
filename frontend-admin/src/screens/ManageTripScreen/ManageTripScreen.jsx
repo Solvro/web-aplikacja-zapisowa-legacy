@@ -7,6 +7,7 @@ import TripCard from './TripCard';
 import Typography from '@material-ui/core/Typography';
 import { withRouter, Link } from 'react-router-dom';
 import { getAllEvents } from '../../store/Api';
+import add from '../../img/add.png';
 
 class ManageTripScreen extends React.Component {
 
@@ -92,7 +93,7 @@ class ManageTripScreen extends React.Component {
                                             overlayText="Dodaj nową wycieczkę"
                                             description="Zaplanuj nową wycieczkę jest ich zdecydowanie za mało na twoim wydziale"
                                             name="Dodaj nową wycieczkę"
-                                            image="https://www.thoughtco.com/thmb/zQfnmMB7JGh55biV3b_ok_w79yE=/768x0/filters:no_upscale():max_bytes(150000):strip_icc()/simpsons1920-58b5a0013df78cdcd87a03bc.jpg"
+                                            image={add}
                                         />
                                     </Link>
                                 </Grid>
