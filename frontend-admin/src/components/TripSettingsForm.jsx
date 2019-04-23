@@ -33,14 +33,15 @@ export const isFormValid = (state, editing = false) => {
     name, description, place, accommodation, participants, image, beginning_date, ending_date, rooms,
   } = state;
 
-  return name
+  return !!name
+      && name.search(/[\\#;,/?:@&=+$%"'<>\[\]\{\}]/) === -1
       && !!description
       && !!place
       && !!accommodation
       && !!beginning_date
       && !!ending_date
       && beginning_date <= ending_date
-      && editing ? true : (!!participants && !!image && !!rooms);
+      && (editing ? true : (!!participants && !!image && !!rooms));
 };
 
 class TripSettingsForm extends React.Component {
