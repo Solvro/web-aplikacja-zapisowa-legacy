@@ -354,12 +354,12 @@ class EventStatisticsSerializer(serializers.Serializer):
 
     def get_students(self, obj):
         return {
-            'no': obj.room_set.count(),
+            'no': obj.student_set.count(),
         }
 
     def get_students_registered(self, obj):
         registered_no = obj.student_set.exclude(status='N').count()
-        students_no = obj.room_set.count()
+        students_no = obj.student_set.count()
         return {
             'no': registered_no,
             'percentage': self.to_percentage(registered_no, students_no),
