@@ -9,10 +9,10 @@ declare var process : {
   }
 
 const axios = require('axios');
-export const APIurl = !process.env.NODE_ENV || process.env.NODE_ENV === 'development' ? process.env.REACT_APP_API_URL_DEV : process.env.REACT_APP_API_URL_PROD;
+export const APIurl = 'api.zapisowa.tk';
 
 const instance = axios.create({
-    baseURL: APIurl,
+    baseURL: `http://${APIurl}/api/`,
     timeout: 1000,
 });
 
@@ -83,7 +83,7 @@ export const enrollStudentsInRoom = async (students: RoomMate[], roomNumber: num
     try {
         const logins = students.map(student => student.login);
         const token = localStorage.getItem('token');
-        return fetch(`${APIurl}/student/${eventName}/register/${roomNumber}/`, {
+        return fetch(`http://${APIurl}/api/student/${eventName}/register/${roomNumber}/`, {
             method: 'post',
             headers: new Headers({
                 'Authorization': `Bearer ${token}`,
@@ -99,7 +99,7 @@ export const enrollStudentsInRoom = async (students: RoomMate[], roomNumber: num
 export const enrollStudentAlone = async (eventName: string) => {
     try {
         const token = localStorage.getItem('token');
-        return fetch(`${APIurl}/student/${eventName}/register/`, {
+        return fetch(`http://${APIurl}/api/student/${eventName}/register/`, {
             method: 'post',
             headers: new Headers({
                 'Authorization': `Bearer ${token}`,
