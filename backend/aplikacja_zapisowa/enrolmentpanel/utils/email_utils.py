@@ -37,9 +37,8 @@ class BasicMail(object):
 
 
 class EventMail(BasicMail):
-    def __init__(self, subject, body, index):
-        student_mail = '{}@student.pwr.edu.pl'.format(index)
-        super().__init__(subject, body, "rajdy@pwr.edu.pl", student_mail)
+    def __init__(self, subject, body, email):
+        super().__init__(subject, body, "rajdy@pwr.edu.pl", email)
 
 
 class StudentRegisterMail(BasicMail):
