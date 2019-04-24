@@ -1,10 +1,18 @@
 import {RoomMate} from "./RoomMate/types";
 
+declare var process : {
+    env: {
+      NODE_ENV: string,
+      REACT_APP_API_URL_PROD: string,
+      REACT_APP_API_URL_DEV: string
+    }
+  }
+
 const axios = require('axios');
-export const APIurl = 'localhost:8000';
+export const APIurl = !process.env.NODE_ENV || process.env.NODE_ENV === 'development' ? process.env.REACT_APP_API_URL_DEV : process.env.REACT_APP_API_URL_PROD;
 
 const instance = axios.create({
-    baseURL: `http://${APIurl}/api/`,
+    baseURL: APIurl,
     timeout: 1000,
 });
 
@@ -75,7 +83,7 @@ export const enrollStudentsInRoom = async (students: RoomMate[], roomNumber: num
     try {
         const logins = students.map(student => student.login);
         const token = localStorage.getItem('token');
-        return fetch(`http://${APIurl}/api/student/${eventName}/register/${roomNumber}/`, {
+        return fetch(`${APIurl}/student/${eventName}/register/${roomNumber}/`, {
             method: 'post',
             headers: new Headers({
                 'Authorization': `Bearer ${token}`,
@@ -91,7 +99,7 @@ export const enrollStudentsInRoom = async (students: RoomMate[], roomNumber: num
 export const enrollStudentAlone = async (eventName: string) => {
     try {
         const token = localStorage.getItem('token');
-        return fetch(`http://${APIurl}/api/student/${eventName}/register/`, {
+        return fetch(`${APIurl}/student/${eventName}/register/`, {
             method: 'post',
             headers: new Headers({
                 'Authorization': `Bearer ${token}`,
