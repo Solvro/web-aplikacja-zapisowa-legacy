@@ -70,7 +70,7 @@ class ManageTripScreen extends React.Component {
                                             md={6}
                                             xs={12}
                                         >
-                                            <Link to={`/trips/${trip.name}`} style={{ textDecoration: 'none' }}>
+                                            <Link to={`/trips/${encodeURIComponent(trip.name)}`} style={{ textDecoration: 'none' }}>
                                                 <TripCard
                                                     overlayText={trip.name}
                                                     description={trip.description}
