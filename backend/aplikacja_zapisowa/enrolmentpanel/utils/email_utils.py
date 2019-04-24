@@ -1,5 +1,8 @@
 from django.core.mail import send_mail
 
+
+PAGE_ADDRESS = "zapisowa.tk"
+
 STUDENT_MAIL_SUBJECT = "Zapisy na rajd {trip}"
 
 STUDENT_MAIL_TEMPLATE = """
@@ -9,7 +12,7 @@ Rejestracja do pokoi na rajd {trip} będzie wkrótce możliwa!\n
 Oto twoje dane do logowania:\n
 Login: {login}\n
 Hasło: {password}\n
-Strona: <podać adres>\n
+Strona: {PAGE_ADDRESS}\n
 Powodzenia przy rejestracji ;-)\n\n
 Wiadomość została wygenerowana automatycznie. Prosimy na nią nie odpowiadać.\n
 """
@@ -47,7 +50,8 @@ class StudentRegisterMail(BasicMail):
             index=student.index,
             trip=event.name,
             login=student.user.username,
-            password=password
+            password=password,
+            PAGE_ADDRESS=PAGE_ADDRESS
         )
 
         super().__init__(subject, body, "rajdy@pwr.edu.pl", student.email)
