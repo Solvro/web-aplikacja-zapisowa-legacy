@@ -66,7 +66,7 @@ class Event(models.Model):
 
 
 class Room(models.Model):
-    number = models.IntegerField()
+    number = models.CharField(max_length=30)
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     max_capacity = models.PositiveSmallIntegerField(default=0)
     cur_capacity = models.PositiveSmallIntegerField(default=0)
