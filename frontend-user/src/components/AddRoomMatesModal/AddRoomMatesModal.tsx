@@ -182,7 +182,7 @@ class AddRoomMatesModal extends React.Component<AddRoomMatesModalProps> {
             const resultBody = await result.json();
             console.log(result, 'result');
             if (result.status === 200) {
-                history.replace('/Summary', {user});
+                history.replace('/Summary', {user, roomNumber: resultBody.number});
             } else {
                 addError(resultBody.details);
             }
