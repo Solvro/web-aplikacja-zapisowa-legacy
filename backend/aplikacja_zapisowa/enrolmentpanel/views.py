@@ -10,6 +10,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from enrolmentpanel.models import Student, User, Event
+from enrolmentpanel.student.permissions import IsStudentParticipatingInEvent
 from enrolmentpanel.serializers import (
     StudentSerializer,
     OrganiserSerializer
@@ -57,8 +58,8 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 
 class StudentView(APIView):
 
-    if not settings.DEBUG:
-        permission_classes = (IsAuthenticated, IsEventOwner)
+    permission_classes = (IsAuthenticated, IsStudentParticipatingInEvent)
+
 
     @swagger_auto_schema(responses={200: StudentSerializer()},
                          operation_description="Gets student by username")
@@ -71,6 +72,9 @@ class StudentView(APIView):
         queryset = Student.objects.all()
         student = get_object_or_404(queryset, user=u)
         if e == student.event:
+            splited_name = student.name.split()
+            name, surname = splited_name[0], splited_name[-1]
+            student.name = f'{name} {surname[0]}.'
             serializer = StudentSerializer(student)
             return Response(serializer.data)
         else:
