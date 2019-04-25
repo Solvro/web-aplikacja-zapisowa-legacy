@@ -82,15 +82,7 @@ export async function verifyUser(token: string) {
 export const enrollStudentsInRoom = async (students: RoomMate[], roomNumber: number, eventName: string) => {
     try {
         const logins = students.map(student => student.login);
-        const token = localStorage.getItem('token');
-        return fetch(`http://${APIurl}/api/student/${eventName}/register/${roomNumber}/`, {
-            method: 'post',
-            headers: new Headers({
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            }),
-            body: JSON.stringify({logins})
-        });
+        return await instance.post(`/student/${eventName}/register/${roomNumber}/`, {logins});
     } catch (error) {
         return error;
     }
@@ -98,14 +90,7 @@ export const enrollStudentsInRoom = async (students: RoomMate[], roomNumber: num
 
 export const enrollStudentAlone = async (eventName: string) => {
     try {
-        const token = localStorage.getItem('token');
-        return fetch(`http://${APIurl}/api/student/${eventName}/register/`, {
-            method: 'post',
-            headers: new Headers({
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            }),
-        });
+        return await instance.post(`/student/${eventName}/register/`);
     } catch (error) {
         return error;
     }

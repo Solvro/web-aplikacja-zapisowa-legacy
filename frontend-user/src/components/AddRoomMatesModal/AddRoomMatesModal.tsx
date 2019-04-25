@@ -179,7 +179,7 @@ class AddRoomMatesModal extends React.Component<AddRoomMatesModalProps> {
         try {
             const { user, history } = this.props;
             const result = await enrollStudentAlone(user.event);
-            const resultBody = await result.json();
+            const resultBody = result.data;
             console.log(result, 'result');
             if (result.status === 200) {
                 history.replace('/Summary', {user, roomNumber: resultBody.number});
