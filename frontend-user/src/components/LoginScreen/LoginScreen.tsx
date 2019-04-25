@@ -97,7 +97,7 @@ class LoginScreen extends React.Component<WithStyles<typeof loginScreenStyles> &
                         >
                             <FacultyLogo size={15}/>
                             <Typography color="primary" align="center" variant="h3">
-                                Jesienny Rajd Mechanika
+                                Rajd Mechanika
                             </Typography>
                             <form onSubmit={this.tryAuthorize} className={classes.form}>
                                 <FormControl margin="normal" required fullWidth={false}>
