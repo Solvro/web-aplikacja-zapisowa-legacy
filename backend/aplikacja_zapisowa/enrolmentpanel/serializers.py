@@ -127,6 +127,7 @@ class StudentSerializer(serializers.ModelSerializer):
             username, password = StudentManager.generate_student_credentials(new_index)
             instance.user.username = username
             instance.user.set_password(password)
+            instance.user.save()
             updated_instance = super().update(instance, validated_data)
             mail = StudentRegisterMail(instance.event, instance, password)
             mail.send_email()
