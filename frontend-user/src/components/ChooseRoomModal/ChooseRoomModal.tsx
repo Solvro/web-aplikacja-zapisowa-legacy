@@ -188,7 +188,7 @@ class ChooseRoomModal extends React.Component<WithStyles<typeof chooseRoomModalS
             const { roomMates, user, addError, history } = this.props;
             const { pickedRoom } = this.state;
             const result = await enrollStudentsInRoom(roomMates, pickedRoom.number, user.event);
-            const resultBody = await result.json();
+            const resultBody = result.data
             if (result.status === 200) {
                 history.replace('/Summary', {roomNumber: pickedRoom.number, roomMates, user});
             } else {
