@@ -13,7 +13,7 @@ import store from './store/store';
 const darkTheme = createMuiTheme({
     palette: {
         primary: {
-            main: '#009688',
+            main: '#335599',
             light: '#FFF',
         },
         secondary: {
