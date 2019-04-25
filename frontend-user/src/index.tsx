@@ -20,8 +20,8 @@ const darkTheme = createMuiTheme({
       main: grey["900"]
     },
     text: {
-      primary: "#FFF",
-      secondary: "#AFAFAF"
+      primary: "#888888",
+      secondary: "#FFF"
     },
     type: "light",
     background: {

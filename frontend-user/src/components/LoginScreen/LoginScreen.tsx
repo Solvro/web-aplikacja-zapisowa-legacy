@@ -48,7 +48,9 @@ class LoginScreen extends React.Component<
     const { username, password } = this.state;
     const authorizationResult = await authorizeUser(username, password);
     const token = authorizationResult ? authorizationResult.access : false;
+    console.log("imhere");
     if (token) {
+      console.log('token', token);
       const { room, refresh } = authorizationResult;
       const user = { ...authorizationResult.student, login: username };
       localStorage.setItem("token", token);
