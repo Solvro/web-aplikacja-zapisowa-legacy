@@ -4,6 +4,7 @@ import Background from '../../img/schoolbus.jpg';
 
 export const loginScreenStyles = createStyles({
     container: {
+        height: '100%',
         display: 'flex',
         flex: '1 1 auto',
         flexDirection: 'column',
