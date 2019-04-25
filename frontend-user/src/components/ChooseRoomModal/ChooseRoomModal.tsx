@@ -161,20 +161,23 @@ class ChooseRoomModal extends React.Component<WithStyles<typeof chooseRoomModalS
                     <Typography variant={"h5"}>
                         Wybierz pokój
                     </Typography>
-                    <Grid container={true}>
-                        {this.state.rooms
-                            .sort((r1: Room, r2: Room) => r1.number - r2.number)
-                            .map((room: Room, index: number) => {
-                                return (
-                                    <Grid item={true} xs={12} sm={6} md={4} lg={3} style={{padding: '0.5em'}}
-                                          key={index}>
-                                        <RoomCard
-                                            onClick={() => this.setState({isModalVisible: true, pickedRoom: room})}
-                                            desiredSpace={roomMates.length} room={room}/>
-                                    </Grid>
-                                );
-                            })}
-                    </Grid>
+                    <div style={{flex: 1, overflowY: 'hidden'}}>
+                        <Grid container={true} className={classes.roomContainer}>
+                            {this.state.rooms
+                                .sort((r1: Room, r2: Room) => r1.number - r2.number)
+                                .map((room: Room, index: number) => {
+                                    return (
+                                        <Grid item={true} xs={12} sm={6} md={4} lg={3} style={{padding: '0.5em'}}
+                                              key={index}
+                                        >
+                                            <RoomCard
+                                                onClick={() => this.setState({isModalVisible: true, pickedRoom: room})}
+                                                desiredSpace={roomMates.length} room={room}/>
+                                        </Grid>
+                                    );
+                                })}
+                        </Grid>
+                    </div>
                 </Paper>
             </Grid>
         );

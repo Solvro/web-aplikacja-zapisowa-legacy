@@ -6,8 +6,13 @@ export const chooseRoomModalStyles = (theme: Theme) => createStyles({
         flexDirection: 'column',
         justifyContent: 'flex-start',
         padding: theme.spacing.unit * 4,
+        height: '100%',
+        position: 'relative',
     },
     paper: {
+        height: '100%',
+        display: 'flex',
+        overflowY: 'hidden',
         position: 'relative',
         flexDirection: 'column',
         padding: theme.spacing.unit * 4,
@@ -32,11 +37,15 @@ export const chooseRoomModalStyles = (theme: Theme) => createStyles({
         },
     },
     modal: {
-        left: '25vw',
-        top: '30vh',
+        left: '50%',
+        top: '50%',
     },
     modalPaper: {
+        transform: 'translate(-50%, -50%)',
         width: '50vw',
+        '@media(max-width: 1000px)': {
+            width: '90vw',
+        },
         textAlign: 'center',
         display: 'flex',
         flexDirection: 'column',
@@ -55,4 +64,8 @@ export const chooseRoomModalStyles = (theme: Theme) => createStyles({
     button: {
         marginRight: '12px'
     },
+    roomContainer: {
+        overflowY: 'auto',
+        height: '100%',
+    }
 });
