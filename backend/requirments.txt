@@ -6,7 +6,7 @@ drf-yasg==1.13.0
 django-cors-headers==2.4.0
 djangorestframework-simplejwt==3.2.3
 channels==2.1.5
-channels_redis==2.3.1
+channels_redis==2.3.3
 Pillow==2.1.0
 ipython
 daphne==2.3.0
