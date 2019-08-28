@@ -14,6 +14,7 @@ from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.exceptions import ValidationError
+from rest_framework.generics import CreateAPIView
 
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
@@ -42,38 +43,21 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class TestView(APIView):
+class CreateStudentView(CreateAPIView):
 
     permission_classes = (IsAuthenticated, IsOrganiserAccount, IsEventOwner)
+    serializer_class = StudentSerializer
 
-    @swagger_auto_schema(responses={200: "{\"sub\": \"marine\"}"},
-                         operation_description="Test endpoint for organiser auth")
-    def get(self, request, event_name):
-        event = Event.objects.get(pk=event_name)
-
-        self.check_object_permissions(request, event)
-
-        data = {
-            'sub': 'marine'
-        }
-        return Response(data)
-
-
-class CreateStudentView(APIView):
-
-    permission_classes = (IsAuthenticated, IsOrganiserAccount, IsEventOwner)
-
-    @swagger_auto_schema(request_body=StudentSerializer,
-                         operation_description="Creates student")
-    def post(self, request, event_name):
+    def create(self, request, event_name, *args, **kwargs):
         event = Event.objects.get(pk=event_name)
         self.check_object_permissions(request, event)
-
-        request.data['event'] = event_name # event -> event_name (because 'event' is not a pk, but an object)
-        student_serializer = StudentSerializer(data=request.data, context={'is_active': event.is_active})
-        if student_serializer.is_valid(raise_exception=True):
-            student_serializer.save()
-        return Response(student_serializer.initial_data)
+        request.data.update(
+            {
+                'is_active': event.is_active,
+                'event': event_name
+            }
+        )
+        return  super().create(request, *args, **kwargs)
 
 
 class CreateEventView(APIView):
