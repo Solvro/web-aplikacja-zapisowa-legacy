@@ -34,6 +34,7 @@ import codecs
 import csv
 import os
 import re
+import logging
 
 
 class RoomListSerializer(serializers.ListSerializer):
@@ -254,7 +255,7 @@ class EventSerializer(serializers.ModelSerializer):
             raise CSVErrorManager.create_error(index, code, column)
 
     def create(self, validated_data):
-        organizer = Organiser.objects.get(user=self.context.get('user'))
+        organizer = Organiser.objects.get(user=self.context.get('request').user)
         participants_data = validated_data.pop('participants')
         rooms_data = validated_data.pop('rooms')
         event = Event.objects.create(organizer=organizer, **validated_data)
