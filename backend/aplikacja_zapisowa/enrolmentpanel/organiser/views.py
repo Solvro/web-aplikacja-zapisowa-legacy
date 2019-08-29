@@ -14,7 +14,7 @@ from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.exceptions import ValidationError
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import CreateAPIView, ListCreateAPIView
 
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
@@ -60,30 +60,18 @@ class CreateStudentView(CreateAPIView):
         return  super().create(request, *args, **kwargs)
 
 
-class CreateEventView(APIView):
+class ListCreateEventView(ListCreateAPIView):
 
     permission_classes = (IsAuthenticated, IsOrganiserAccount)
     parser_classes = (MultiPartParser,)
+    serializer_class = EventSerializer
 
-    @swagger_auto_schema(request_body=EventSerializer,
-                         operation_description="Creates event. Creation is atomic.",
-                         responses={400: "{\"detail\": \"detail\"}"})
+    def get_queryset(self):
+        return Event.objects.filter(organizer__user=self.request.user)
+
     @transaction.atomic
-    def post(self, request):
-        event_serializer = EventSerializer(data=request.data, context={'user': request.user})
-        try:
-            if event_serializer.is_valid(raise_exception=True):
-                event_serializer.save()
-        except ValidationError:
-            raise UniqueEventNameError
-        return Response(status=status.HTTP_201_CREATED)
-
-    @swagger_auto_schema(responses={200: EventSerializer(many=True)},
-                         operation_description="Gets all organiser's events.")
-    def get(self, request):
-        event = Event.objects.filter(organizer__user=request.user)
-        event_serializer = EventSerializer(event, many=True)
-        return Response(event_serializer.data)
+    def create(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)
 
 
 class DetailEventView(APIView):
