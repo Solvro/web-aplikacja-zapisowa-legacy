@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from rest_framework.test import APIClient
 from rest_framework import status
 
-from .serializers import EventSerializer
+from .serializers import EventSerializer, StudentSerializer
 
 import json
 import datetime
@@ -315,3 +315,73 @@ class ListCreateEventViewTestCase(TestCase):
 
         all_events = Event.objects.all()
         self.assertNotEqual(response.data, EventSerializer(all_events, many=True).data)
+
+
+class CreateStudentViewTestCase(TestCase):
+    EVENT_NAME = 'test_event'
+    STUDENT_DATA = {
+        'name': 'test_student',
+        'index': '2137',
+        'faculty': 1,
+        'sex': 'M'
+    }
+    ORGANISER_DATA = {
+        'username': 'test_organiser',
+        'password': 'test',
+        'faculty': 1,
+        'name': 'test'
+    }
+    url = reverse('student-create', kwargs={'event_name': EVENT_NAME})
+    client = APIClient()
+
+    def setUp(self):
+        organiser = Organiser.objects.create(**self.ORGANISER_DATA)
+        Event.objects.create(
+            name=self.EVENT_NAME,
+            beginning_date=datetime.datetime.now(),
+            ending_date=datetime.datetime.now(),
+            organizer=organiser
+        )
+
+    def test_event_owner_permission(self):
+        Organiser.objects.create(
+            username='other_test_organiser',
+            password='test',
+            faculty=1,
+            name='test'
+        )
+        self.client.login(username='other_test_organiser', password='test')
+        response = self.client.post(
+            self.url,
+            json.dumps(self.STUDENT_DATA),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_create_student(self):
+        self.client.login(username=self.ORGANISER_DATA['username'], password=self.ORGANISER_DATA['password'])
+        response = self.client.post(
+            self.url,
+            json.dumps(self.STUDENT_DATA),
+            content_type='application/json'
+        )
+        test_student = Student.objects.filter(name='test_student')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(len(test_student), 1)
+        self.assertEqual(response.data, StudentSerializer(test_student[0]).data)
+
+    def test_double_creation(self):
+        self.client.login(username=self.ORGANISER_DATA['username'], password=self.ORGANISER_DATA['password'])
+        self.client.post(
+            self.url,
+            json.dumps(self.STUDENT_DATA),
+            content_type='application/json'
+        )
+        response = self.client.post(
+            self.url,
+            json.dumps(self.STUDENT_DATA),
+            content_type='application/json'
+        )
+        test_student = Student.objects.filter(name='test_student')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(len(test_student), 1)
