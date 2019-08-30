@@ -14,7 +14,11 @@ from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.exceptions import ValidationError
+<<<<<<< HEAD
 from rest_framework.generics import CreateAPIView, ListCreateAPIView
+=======
+from rest_framework.generics import ListCreateAPIView
+>>>>>>> 23752ab3669d0ea54ace2a25fb68562d0b9ba2eb
 
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
