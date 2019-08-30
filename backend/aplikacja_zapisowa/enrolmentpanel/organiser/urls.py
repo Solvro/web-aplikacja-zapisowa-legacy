@@ -3,7 +3,6 @@ from django.urls import path
 from .views import (
     ListCreateEventView,
     CreateStudentView,
-    TestView,
     DetailEventView,
     StudentStatusView,
     DetailRoomListView,
@@ -17,7 +16,6 @@ urlpatterns = [
     path('event', ListCreateEventView.as_view(), name='event-create-list'),
     path('event/<event_name>', DetailEventView.as_view()),
     path('event/<event_name>/rooms', DetailRoomListView.as_view()),
-    path('<event_name>/test/', TestView.as_view()),
     path('<event_name>/statistics', EventStatisticsView.as_view()),
     path('<event_name>/student/', CreateStudentView.as_view(), name='student-create'),
     path('<event_name>/students_status/', StudentStatusView.as_view()),
