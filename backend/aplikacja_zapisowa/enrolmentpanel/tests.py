@@ -9,11 +9,7 @@ from django.contrib.auth.models import User
 from rest_framework.test import APIClient
 from rest_framework import status
 
-<<<<<<< HEAD
 from .serializers import EventSerializer, StudentSerializer
-=======
-from .serializers import EventSerializer
->>>>>>> 23752ab3669d0ea54ace2a25fb68562d0b9ba2eb
 
 import json
 import datetime
@@ -319,7 +315,6 @@ class ListCreateEventViewTestCase(TestCase):
 
         all_events = Event.objects.all()
         self.assertNotEqual(response.data, EventSerializer(all_events, many=True).data)
-<<<<<<< HEAD
 
 
 class CreateStudentViewTestCase(TestCase):
@@ -390,5 +385,3 @@ class CreateStudentViewTestCase(TestCase):
         test_student = Student.objects.filter(name='test_student')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(len(test_student), 1)
-=======
->>>>>>> 23752ab3669d0ea54ace2a25fb68562d0b9ba2eb
