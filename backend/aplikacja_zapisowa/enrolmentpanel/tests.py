@@ -223,10 +223,10 @@ class ListCreateEventViewTestCase(TestCase):
         'beginning_date': '2019-12-21',
         'ending_date': '2019-12-22',
         'description': 'this is test event',
-        'participants': open('./files_for_testing/generated_participants.csv'),
-        'rooms': open('./files_for_testing/generated_rooms.csv')
+        'participants': open('./enrolmentpanel/unit_test_files/generated_participants.csv'),
+        'rooms': open('./enrolmentpanel/unit_test_files/generated_rooms.csv')
     }
-    CORRUPTED_ROOM_DATA = './files_for_testing/corrupted_rooms.csv'
+    CORRUPTED_ROOM_DATA = './enrolmentpanel/unit_test_files/corrupted_rooms.csv'
     
     url = reverse('event-create-list')
     client = APIClient()
