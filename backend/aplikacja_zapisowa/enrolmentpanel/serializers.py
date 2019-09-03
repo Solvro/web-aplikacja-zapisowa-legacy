@@ -34,6 +34,7 @@ import codecs
 import csv
 import os
 import re
+import logging
 
 
 class RoomListSerializer(serializers.ListSerializer):
@@ -108,11 +109,10 @@ class StudentSerializer(serializers.ModelSerializer):
     def __is_updated(self, new_value, previous_value):
         return new_value is not None and previous_value != new_value
 
-
     def create(self, validated_data):
         if validated_data.get("email") is None:
             validated_data["email"] = f"{validated_data['index']}@student.pwr.edu.pl"
-        return Student.objects.create(**validated_data, is_active=self.context.get('is_active', False))
+        return Student.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
         validated_data.pop('event', None)
@@ -254,7 +254,7 @@ class EventSerializer(serializers.ModelSerializer):
             raise CSVErrorManager.create_error(index, code, column)
 
     def create(self, validated_data):
-        organizer = Organiser.objects.get(user=self.context.get('user'))
+        organizer = Organiser.objects.get(user=self.context.get('request').user)
         participants_data = validated_data.pop('participants')
         rooms_data = validated_data.pop('rooms')
         event = Event.objects.create(organizer=organizer, **validated_data)
