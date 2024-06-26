@@ -1,4 +1,4 @@
-FROM python:3.6.6-slim-stretch
+FROM python:3.6-buster
 
 RUN apt-get update && \
     apt-get -y install gcc mono-mcs && \
@@ -9,6 +9,7 @@ RUN mkdir /app
 COPY ./requirments.txt /app/
 COPY ./aplikacja_zapisowa /app/
 WORKDIR /app
+RUN pip install --upgrade pip
 RUN pip install -r ./requirments.txt
 
 CMD ["daphne", "-p", "8000", "-b", "0.0.0.0", "aplikacja_zapisowa.asgi:application"]

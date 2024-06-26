@@ -29,7 +29,5 @@ services:
            - "./backend/aplikacja_zapisowa:/app"
     db:
        image: "postgres:latest"
-       volumes:
-           - "aplikacja-zapisowa_postgress-volume"
     redis:
        image: "redis:5-alpine"
