@@ -7,6 +7,6 @@ ENV PATH /app/node_modules/.bin:$PATH
 
 COPY . /app
 COPY ./package.json /app/package.json
-RUN yarn install --silent
+RUN npm install --legacy-peer-deps
 
 CMD ["yarn", "start"]

@@ -4,11 +4,13 @@ psycopg2-binary==2.7.7
 djangorestframework==3.8.2
 drf-yasg==1.13.0
 django-cors-headers==2.4.0
-djangorestframework-simplejwt==3.2.3
+djangorestframework-simplejwt==5.0.0
+PyJWT==v1.7.1
 channels==2.1.5
 channels_redis==2.3.3
 Pillow==2.1.0
 ipython
 daphne==2.2.5
+decode==0.7.1
 sentry-sdk==0.7.10
 django-statsd==2.3.0

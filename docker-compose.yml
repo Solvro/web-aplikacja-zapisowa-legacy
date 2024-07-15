@@ -28,6 +28,14 @@ services:
        volumes:
            - "./backend/aplikacja_zapisowa:/app"
     db:
-       image: "postgres:latest"
+      image: postgres:latest
+      environment:
+        - POSTGRES_DB=db
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=passwd123
+      volumes:
+        - pgdata:/var/lib/postgresql/data
     redis:
        image: "redis:5-alpine"
+volumes:
+  pgdata:

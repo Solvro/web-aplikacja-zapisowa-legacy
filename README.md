@@ -1,5 +1,7 @@
-# Legacy aplikacja zapisowa 
-![Screenshot 2024-06-26 at 19.39.02.png](..%2FScreenshot%202024-06-26%20at%2019.39.02.png)
+# Legacy aplikacja zapisowa
+![Screenshot 2024-07-15 at 16.09.11.png](./assets/Screenshot%202024-07-15%20at%2016.09.11.png)
+![Screenshot 2024-07-15 at 17.41.25.png](assets%2FScreenshot%202024-07-15%20at%2017.41.25.png)
+## About application
 The legacy application for signing up for student "rajd" - participation in tourist events for students.
 It enables quick and convenient registration, managing the list of participants and tracking information about upcoming "rajds".
 
@@ -11,7 +13,7 @@ Then you just need to type into terminal:
 ```
 docker-compose up
 ```
-And then you have your development react site under `localhost:3000` and backend API avaliable under `localhost:800`.
+And then you have your development react site under `localhost:3000` and backend API avaliable under `localhost:8000`.
 
 ## Prepare DB for working
 
