@@ -28,6 +28,7 @@ class SummaryRoute extends React.Component<SummaryRouteProps> {
             history.replace('/AddRoomMates');
             return null;
         } else {
+            //@ts-ignore
             const {roomNumber, roomMates, user} = location.state;
             localStorage.clear();
             signOut();

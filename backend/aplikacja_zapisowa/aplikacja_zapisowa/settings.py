@@ -110,8 +110,9 @@ WSGI_APPLICATION = 'aplikacja_zapisowa.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
+        'NAME': 'db',
         'USER': 'postgres',
+        'PASSWORD': 'passwd123',
         'HOST': 'db',
         'PORT': '5432',
     }
